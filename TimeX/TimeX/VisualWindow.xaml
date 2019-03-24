@@ -1,0 +1,873 @@
+﻿<Window x:Name="VisaulForm"
+        x:Class="TimeX.VisualWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Closing="VisaulForm_Closing"
+        Height="768"
+        Icon="Images/Preferences/play-button.png"
+        KeyUp="VisaulForm_KeyUp"
+        Language="ru-RU"
+        MinHeight="600"
+        MinWidth="800"
+        Title="Ход мероприятия"
+        Width="1320"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush ImageSource="Images/hexellence.png"
+                    TileMode="Tile"
+                    Viewport="0,0,150,173"
+                    ViewportUnits="Absolute"/>
+    </Window.Background>
+    <Window.Resources>
+        <Style TargetType="Border" x:Key="BorderEffect">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="5"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Image" x:Key="ImageStyle" BasedOn="{StaticResource {x:Type Image}}">
+            <Style.Setters>
+                <Setter Property="Margin" Value="5"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="3" Color="#F16B2C"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Margin" Value="5,2,5,7"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    
+    <Viewbox>
+        <!--Наполнение окна-->
+        <Grid Width="1366" Height="768">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <!--Заголовок-->
+            <Grid Grid.Row="0"
+                  Background="White"
+                  Height="70">
+                <Grid.Effect>
+                    <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="5"/>                    
+                </Grid.Effect>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--Логотип-->
+                <Image Grid.Column="0"
+                       Height="Auto"
+                       Margin="40,0,20,0"
+                       Source="Images/logo.png"
+                       StretchDirection="DownOnly"
+                       Width="Auto"/>
+                <!--Название ПО-->
+                <Label Grid.Column="1"
+                       Content="Контроль выполнения плана мероприятий"
+                       FontFamily="Century Gothic"
+                       FontSize="34"
+                       HorizontalAlignment="Left"
+                       Margin="20,5,0,5"
+                       VerticalAlignment="Center"
+                       VerticalContentAlignment="Center">                    
+                </Label>
+            </Grid>
+
+            <!--Название мероприяия-->
+            <Border Grid.Row="1"
+                    Background="White"
+                    CornerRadius="3"
+                    Margin="10"
+                    MinHeight="70"
+                    Padding="30,10"
+                    Style="{StaticResource BorderEffect}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                           x:Name="NameBlock"
+                           FontSize="28"
+                           Foreground="{StaticResource OrangeColor}"
+                           HorizontalAlignment="Left"
+                           HorizontalContentAlignment="Left">
+                        <TextBlock Text="{Binding Name}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Left"/>
+                    </Label>
+                    <Image Grid.Column="1" x:Name="FullEventsList"
+                           Height="20"
+                           MouseUp="FullEventsList_MouseUp"
+                           Source="Images/VisualImages/see-button.png"
+                           Style="{StaticResource ImageStyle}"
+                           ToolTip="Отобразить весь список событий"
+                           Width="20"
+                           VerticalAlignment="Center"/>
+                    <Image Grid.Column="2"
+                           Height="18"
+                           Source="Images/VisualImages/print-button.png"
+                           Style="{StaticResource ImageStyle}"
+                           Visibility="Collapsed"
+                           Width="18"/>
+                </Grid>
+            </Border>
+
+            <!--Ход мероприятия-->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="3"
+                    Padding="0"
+                    Margin="50,50,50,0"
+                    Style="{StaticResource BorderEffect}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>                    
+                    <!--Прогрессбар хода мероприятия-->
+                    <Grid Grid.Row="0" x:Name="ActionInfo">
+                        <!--Шкала отображения хода мероприятия-->
+                        <ProgressBar x:Name="ActionProgress"
+                                 Height="80"
+                                 MouseMove="ActionProgress_MouseMove"
+                                 ToolTipService.InitialShowDelay="0"
+                                 Value="{Binding CompletePercent, Mode=OneWay}">
+                            <!--Тень програссбара-->
+                            <ProgressBar.Effect>
+                                <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="5"/>
+                            </ProgressBar.Effect>
+                            <!--Шаблон прогрессбара-->
+                            <ProgressBar.Template>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Border x:Name="PART_Track"
+                                            Background="White"
+                                            CornerRadius="3"/>
+                                        <Border x:Name="PART_Indicator"
+                                            Background="{StaticResource OrangeColor}"
+                                            CornerRadius="3"
+                                            HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </ProgressBar.Template>
+                        </ProgressBar>
+                        <!--Штрихи чекпоинтов-->
+                        <ItemsControl x:Name="CheckPoints"
+                                      ItemsSource="{Binding Checkpoints}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="{Binding Left}"/>
+                                            <ColumnDefinition Width="{Binding Right}"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0"
+                                            BorderThickness="0,0,1,0"
+                                            BorderBrush="Black"
+                                            MouseEnter="Border_MouseEnter"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <!--Метки чекпоинтов-->
+                        <ItemsControl ItemsSource="{Binding Checkpoints}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="{Binding Left}"/>
+                                            <ColumnDefinition Width="{Binding Right}"/>
+                                        </Grid.ColumnDefinitions>                                        
+                                        <Canvas Grid.Column="0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top">
+                                            <Image Height="Auto"
+                                                   Source="Images/VisualImages/location24px.png"
+                                                   Stretch="None"
+                                                   Width="Auto">
+                                                <Image.RenderTransform>
+                                                    <TransformGroup>
+                                                        <TranslateTransform Y="-21" X="-8.5"/>
+                                                    </TransformGroup>
+                                                </Image.RenderTransform>
+                                            </Image>
+                                        </Canvas>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <!--Указатель позиции курсора-->
+                        <Border x:Name="CursorPosition"
+                                BorderBrush="Black"
+                                BorderThickness="0,0,1,0"
+                                HorizontalAlignment="Left"
+                                SnapsToDevicePixels="True">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=ActionProgress}" Value="false">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=CheckPoints}" Value="true">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                        <!--Всплывающая подсказка-->
+                        <Popup x:Name="ProgressBarPopup"
+                               AllowsTransparency="True"                           
+                               Placement="Top"
+                               PlacementRectangle="{Binding ElementName=ActionProgress, Mode=OneWay}"
+                               PopupAnimation="Slide"
+                               ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                               SnapsToDevicePixels="True"
+                               VerticalOffset="2"
+                               Visibility="Hidden"
+                               Opened="ProgressBarPopup_Opened">
+                            <Popup.Style>
+                                <Style TargetType="Popup">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=CursorPosition, Mode=OneWay}" Value="True">
+                                            <Setter Property="IsOpen" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Popup.Style>
+                            <Border x:Name="PopupBorder"
+                                    Opacity="0.9"
+                                    Padding="0">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="3" Opacity="0.3" ShadowDepth="3"/>
+                                </Border.Effect>
+                                <Grid Margin="5">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Содержание подсказки-->
+                                    <Border Grid.Row="0"
+                                        Background="Black"
+                                        CornerRadius="3">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+
+                                            <Label Grid.Row="0" x:Name="PopupLabel"
+                                                   Content="Popup!"
+                                                   FontSize="18"
+                                                   Foreground="White"
+                                                   Margin="3"/>
+                                            <ListBox Grid.Row="1" x:Name="PopupEvents"
+                                                 Background="{x:Null}"
+                                                 BorderThickness="0"
+                                                 Margin="3"
+                                                 Padding="0">
+                                                <ListBox.Resources>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Style.Setters>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                                        <Label Content="{Binding Name}"
+                                                                           Margin="4,1"
+                                                                           Padding="0"
+                                                                           FontSize="12"
+                                                                           Foreground="White"
+                                                                           HorizontalContentAlignment="Center"/>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style.Setters>
+                                                    </Style>
+                                                </ListBox.Resources>
+                                            </ListBox>
+                                        </Grid>
+                                    </Border>
+                                    <!--Треугольник-указатель-->
+                                    <Polygon Grid.Row="1"
+                                         Fill="Black"
+                                         HorizontalAlignment="Center"
+                                         Points="0,0 30,0 15,10 0,0"/>
+                                </Grid>
+                            </Border>
+                        </Popup>
+                    </Grid>                    
+                    <!--Отображение времени мероприятия-->
+                    <Grid Grid.Row="1">
+                        <!--Стили отображения надписей-->
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type Label}">
+                                <Style.Setters>
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    <Setter Property="FontFamily" Value="PT Sans"/>
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <!--<Setter Property="FontWeight" Value="SemiBold"/>-->
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <Trigger Property="Grid.Row" Value="0">
+                                        <Setter Property="Margin" Value="4,12,4,0"/>
+                                        <Setter Property="Foreground" Value="{StaticResource OrangeColor}"/>
+                                    </Trigger>
+                                    <Trigger Property="Grid.Row" Value="1">
+                                        <Setter Property="Margin" Value="4,0,4,12"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="12*"/>
+                            <ColumnDefinition Width="15*"/>
+                            <ColumnDefinition Width="16*"/>
+                            <ColumnDefinition Width="14*"/>
+                            <ColumnDefinition Width="13*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <!--Названия колонок-->
+                        <Label Grid.Column="0" Grid.Row="0">
+                            <TextBlock Text="Время начала"/>
+                        </Label>
+                        <Label Grid.Column="1" Grid.Row="0">
+                            <TextBlock Text="Время окончания"/>
+                        </Label>
+                        <Label Grid.Column="2" Grid.Row="0">
+                            <TextBlock Text="Осталось времени"/>
+                        </Label>
+                        <Label Grid.Column="3" Grid.Row="0">
+                            <TextBlock Text="Прошло времени"/>
+                        </Label>
+                        <Label Grid.Column="4" Grid.Row="0">
+                            <TextBlock Text="Текущее время"/>
+                        </Label>
+                        <!--Значения колонок-->
+                        <Label Grid.Column="0" Grid.Row="1" x:Name="StartTimeLabel">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="{Binding StartTime, StringFormat='HH:mm'}"/>
+                                <TextBlock Grid.Row="1" Text="{Binding StartTime, StringFormat='dd MMM yyyy'}"/>
+                            </Grid>
+                        </Label>
+                        <Label Grid.Column="1" Grid.Row="1" x:Name="EndTimeLabel">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="{Binding FinishTime, StringFormat='HH:mm'}"/>
+                                <TextBlock Grid.Row="1" Text="{Binding FinishTime, StringFormat='dd MMM yyyy'}"/>
+                            </Grid>
+                        </Label>
+                        <Label Grid.Column="2" Grid.Row="1" x:Name="RemainingTimeLabel">
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style>
+                                        <Style.Setters>
+                                            <Setter Property="TextBlock.Text" Value="{Binding RemainingTime, StringFormat={}{0:d\\д\\ hh\\:mm\\:ss}}"/>
+                                        </Style.Setters>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RemainingTime.Days}" Value="0">
+                                                <Setter Property="TextBlock.Text" Value="{Binding RemainingTime, StringFormat={}{0:hh\\:mm\\:ss}}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Label>
+                        <Label Grid.Column="3" Grid.Row="1" x:Name="ElapsedTimeLabel">
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style>
+                                        <Style.Setters>
+                                            <Setter Property="TextBlock.Text" Value="{Binding ElapsedTime, StringFormat={}{0:d\\д\\ hh\\:mm\\:ss}}"/>
+                                        </Style.Setters>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElapsedTime.Days}" Value="0">
+                                                <Setter Property="TextBlock.Text" Value="{Binding ElapsedTime, StringFormat={}{0:hh\\:mm\\:ss}}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Label>
+                        <Label Grid.Column="4" Grid.Row="1" x:Name="CurrentTimeLabel">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="{Binding CurrentTime, StringFormat='HH:mm:ss'}"/>
+                                <TextBlock Grid.Row="1" Text="{Binding CurrentTime, StringFormat='dd MMM yyyy'}"/>
+                            </Grid>
+                        </Label>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!--Отображение событий мероприятия-->
+            <Grid Grid.Row="3" Margin="50,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Label Grid.Column="0"
+                       HorizontalContentAlignment="Left"
+                       Padding="0,5"/>
+                </Grid>
+                <Border Grid.Row="1"
+                        Background="White"
+                        CornerRadius="3"
+                        Height="Auto"
+                        Style="{StaticResource BorderEffect}"
+                        VerticalAlignment="Top">
+                    <ListBox x:Name="EventsListBox"
+                             Background="{x:Null}"
+                             BorderThickness="0"
+                             Focusable="False"
+                             ItemsSource="{Binding CurrentAndLastNext}"
+                             Padding="0"
+                             ScrollViewer.CanContentScroll="False"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VerticalAlignment="Top"
+                             VerticalContentAlignment="Top">
+                        <ListBox.Resources>
+                            <Style TargetType="ProgressBar" x:Key="PBStyle">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Grid>
+                                                    <Border x:Name="PART_Track"
+                                                            Background="#DFDFDF"/>
+                                                    <Border x:Name="PART_Indicator"
+                                                            Background="{StaticResource EventIndicator_Performed}"
+                                                            HorizontalAlignment="Left"/>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <!--Запланировано-->
+                                    <Trigger Property="ProgressBar.Value" Value="0">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <Border x:Name="PART_Track"
+                                                                Background="{StaticResource EventIndicator_Planned}"/> 
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <!--Завершено-->
+                                    <Trigger Property="ProgressBar.Value" Value="100">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <Border x:Name="PART_Track"
+                                                                Background="{StaticResource EventIndicator_Completed}"/>                                                        
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="ListBoxItem">
+                                <Style.Setters>
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Border BorderThickness="1" MinHeight="80">
+                                                    <Grid>
+                                                        <Grid>
+                                                            <ProgressBar Style="{StaticResource PBStyle}"
+                                                                     Value="{Binding CompletePercent, Mode=OneWay}"/>
+                                                        </Grid>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="5*"/>
+                                                                <ColumnDefinition Width="2*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <!--Время на выполнение события-->
+                                                            <Grid Grid.Column="0"
+                                                                  HorizontalAlignment="Stretch"
+                                                                  VerticalAlignment="Stretch">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition/>
+                                                                    <ColumnDefinition Width="15"/>
+                                                                    <ColumnDefinition/>
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <Label Grid.Column="0"
+                                                                       Background="{x:Null}"
+                                                                       BorderThickness="0"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       VerticalContentAlignment="Center">
+                                                                    <TextBlock>
+                                                                        <TextBlock.Style>
+                                                                            <Style>
+                                                                                <Style.Setters>
+                                                                                    <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                </Style.Setters>
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding StartTime.Days}" Value="0">
+                                                                                        <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </TextBlock.Style>
+                                                                    </TextBlock>
+                                                                </Label>
+                                                                <Label Grid.Column="1"
+                                                                       Background="{x:Null}"
+                                                                       BorderThickness="0"
+                                                                       Content="-"
+                                                                       HorizontalAlignment="Center"
+                                                                       HorizontalContentAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       VerticalContentAlignment="Center"/>
+                                                                <Label Grid.Column="2"
+                                                                       Background="{x:Null}"
+                                                                       BorderBrush="White"
+                                                                       BorderThickness="0"
+                                                                       HorizontalAlignment="Center"
+                                                                       HorizontalContentAlignment="Center"
+                                                                       VerticalContentAlignment="Center">
+                                                                    <TextBlock>
+                                                                        <TextBlock.Style>
+                                                                            <Style>
+                                                                                <Style.Setters>
+                                                                                    <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                </Style.Setters>
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding FinishTime.Days}" Value="0">
+                                                                                        <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </TextBlock.Style>
+                                                                    </TextBlock>
+                                                                </Label>
+                                                            </Grid>
+                                                            <!--Имя события-->
+                                                            <Label Grid.Column="1"
+                                                               Background="{x:Null}"
+                                                               BorderBrush="White"
+                                                               BorderThickness="2,0,2,0"
+                                                               Focusable="False"
+                                                               Padding="25,0,0,0"
+                                                               ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                               VerticalAlignment="Stretch"
+                                                               VerticalContentAlignment="Center"
+                                                               HorizontalContentAlignment="Left">
+                                                                <TextBlock Text="{Binding Name}"
+                                                                       TextWrapping="Wrap"/>
+                                                            </Label>
+                                                            <!--Статус выполнения-->
+                                                            <Label Grid.Column="2"
+                                                               Content="Выполняется"
+                                                               HorizontalAlignment="Stretch"
+                                                               HorizontalContentAlignment="Center"
+                                                               VerticalAlignment="Stretch"
+                                                               VerticalContentAlignment="Center"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CompletePercent}" Value="0">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Border BorderThickness="1" MinHeight="80">
+                                                        <Border.Child>
+                                                            <Grid>
+                                                                <Grid>
+                                                                    <ProgressBar Style="{StaticResource PBStyle}"
+                                                                             Value="{Binding CompletePercent, Mode=OneWay}"/>
+                                                                </Grid>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="2*"/>
+                                                                        <ColumnDefinition Width="5*"/>
+                                                                        <ColumnDefinition Width="2*"/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <!--Время на выполнение события-->
+                                                                    <Grid Grid.Column="0"
+                                                                      HorizontalAlignment="Stretch"
+                                                                      VerticalAlignment="Stretch">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition/>
+                                                                            <ColumnDefinition Width="15"/>
+                                                                            <ColumnDefinition/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <Label Grid.Column="0"
+                                                                           Background="{x:Null}"
+                                                                           BorderThickness="0"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center">
+                                                                            <TextBlock>
+                                                                                <TextBlock.Style>
+                                                                                    <Style>
+                                                                                        <Style.Setters>
+                                                                                            <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                        </Style.Setters>
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding StartTime.Days}" Value="0">
+                                                                                                <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </Label>
+                                                                        <Label Grid.Column="1"
+                                                                           Background="{x:Null}"
+                                                                           BorderThickness="0"
+                                                                           Content="-"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center"/>
+                                                                        <Label Grid.Column="2"
+                                                                           Background="{x:Null}"
+                                                                           BorderBrush="White"
+                                                                           BorderThickness="0"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center">
+                                                                            <TextBlock>
+                                                                                <TextBlock.Style>
+                                                                                    <Style>
+                                                                                        <Style.Setters>
+                                                                                            <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                        </Style.Setters>
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding FinishTime.Days}" Value="0">
+                                                                                                <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </Label>
+                                                                    </Grid>
+                                                                    <!--Имя события-->
+                                                                    <Label Grid.Column="1"
+                                                                       Background="{x:Null}"
+                                                                       BorderBrush="White"                                                                       
+                                                                       BorderThickness="2,0,2,0"
+                                                                       Focusable="False"
+                                                                       Foreground="#a0a0a0"
+                                                                       Padding="25,0,0,0"
+                                                                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                                       VerticalAlignment="Stretch"
+                                                                       VerticalContentAlignment="Center"
+                                                                       HorizontalContentAlignment="Left">
+                                                                        <TextBlock Text="{Binding Name}"
+                                                                               TextWrapping="Wrap"/>
+                                                                    </Label>
+                                                                    <!--Статус выполнения-->
+                                                                    <Label Grid.Column="2"
+                                                                       Content="Запланировано"
+                                                                       Foreground="#a0a0a0"
+                                                                       HorizontalAlignment="Stretch"
+                                                                       HorizontalContentAlignment="Center"
+                                                                       VerticalAlignment="Stretch"
+                                                                       VerticalContentAlignment="Center"/>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Border.Child>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CompletePercent}" Value="100">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Border BorderThickness="1" MinHeight="80">
+                                                        <Border.Child>
+                                                            <Grid>
+                                                                <Grid>
+                                                                    <ProgressBar Style="{StaticResource PBStyle}"
+                                                                             Value="{Binding CompletePercent, Mode=OneWay}"/>
+                                                                </Grid>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="2*"/>
+                                                                        <ColumnDefinition Width="5*"/>
+                                                                        <ColumnDefinition Width="2*"/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <!--Время на выполнение события-->
+                                                                    <Grid Grid.Column="0"
+                                                                      HorizontalAlignment="Stretch"
+                                                                      VerticalAlignment="Stretch">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition/>
+                                                                            <ColumnDefinition Width="15"/>
+                                                                            <ColumnDefinition/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <Label Grid.Column="0"
+                                                                           Background="{x:Null}"
+                                                                           BorderThickness="0"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center">
+                                                                            <TextBlock>
+                                                                                <TextBlock.Style>
+                                                                                    <Style>
+                                                                                        <Style.Setters>
+                                                                                            <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                        </Style.Setters>
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding StartTime.Days}" Value="0">
+                                                                                                <Setter Property="TextBlock.Text" Value="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </Label>
+                                                                        <Label Grid.Column="1"
+                                                                           Background="{x:Null}"
+                                                                           BorderThickness="0"
+                                                                           Content="-"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center"/>
+                                                                        <Label Grid.Column="2"
+                                                                           Background="{x:Null}"
+                                                                           BorderBrush="White"
+                                                                           BorderThickness="0"
+                                                                           Foreground="#a0a0a0"
+                                                                           HorizontalAlignment="Center"
+                                                                           HorizontalContentAlignment="Center"
+                                                                           VerticalAlignment="Center"
+                                                                           VerticalContentAlignment="Center">
+                                                                            <TextBlock>
+                                                                                <TextBlock.Style>
+                                                                                    <Style>
+                                                                                        <Style.Setters>
+                                                                                            <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:d\\д\\ hh\\:mm}}"/>
+                                                                                        </Style.Setters>
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding FinishTime.Days}" Value="0">
+                                                                                                <Setter Property="TextBlock.Text" Value="{Binding FinishTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </Label>
+                                                                    </Grid>
+                                                                    <!--Имя события-->
+                                                                    <Label Grid.Column="1"
+                                                                       BorderBrush="White"                                                                       
+                                                                       BorderThickness="2,0,2,0" 
+                                                                       Foreground="#a0a0a0"
+                                                                       Padding="25,0,0,0"
+                                                                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                                       VerticalAlignment="Stretch"
+                                                                       VerticalContentAlignment="Center"
+                                                                       HorizontalContentAlignment="Left">
+                                                                        <TextBlock Text="{Binding Name}"
+                                                                               TextWrapping="Wrap"/>
+                                                                    </Label>
+                                                                    <!--Статус выполнения-->
+                                                                    <Label Grid.Column="2"
+                                                                       Content="Завершено"
+                                                                       Foreground="#a0a0a0"
+                                                                       HorizontalAlignment="Stretch"
+                                                                       HorizontalContentAlignment="Center"
+                                                                       VerticalAlignment="Stretch"
+                                                                       VerticalContentAlignment="Center"/>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Border.Child>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
+                </Border>
+            </Grid>
+        </Grid>
+    </Viewbox>
+</Window>

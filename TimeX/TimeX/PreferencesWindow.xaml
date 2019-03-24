@@ -1,0 +1,818 @@
+﻿<Window x:Name="PreferencesForm"
+        x:Class="TimeX.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Closing="PreferencesForm_Closing"
+        Height="768"
+        Icon="Images/Icon.ico"
+        Language="ru-RU"
+        MinHeight="600"
+        MinWidth="800"
+        Title="Настройки"
+        Width="1024"
+        WindowStartupLocation="Manual">
+    <Window.Background>
+        <ImageBrush ImageSource="Images/hexellence.png"
+                        TileMode="Tile"
+                        Viewport="0,0,150,173"
+                        ViewportUnits="Absolute"/>
+    </Window.Background>
+    <Window.Resources>
+        <Style TargetType="Border" x:Key="BorderStyle">
+            <Style.Setters>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="5"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="MinHeight" Value="62"/>
+                <Setter Property="Margin" Value="8,5"/>
+                <Setter Property="Padding" Value="28,0"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightGrayColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ControlTemplate.Resources>
+                            <Style TargetType="Label"  BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Property="Margin" Value="11,0"/>
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="16"/>
+                            </Style>
+                        </ControlTemplate.Resources>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Rectangle.Fill"
+                                        TargetName="outerRectangle"
+                                        Value="{StaticResource ButtonMouseEnterColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="Button.BorderBrush"
+                                        TargetName="ButtonBorder"
+                                        Value="{StaticResource ButtonFocusColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                        <Border x:Name="ButtonBorder"
+                                ClipToBounds="{TemplateBinding ClipToBounds}"
+                                CornerRadius="3"
+                                Height="{TemplateBinding Height}"
+                                Width="{TemplateBinding Width}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Rectangle x:Name="outerRectangle"
+                                           HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           Fill="Transparent"/>
+                                <DockPanel>
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                                </DockPanel>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="DatePickerTextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+        </Style>
+        <Style TargetType="Image" x:Key="ImageStyle" BasedOn="{StaticResource {x:Type Image}}">
+            <Style.Setters>
+                <Setter Property="Margin" Value="11,0,0,0"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="3" Color="#F16B2C"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Margin" Value="11,-2,0,2"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+            <Style.Setters>
+                <Setter Property="Margin" Value="11"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextBoxStyle">
+            <Style.Setters>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <Setter Property="FontFamily" Value="PT Sans"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="MinWidth" Value="35"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
+    
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Заголовок-->
+        <Grid Grid.Row="0"
+              Background="White"
+              Height="70">
+            <Grid.Effect>
+                <DropShadowEffect Opacity="0.3" ShadowDepth="0" BlurRadius="5"/>
+            </Grid.Effect>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <!--Логотип-->
+            <Image Grid.Column="0"
+                   Height="Auto"
+                   Margin="40,10,20,10"
+                   Source="Images/logo.png"
+                   StretchDirection="DownOnly"
+                   Width="Auto"/>
+            <!--Название ПО-->
+            <Label Grid.Column="1" x:Name="testing"
+                   Content="Контроль выполнения плана мероприятий"
+                   FontFamily="Century Gothic"
+                   FontSize="34"
+                   HorizontalAlignment="Left"
+                   Margin="20,5,0,5"
+                   VerticalAlignment="Center"
+                   VerticalContentAlignment="Center" MouseUp="Label_MouseUp"/>
+        </Grid>
+
+        <!--Настройки мероприятий-->
+        <Grid Grid.Row="1" x:Name="ActionsEditionGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--Добавление мероприятия-->
+            <Grid Grid.Row="0">
+                <Border Margin="8,25"
+                        MinHeight="80"
+                        Style="{StaticResource BorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Grid.Column="0"
+                               Content="Управление мероприятиями"
+                               FontSize="28"/>
+                        <!--Кнопка добавления меропрития-->
+                        <Image Grid.Column="1"
+                               MouseUp="AddImage_MouseUp"
+                               Source="Images/Preferences/add-button.png"
+                               ToolTip="Добавить мероприятие"
+                               Cursor="Hand">
+                            <Image.Effect>
+                                <DropShadowEffect Opacity="0.3" BlurRadius="3" ShadowDepth="0"/>
+                            </Image.Effect>
+                        </Image>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!--Список мероприятий-->
+            <ListBox Grid.Row="1" x:Name="ActionsListBox"
+                     Background="{x:Null}"
+                     BorderBrush="{x:Null}"
+                     BorderThickness="0"
+                     Foreground="Black"
+                     HorizontalContentAlignment="Stretch"
+                     KeyboardNavigation.TabNavigation="Cycle"
+                     Margin="-1,0"
+                     Padding="0"
+                     ScrollViewer.CanContentScroll="False"
+                     VerticalContentAlignment="Top"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.Resources>
+                    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="PlayActionButton">
+                        <Style.Setters>
+                            <EventSetter Event="MouseUp" Handler="PlayActionImage_MouseUp"/>
+                        </Style.Setters>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Started}" Value="true">
+                                <Setter Property="Source" Value="Images/Preferences/pause-button.png"/>
+                                <Setter Property="ToolTip" Value="Приостановить мероприятие"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Started}" Value="false">
+                                <Setter Property="Source" Value="Images/Preferences/play-button.png"/>
+                                <Setter Property="ToolTip" Value="Запустить мероприятие"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="EditActionButton">
+                        <EventSetter Event="MouseUp" Handler="EditActionImage_MouseUp"/>
+                        <Setter Property="ToolTip" Value="Редактировать мероприятие"/>
+                    </Style>
+                    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="DeleteActionButton">
+                        <EventSetter Event="MouseUp" Handler="DeleteActionImage_MouseUp"/>
+                        <Setter Property="ToolTip" Value="Удалить мероприятие"/>
+                    </Style>
+                    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="NowStartTimeButton">
+                        <EventSetter Event="MouseUp" Handler="NowStartTimeImage_MouseUp"/>
+                        <Setter Property="ToolTip" Value="Установить текущее время для мероприятия"/>
+                    </Style>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Setters>
+                            <Setter Property="IsTabStop" Value="False"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Label.Foreground" TargetName="ActionName" Value="{StaticResource OrangeColor}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                        <!--Шаблон отображения мероприятия-->
+                                        <Border Height="Auto"
+                                                MinHeight="75"
+                                                Style="{StaticResource BorderStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!--Название мероприятия-->
+                                                <Label Grid.Column="0" x:Name="ActionName"
+                                                       FontSize="24"
+                                                       Foreground="Black"
+                                                       VerticalAlignment="Stretch"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                                                </Label>
+                                                <!--Настройка времени запуска мероприятия-->
+                                                <Grid Grid.Column="1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Label Grid.Column="0"
+                                                           Content="Начало: "/>
+                                                    <DatePicker Grid.Column="1"
+                                                                DataContextChanged="DatePicker_DataContextChanged"
+                                                                Margin="0,0,11,0"
+                                                                Padding="1"
+                                                                SelectedDate="{Binding StartTime, Mode=TwoWay}"
+                                                                TextBlock.FontFamily="PT Sans"
+                                                                TextBlock.FontSize="14"
+                                                                TextBlock.Foreground="{StaticResource OrangeColor}"
+                                                                VerticalAlignment="Center"
+                                                                VerticalContentAlignment="Center"/>
+                                                    <TextBox Grid.Column="2" x:Name="ActionHour"
+                                                             Foreground="{StaticResource OrangeColor}"
+                                                             HorizontalContentAlignment="Center"
+                                                             KeyUp="ActionHour_KeyUp"
+                                                             LostFocus="ActionHour_LostFocus"
+                                                             PreviewTextInput="TextBox_PreviewTextInput"
+                                                             Style="{StaticResource TextBoxStyle}"
+                                                             Tag="{Binding}"
+                                                             Text="{Binding StartTime.Hour, Mode=OneWay}"
+                                                             TextChanged="ActionHour_TextChanged"/>
+                                                    <Label Grid.Column="3"
+                                                           Content="ч."
+                                                           Foreground="{StaticResource LightGrayColor}"/>
+                                                    <TextBox Grid.Column="4" x:Name="ActionMinute"
+                                                             Foreground="{StaticResource OrangeColor}"
+                                                             HorizontalContentAlignment="Center"
+                                                             LostFocus="ActionMinute_LostFocus"
+                                                             PreviewTextInput="TextBox_PreviewTextInput"
+                                                             Style="{StaticResource TextBoxStyle}"
+                                                             Tag="{Binding}"
+                                                             Text="{Binding StartTime.Minute, Mode=OneWay}"
+                                                             TextChanged="ActionMinute_TextChanged" KeyUp="ActionMinute_KeyUp"/>
+                                                    <Label Grid.Column="5"
+                                                           Content="мин."
+                                                           Foreground="{StaticResource LightGrayColor}"
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"/>
+                                                    <Image Grid.Column="6"
+                                                           Source="Images/Preferences/restart-button.png"
+                                                           Style="{StaticResource NowStartTimeButton}"/>
+                                                </Grid>
+                                                <!--Запуск мероприятия-->
+                                                <Image Grid.Column="2"
+                                                       Style="{StaticResource PlayActionButton}"/>                                                
+                                                <!--Редактирование мероприятия-->
+                                                <Image Grid.Column="3"
+                                                       Source="Images/Preferences/edit-button.png"
+                                                       Style="{StaticResource EditActionButton}"/>
+                                                <!--Удаление мероприятия-->
+                                                <Image Grid.Column="4"
+                                                       Source="Images/Preferences/trash-button.png"
+                                                       Style="{StaticResource DeleteActionButton}"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </Grid>
+
+        <!--Настройка мероприятия-->
+        <Grid Grid.Row="2" x:Name="ActionEditionGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--Название мероприятия и сохранение-->
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!--Заголовок мероприятия-->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" x:Name="EditedActionTitle"
+                           Content="Настройка мероприятия:"
+                           Foreground="#a0a0a0"
+                           Padding="39,0,0,0"/>
+                    <!--Кнопка выхода в главное меню-->
+                    <Button Grid.Column="1" x:Name="BackActionButton"
+                            Click="BackAction_Click"
+                            HorizontalAlignment="Right"
+                            Margin="47,5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Главное меню"
+                                   Foreground="{StaticResource OrangeColor}"
+                                   HorizontalContentAlignment="Center"/>
+                            <Image Grid.Column="1"
+                                   Margin="0,11,11,11"
+                                   Source="Images/Preferences/back-button.png"/>
+                        </Grid>
+                    </Button>
+                </Grid>
+                <!--Панель настройки мероприятия-->
+                <Border Grid.Row="1"
+                        Height="Auto"
+                        Style="{StaticResource BorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <!--Название мероприятия-->
+                        <TextBox Grid.ColumnSpan="3" Grid.Row="0"
+                                 FontSize="24"
+                                 Margin="11"                                 
+                                 Style="{StaticResource TextBoxStyle}"
+                                 Text="{Binding Name}"
+                                 TextWrapping="Wrap"/>                        
+                        <!--Настройка даты старта мероприятия-->
+                        <Grid Grid.Column="0" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                   Content="Начало: "/>
+                            <DatePicker Grid.Column="1"
+                                        Margin="0,0,11,0"
+                                        Padding="1"
+                                        SelectedDate="{Binding StartTime}"
+                                        TextBlock.FontFamily="PT Sans"
+                                        TextBlock.FontSize="14"
+                                        TextBlock.Foreground="{StaticResource OrangeColor}"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"/>
+                            <TextBox Grid.Column="2" x:Name="ActionHour"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="{Binding StartTime.Hour, Mode=OneWay}"
+                                     TextChanged="ActionHour_TextChanged"/>
+                            <Label Grid.Column="3"
+                                   Content="ч."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <TextBox Grid.Column="4" x:Name ="ActionMinute"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="{Binding StartTime.Minute, Mode=OneWay}" TextChanged="ActionMinute_TextChanged"/>
+                            <Label Grid.Column="5"
+                                   Content="мин."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <Image Grid.Column="6"
+                                   MouseUp="NowTimeImage_MouseUp"
+                                   Source="Images/Preferences/restart-button.png"
+                                   Style="{StaticResource ImageStyle}"
+                                   ToolTip="Установить текущее время для мероприятия"/>
+                        </Grid>
+                        <!--Кнопка сохранения мероприятия-->
+                        <Button Grid.Column="2" Grid.Row="1" x:Name="SaveActionButton"
+                                Click="SaveAction_Click"
+                                Margin="11"
+                                Width="{Binding ActualWidth, ElementName=BackActionButton, Mode=OneWay}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Сохранить"
+                                       Foreground="{StaticResource OrangeColor}"
+                                       HorizontalContentAlignment="Center"/>
+                                <Image Grid.Column="1"
+                                       Margin="0,11,11,11"
+                                       Source="Images/Preferences/save-button.png">
+                                </Image>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!--Название события и сохранение-->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!--Заголовок списка событий-->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label x:Name="EditedEventTitle"
+                           Content="Добавить событие:"
+                           Foreground="#a0a0a0"
+                           Padding="39,0,0,0"/>
+                    <!--Отмена настройки события-->
+                    <Button Grid.Column="1" x:Name="BackEventButton"
+                            Click="BackEvent_Click"
+                            HorizontalAlignment="Right"
+                            Margin="{Binding Margin, ElementName=BackActionButton}"
+                            Width="{Binding ActualWidth, ElementName=BackActionButton, Mode=OneWay}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                   Content="Отменить"
+                                   Foreground="{StaticResource OrangeColor}"
+                                   HorizontalContentAlignment="Center"/>
+                            <Image Grid.Column="1"
+                                   Margin="0,11,11,11"
+                                   Source="Images/Preferences/cancel-button.png"/>
+                        </Grid>
+                    </Button>
+                </Grid>
+                <!--Панель со списком событий-->
+                <Border Grid.Row="1"
+                        Height="Auto"
+                        Style="{StaticResource BorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <!--Заголовок события-->
+                        <TextBox Grid.ColumnSpan="3" Grid.Row="0" x:Name="EventName"
+                                 FontSize="18"
+                                 Margin="11"
+                                 Style="{StaticResource TextBoxStyle}"
+                                 Text="Новое событие"
+                                 TextWrapping="Wrap"/>
+                        <!--Настройка времени начала мероприятия-->
+                        <Grid Grid.Column="0" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                   Content="Начало: "/>
+                            <TextBox Grid.Column="1" x:Name="EventStartDay"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="2"
+                                   Content="д."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <TextBox Grid.Column="3" x:Name="EventStartHour"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="4"
+                                   Content="ч."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <TextBox Grid.Column="5" x:Name="EventStartMins"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="6"
+                                   Content="мин."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                        </Grid>
+                        <!--Настройка длительности мероприятия-->
+                        <Grid Grid.Column="1" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                   Content="Длительность: "/>
+                            <TextBox Grid.Column="1" x:Name="EventDurationDay"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="2"                                               
+                                   Content="д."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <TextBox Grid.Column="3" x:Name="EventDurationHour"                                     
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="4"
+                                   Content="ч."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                            <TextBox Grid.Column="5" x:Name="EventDurationMins"
+                                     Foreground="{StaticResource OrangeColor}"
+                                     HorizontalContentAlignment="Center"
+                                     LostFocus="NumberTextBox_LostFocus"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0"/>
+                            <Label Grid.Column="6"
+                                   Content="мин."
+                                   Foreground="{StaticResource LightGrayColor}"/>
+                        </Grid>
+                        <!--Кнопка согранения события-->
+                        <Button Grid.Column="2" Grid.Row="1" x:Name="SaveEventButton"
+                                Click="SaveEvent_Click"
+                                Margin="11"
+                                Width="{Binding ActualWidth, ElementName=BackActionButton, Mode=OneWay}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Сохранить"
+                                       Foreground="{StaticResource OrangeColor}"
+                                       HorizontalContentAlignment="Center"/>
+                                <Image Grid.Column="1"
+                                       Margin="0,11,11,11"
+                                       Source="Images/Preferences/save-button.png"/>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!--Список событий мероприятия-->
+            <Grid Grid.Row="2" x:Name="EventsList">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!--Заголовок списка событий-->
+                <Grid Grid.Row="0">
+                    <Label Content="Список событий:"
+                           Foreground="#a0a0a0"
+                           Padding="39,0,0,0"/>
+                </Grid>
+                <!--Панель со списком событий-->
+                <Border Grid.Row="1"
+                        Style="{StaticResource BorderStyle}"
+                        MinHeight="0"
+                        Padding="0"
+                        VerticalAlignment="Top">
+                    <ListBox x:Name="EventsListBox"
+                             Background="{x:Null}"
+                             BorderThickness="0"
+                             ItemsSource="{Binding Items}"
+                             KeyboardNavigation.TabNavigation="None"
+                             Margin="-1,0"
+                             Padding="0"
+                             ScrollViewer.CanContentScroll="False"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VerticalAlignment="Top"
+                             VerticalContentAlignment="Top">
+                        <ListBox.Resources>
+                            <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="EditEventImage">
+                                <EventSetter Event="MouseUp" Handler="EditEventImage_MouseUp"/>
+                            </Style>
+                            <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}" x:Key="DeleteEventImage">
+                                <EventSetter Event="MouseUp" Handler="DeleteEventImage_MouseUp"/>
+                            </Style>
+                            <Style TargetType="ListBoxItem">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <ControlTemplate.Triggers>
+                                                    <!--Действия при наведдении мыши на событие-->
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="EventListItem" Property="Border.Background" Value="{StaticResource LightOrangeColor}"/>
+                                                        <Setter TargetName="EventListAction" Property="Grid.Visibility" Value="Visible"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                                <!--Шаблон события-->
+                                                <Border x:Name="EventListItem" Background="White" Padding="28,0">
+                                                    <Grid>
+                                                        <!--Слой отображения инфо события-->
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <!--Время События-->
+                                                            <Grid Grid.Column="0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition/>
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <Label Grid.Column="0"
+                                                                       Background="{x:Null}"
+                                                                       BorderThickness="0"
+                                                                       Foreground="{StaticResource OrangeColor}"
+                                                                       HorizontalAlignment="Right"
+                                                                       HorizontalContentAlignment="Right"
+                                                                       VerticalAlignment="Center"                                                                           
+                                                                       VerticalContentAlignment="Center">
+                                                                    <TextBlock Text="{Binding StartTime, StringFormat=dd\\ hh\\:mm}"/>
+                                                                </Label>
+                                                                <Label Grid.Column="1"
+                                                                       Background="{x:Null}"
+                                                                       BorderBrush="White"
+                                                                       BorderThickness="0"
+                                                                       Content="-"
+                                                                       Foreground="{StaticResource OrangeColor}"
+                                                                       HorizontalAlignment="Center"
+                                                                       HorizontalContentAlignment="Center"
+                                                                       Margin="0"
+                                                                       VerticalAlignment="Center"
+                                                                       VerticalContentAlignment="Center"/>
+                                                                <Label Grid.Column="2"
+                                                                       Background="{x:Null}"
+                                                                       BorderBrush="White"
+                                                                       BorderThickness="0"
+                                                                       Foreground="{StaticResource OrangeColor}"
+                                                                       HorizontalAlignment="Left"
+                                                                       HorizontalContentAlignment="Left"
+                                                                       VerticalAlignment="Center"
+                                                                       VerticalContentAlignment="Center">
+                                                                    <TextBlock Text="{Binding FinishTime, StringFormat=dd\\ hh\\:mm}"/>
+                                                                </Label>
+                                                            </Grid>
+                                                            <!--Название события-->
+                                                            <Label Grid.Column="1"
+                                                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                                   VerticalContentAlignment="Center">
+                                                                <TextBlock Text="{Binding Name}"
+                                                                           TextWrapping="Wrap"/>
+                                                            </Label>
+                                                        </Grid>
+                                                        <!--Слой кнопок редактирования и удаления-->
+                                                        <Grid x:Name="EventListAction"
+                                                              HorizontalAlignment="Right"
+                                                              Margin="0,0,17,0"
+                                                              Visibility="Collapsed">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Image Grid.Column="0"
+                                                                   SnapsToDevicePixels="True"
+                                                                   Source="Images/Preferences/edit-button.png"
+                                                                   Style="{StaticResource EditEventImage}"/>
+                                                            <Image Grid.Column="1"
+                                                                   SnapsToDevicePixels="True"
+                                                                   Source="Images/Preferences/trash-button.png"
+                                                                   Style="{StaticResource DeleteEventImage}"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!--<ListBox x:Name="testBox" Width="Auto" HorizontalAlignment="Left">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding VoiceInfo.Name}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.Resources>
+        </ListBox>-->
+    </Grid>
+</Window>
