@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using GalaSoft.MvvmLight.Threading;
+﻿using GalaSoft.MvvmLight.Threading;
+using System.Windows;
 
 namespace TimeXv2
 {
@@ -8,6 +8,8 @@ namespace TimeXv2
     /// </summary>
     public partial class App : Application
     {
+        public static string FilePath { get; set; } = "1.txt";
+
         static App()
         {
             DispatcherHelper.Initialize();
