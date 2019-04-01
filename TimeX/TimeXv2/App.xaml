@@ -15,7 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.BlueGrey.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.LightBlue.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -33,6 +33,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="Topmost" Value="True"/>
             </Style>
 
             <!--ScrollBar style-->
@@ -40,22 +41,45 @@
                 <Setter Property="Cursor" Value="Hand"/>
                 <Style.Triggers>
                     <Trigger Property="Orientation" Value="Vertical">
-                        <Setter Property="Margin" Value="0,0,-14,0" />
-                        <Setter Property="MinWidth" Value="12"/>
-                        <Setter Property="Width" Value="12"/>
+                        <Setter Property="Margin" Value="-18,0,0,0" />
+                        <Setter Property="MinWidth" Value="8"/>
+                        <Setter Property="Width" Value="18"/>
                     </Trigger>
                     <Trigger Property="Orientation" Value="Horizontal">
-                        <Setter Property="Margin" Value="0,-7,0,-9"/>
-                        <Setter Property="MinHeight" Value="12"/>
-                        <Setter Property="Height" Value="1"/>
+                        <Setter Property="Margin" Value="0,-18,0,0"/>
+                        <Setter Property="MinHeight" Value="8"/>
+                        <Setter Property="Height" Value="18"/>
                     </Trigger>
                 </Style.Triggers>
+            </Style>
+
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                <Setter Property="Margin" Value="0,0,8,8"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}" x:Key="ActionFlatButton" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}" x:Key="ActionRaisedDarkButton" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Margin" Value="0,0,8,8"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
             </Style>
 
             <!--Icons style-->
             <Style TargetType="materialDesign:PackIcon">
                 <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+
+            <Style TargetType="{x:Type StackPanel}">
+                <Setter Property="Margin" Value="8,8,0,0"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Margin" Value="0,0,8,8"/>
             </Style>
 
             <!--Базовый стиль для UserControl, Window-->
@@ -82,7 +106,7 @@
                 <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
                 <Setter Property="Focusable" Value="False"/>
             </Style>
-
+            
             <!--ScrollViewer style-->
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                 <Setter Property="CanContentScroll" Value="False"/>

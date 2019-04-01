@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TimeXv2.Model
 {
-    class Action
+    public class Action
     {
         public List<Checkpoint> Checkpoints { get; set; }
 

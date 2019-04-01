@@ -2,7 +2,7 @@
 
 namespace TimeXv2.Model
 {
-    class Checkpoint
+    public class Checkpoint
     {
         public DateTime? CheckedDate { get; set; }
 

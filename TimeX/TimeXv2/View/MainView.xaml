@@ -2,14 +2,292 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TimeXv2.View"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
+      d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding Main, Source={StaticResource Locator}}"
       Style="{StaticResource PageStyle}"
       WindowTitle="Главная">
-    <Grid>
-        <Label Content="{Binding Title}"/>
-    </Grid>
+    <materialDesign:DialogHost x:Name="rootDialogHost">
+        <materialDesign:DialogHost.DialogContent>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Margin="0,0,8,8"
+                               Text="Opacity"
+                               ToolTip="Прозрачность окна"
+                               VerticalAlignment="Center"/>
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Slider Grid.Column="0"
+                                Margin="0,0,0,8"
+                                IsSnapToTickEnabled="True"
+                                Maximum="1" Minimum="0.5"
+                                SmallChange="0.01"                            
+                                TickFrequency="0.01"
+                                TickPlacement="TopLeft"
+                                ToolTip="{Binding RootOpacity, ElementName=root}"                            
+                                Value="{Binding RootOpacity, ElementName=root, Mode=TwoWay}"
+                                Width="250"/>
+                        <TextBlock Grid.Column="1" Text="{Binding RootOpacity, ElementName=root, Mode=TwoWay, StringFormat=\{0:n2\}}"
+                                   Width="30"
+                                   TextAlignment="Right"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                               Margin="0,0,8,8"
+                               Text="Dark theme"
+                               ToolTip="Тёмная тема"
+                               VerticalAlignment="Center"/>
+                    <ToggleButton Grid.Row="1" Grid.Column="1"
+                                  HorizontalAlignment="Left"
+                                  Height="14"
+                                  IsChecked="{Binding IsDark, ElementName=root, Mode=TwoWay}"
+                                  Margin="0,0,0,8"
+                                  VerticalAlignment="Center"/>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="8">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Save" ToolTip="Сохранить"/>
+                        <Button Content="Cancel" ToolTip="Отменить"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </materialDesign:DialogHost.DialogContent>
+        <materialDesign:DialogHost>
+            <Grid Background="{DynamicResource MaterialDesignPaper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!--Панель элементов-->
+                <materialDesign:ColorZone Name="HeaderZone"
+                                          materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                          Mode="PrimaryMid"
+                                          DockPanel.Dock="Top"
+                                          Grid.Row="0"
+                                          Grid.ColumnSpan="3">
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="8"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <ToggleButton Grid.Column="0"
+                                      x:Name="MenuToggleButton"
+                                      DockPanel.Dock="Top"
+                                      Height="24"
+                                      IsChecked="False"
+                                      Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                                      ToolTip="Меню"/>
+                        <TextBlock Grid.Column="1"
+                                   FontSize="18"
+                                   SnapsToDevicePixels="True"
+                                   Text="КВПМ"/>
+                    </Grid>
+                </materialDesign:ColorZone>
+
+                <materialDesign:DrawerHost Grid.Row="1" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                    <materialDesign:DrawerHost.LeftDrawerContent>
+                        <DockPanel MinWidth="150">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Resources>
+                                    <Style TargetType="materialDesign:PackIcon">
+                                        <Setter Property="Grid.Column" Value="0"/>
+                                        <Setter Property="Margin" Value="8,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Width" Value="16"/>
+                                    </Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Grid.Column" Value="1"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="TextAlignment" Value="Left"/>
+                                    </Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Setter Property="Command" Value="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"/>
+                                        <Setter Property="CommandParameter" Value="{x:Static Dock.Left}"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <Separator Background="{DynamicResource MaterialDesignPaper}"/>
+
+                                <StackPanel Orientation="Vertical">
+                                    <Button ToolTip="Новый документ">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="NewBox" />
+                                            <TextBlock Text="New"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button ToolTip="Открыть">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="BookOpen" />
+                                            <TextBlock Text="Open"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button ToolTip="Сохранить">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="ContentSave" />
+                                            <TextBlock Text="Save"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+
+                                <Separator Background="{DynamicResource MaterialDesignPaper}"/>
+
+                                <StackPanel Orientation="Vertical">
+                                    <Button ToolTip="Настройки">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="Settings" />
+                                            <TextBlock Text="Settings"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button ToolTip="Справка">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="HelpCircle" />
+                                            <TextBlock Text="Help"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button ToolTip="Поверх всех окон"
+                                    HorizontalContentAlignment="Stretch">
+                                        <Grid>
+                                            <Grid HorizontalAlignment="Left">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <materialDesign:PackIcon Kind="VectorArrangeAbove"/>
+                                                <TextBlock Text="Up"/>
+                                            </Grid>
+
+                                            <CheckBox IsChecked="{Binding Topmost, ElementName=root, Mode=TwoWay}"
+                                              HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+
+                                <Separator Background="{DynamicResource MaterialDesignPaper}"/>
+
+                                <StackPanel Orientation="Vertical">
+                                    <Button ToolTip="Выход">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Kind="ExitToApp" />
+                                            <TextBlock Text="Exit"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </materialDesign:DrawerHost.LeftDrawerContent>
+
+                    <Grid>
+                        <ScrollViewer Margin="0"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalContentAlignment="Center"
+                                  VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Actions}" Padding="16">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <materialDesign:Card Margin="0,0,8,8">
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="{Binding Name}"/>
+                                                <TextBlock Text="{Binding StartTime}"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button Style="{StaticResource ActionFlatButton}">
+                                                        <materialDesign:PackIcon Kind="Delete"/>
+                                                    </Button>
+                                                    <Button Style="{StaticResource ActionFlatButton}">
+                                                        <materialDesign:PackIcon Kind="Edit"/>
+                                                    </Button>
+                                                    <Button Style="{StaticResource ActionRaisedDarkButton}">
+                                                        <materialDesign:PackIcon Kind="Play"/>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                Margin="0,0,8,8">
+                            <materialDesign:PackIcon Kind="Plus"/>
+                        </Button>
+                    </Grid>
+                </materialDesign:DrawerHost>
+            </Grid>
+        </materialDesign:DialogHost>
+    </materialDesign:DialogHost>
 </Page>
