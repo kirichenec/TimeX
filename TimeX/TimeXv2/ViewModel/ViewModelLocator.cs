@@ -1,5 +1,7 @@
 ﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
+using System.Diagnostics.CodeAnalysis;
+using TimeXv2.ViewModel.Navigation;
 
 namespace TimeXv2.ViewModel
 {
@@ -16,20 +18,32 @@ namespace TimeXv2.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<INavigationService, NavigationService>();
+            SimpleIoc.Default.Register<MainViewModel>(true);
+            SimpleIoc.Default.Register<ActionSettingsViewModel>(true);
         }
 
         /// <summary>
         /// Gets the Main property.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This non-static member is needed for data binding purposes.")]
         public MainViewModel Main
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the ActionSettings property.
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This non-static member is needed for data binding purposes.")]
+        public ActionSettingsViewModel ActionSettings
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ActionSettingsViewModel>();
             }
         }
 

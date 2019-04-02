@@ -33,7 +33,6 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Topmost" Value="True"/>
             </Style>
 
             <!--ScrollBar style-->
@@ -105,8 +104,222 @@
                 <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
                 <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
                 <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Page">
+                            <materialDesign:DialogHost x:Name="rootDialogHost">
+                                <materialDesign:DialogHost.DialogContent>
+                                    <Grid Grid.Row="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid Grid.Row="0" Margin="24">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                       Margin="0,0,8,8"
+                                                       Text="Opacity"
+                                                       ToolTip="Прозрачность окна"
+                                                       VerticalAlignment="Center"/>
+                                            <Grid Grid.Row="0" Grid.Column="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Slider Grid.Column="0"
+                                                        Margin="0,0,0,8"
+                                                        IsSnapToTickEnabled="True"
+                                                        Maximum="1" Minimum="0.5"
+                                                        SmallChange="0.01"                            
+                                                        TickFrequency="0.01"
+                                                        TickPlacement="TopLeft"
+                                                        ToolTip="{Binding RootOpacity, ElementName=root}"                            
+                                                        Value="{Binding RootOpacity, ElementName=root, Mode=TwoWay}"
+                                                        Width="250"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding RootOpacity, ElementName=root, Mode=TwoWay, StringFormat=\{0:n2\}}"
+                                                           Width="30"
+                                                           TextAlignment="Right"
+                                                           HorizontalAlignment="Right"/>
+                                            </Grid>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                       Margin="0,0,8,8"
+                                                       Text="Dark theme"
+                                                       ToolTip="Тёмная тема"
+                                                       VerticalAlignment="Center"/>
+                                            <ToggleButton Grid.Row="1" Grid.Column="1"
+                                                          HorizontalAlignment="Left"
+                                                          Height="14"
+                                                          IsChecked="{Binding IsDark, ElementName=root, Mode=TwoWay}"
+                                                          Margin="0,0,0,8"
+                                                          VerticalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Margin="8">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <Button Content="Save" ToolTip="Сохранить"/>
+                                                <Button Content="Cancel" ToolTip="Отменить"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </materialDesign:DialogHost.DialogContent>
+                                <materialDesign:DialogHost>
+                                    <Grid Background="{DynamicResource MaterialDesignPaper}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <!--Панель элементов-->
+                                        <materialDesign:ColorZone Name="HeaderZone"
+                                                                  materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                                                  Mode="PrimaryMid"
+                                                                  DockPanel.Dock="Top"
+                                                                  Grid.Row="0"
+                                                                  Grid.ColumnSpan="3">
+                                            <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                                                <Grid.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Margin" Value="8"/>
+                                                        <Setter Property="Padding" Value="0"/>
+                                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    </Style>
+                                                </Grid.Resources>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ToggleButton Grid.Column="0"
+                                                              x:Name="MenuToggleButton"
+                                                              DockPanel.Dock="Top"
+                                                              Height="24"
+                                                              IsChecked="False"
+                                                              Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                                                              ToolTip="Меню"/>
+                                                <TextBlock Grid.Column="1"
+                                                           FontSize="18"
+                                                           SnapsToDevicePixels="True"
+                                                           Text="КВПМ"/>
+                                            </Grid>
+                                        </materialDesign:ColorZone>
+
+                                        <materialDesign:DrawerHost Grid.Row="1" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                                            <materialDesign:DrawerHost.LeftDrawerContent>
+                                                <DockPanel MinWidth="150">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <StackPanel.Resources>
+                                                            <Style TargetType="materialDesign:PackIcon">
+                                                                <Setter Property="Grid.Column" Value="0"/>
+                                                                <Setter Property="Margin" Value="0,0,8,0"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="Width" Value="18"/>
+                                                            </Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Grid.Column" Value="1"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="TextAlignment" Value="Left"/>
+                                                            </Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                                <Setter Property="Command" Value="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"/>
+                                                                <Setter Property="CommandParameter" Value="{x:Static Dock.Left}"/>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                                <Setter Property="Margin" Value="0"/>
+                                                                <Setter Property="Padding" Value="12,0,16,0"/>
+                                                            </Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Setter Property="Margin" Value="0"/>
+                                                            </Style>
+                                                        </StackPanel.Resources>
+
+                                                        <Separator Background="{DynamicResource MaterialDesignPaper}"/>
+
+                                                        <StackPanel Orientation="Vertical">
+                                                            <Button>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <materialDesign:PackIcon Kind="Settings" />
+                                                                    <TextBlock Text="Настройки"/>
+                                                                </Grid>
+                                                            </Button>
+                                                            <Button>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <materialDesign:PackIcon Kind="About" />
+                                                                    <TextBlock Text="О программе"/>
+                                                                </Grid>
+                                                            </Button>
+                                                            <Button>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <materialDesign:PackIcon>
+                                                                        <materialDesign:PackIcon.Resources>
+                                                                            <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
+                                                                                <Setter Property="Kind" Value="VectorArrangeBelow"/>
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding Path=Topmost, RelativeSource={RelativeSource AncestorType={x:Type NavigationWindow}}}" Value="True">
+                                                                                        <Setter Property="Kind" Value="VectorArrangeAbove"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </materialDesign:PackIcon.Resources>
+                                                                    </materialDesign:PackIcon>
+                                                                    <TextBlock Text="Поверх всех окон"/>
+                                                                </Grid>
+                                                            </Button>
+                                                        </StackPanel>
+
+                                                        <Separator Background="{DynamicResource MaterialDesignPaper}"/>
+
+                                                        <StackPanel Orientation="Vertical">
+                                                            <Button ToolTip="Выход">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <materialDesign:PackIcon Kind="ExitToApp" />
+                                                                    <TextBlock Text="Exit"/>
+                                                                </Grid>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </materialDesign:DrawerHost.LeftDrawerContent>
+
+                                            <ContentPresenter/>
+                                        </materialDesign:DrawerHost>
+                                    </Grid>
+                                </materialDesign:DialogHost>
+                            </materialDesign:DialogHost>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
-            
+
             <!--ScrollViewer style-->
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                 <Setter Property="CanContentScroll" Value="False"/>
