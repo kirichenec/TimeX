@@ -7,7 +7,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ignore="http://www.galasoft.ch/ignore"
              StartupUri="View\MainView.xaml"
-             mc:Ignorable="d ignore">
+             mc:Ignorable="d ignore"
+             LoadCompleted="Application_LoadCompleted">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -18,6 +19,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.LightBlue.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="RBMargin" 
+                       Left="0" Top="0" Right="8" Bottom="8" />
+            <Thickness x:Key="LTMargin" 
+                       Left="8" Top="8" Right="0" Bottom="0" />
 
             <!--Global View Model Locator-->
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
@@ -52,8 +58,13 @@
                 </Style.Triggers>
             </Style>
 
+            <!--Button styles-->
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                <Setter Property="Margin" Value="0,0,8,8"/>
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}" x:Key="RaisedButton" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
             </Style>
 
             <Style TargetType="{x:Type Button}" x:Key="ActionFlatButton" BasedOn="{StaticResource {x:Type Button}}">
@@ -62,9 +73,18 @@
             </Style>
 
             <Style TargetType="{x:Type Button}" x:Key="ActionRaisedDarkButton" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                <Setter Property="Margin" Value="0,0,8,8"/>
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
                 <Setter Property="Padding" Value="0"/>
                 <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+            </Style>
+
+            <Style TargetType="{x:Type StackPanel}" x:Key="ButtonStackPanel">
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" x:Key="ButtonTextBlock">
+                <Setter Property="Margin" Value="8,0,0,0"/>
             </Style>
 
             <!--Icons style-->
@@ -73,12 +93,18 @@
                 <Setter Property="Margin" Value="0"/>
             </Style>
 
+            <!--StackPanel style-->
             <Style TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="8,8,0,0"/>
+                <Setter Property="Margin" Value="{StaticResource LTMargin}"/>
             </Style>
 
+            <!--TextBlock style-->
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                <Setter Property="Margin" Value="0,0,8,8"/>
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" x:Key="TitleTextBlock" BasedOn="{StaticResource MaterialDesignTitleTextBlock}">
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
             </Style>
 
             <!--Базовый стиль для UserControl, Window-->
@@ -320,9 +346,22 @@
                 </Setter>
             </Style>
 
+            <!--ToolTip style-->
+            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
+                <Setter Property="Padding" Value="{StaticResource LTMargin}"/>
+            </Style>
+
+            <!--TextBox style-->
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <Setter Property="Margin" Value="{StaticResource RBMargin}"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75"/>
+            </Style>
+            
             <!--ScrollViewer style-->
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                 <Setter Property="CanContentScroll" Value="False"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
             </Style>
 
             <Style TargetType="ItemsControl">

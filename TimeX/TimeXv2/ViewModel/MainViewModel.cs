@@ -1,36 +1,27 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Collections.Generic;
-using TimeXv2.Helpers;
-using TimeXv2.Model;
+using MaterialDesignThemes.Wpf;
+using System.Collections.ObjectModel;
+using System.Linq;
+using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
+using ActionModel = TimeXv2.Model.Action;
 
 namespace TimeXv2.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        #region Services
-        private readonly INavigationService _navigationService;
+        #region ctor
+        public MainViewModel(INavigationService navigationService, IDataService dataService)
+        {
+            _dataService = dataService;
+            _navigationService = navigationService;
+        }
         #endregion
 
-        #region ctor
-        public MainViewModel(INavigationService navigationService)
-        {
-            _navigationService = navigationService;
-
-            var actions = new List<Action>();
-            IDataWorker dataWorker = new FileWorker();
-            try
-            {
-                actions = dataWorker.Load<List<Action>>(App.FilePath);
-            }
-            catch (System.Exception)
-            {
-                actions.Add(new Action() { Name = "FirstAction", StartTime = System.DateTime.Now });
-                dataWorker.Save(actions, App.FilePath);
-            }
-            Actions.AddRange(actions);
-        }
+        #region Services
+        private readonly INavigationService _navigationService;
+        private readonly IDataService _dataService;
         #endregion
 
         #region Properties
@@ -41,13 +32,13 @@ namespace TimeXv2.ViewModel
         /// </summary>
         public const string ActionsPropertyName = "Actions";
 
-        private List<Action> _actions = new List<Action>();
+        private ObservableCollection<ActionModel> _actions = new ObservableCollection<ActionModel>();
 
         /// <summary>
         /// Sets and gets the Actions property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public List<Action> Actions
+        public ObservableCollection<ActionModel> Actions
         {
             get
             {
@@ -64,6 +55,69 @@ namespace TimeXv2.ViewModel
 
         #region Commands
 
+        #region DeleteActionCommand
+        private RelayCommand<ActionModel> _deleteActionCommand;
+
+        /// <summary>
+        /// Gets the DeleteActionCommand.
+        /// </summary>
+        public RelayCommand<ActionModel> DeleteActionCommand
+        {
+            get
+            {
+                return _deleteActionCommand
+                    ?? (_deleteActionCommand = new RelayCommand<ActionModel>(
+                    action =>
+                    {
+                        this.Actions.Remove(action);
+                        DialogHost.CloseDialogCommand.Execute(null, null);
+                    }));
+            }
+        }
+        #endregion
+
+        #region EditActionCommand
+        private RelayCommand<ActionModel> _editActionCommand;
+
+        /// <summary>
+        /// Gets the EditActionCommand.
+        /// </summary>
+        public RelayCommand<ActionModel> EditActionCommand
+        {
+            get
+            {
+                return _editActionCommand
+                    ?? (_editActionCommand = new RelayCommand<ActionModel>(
+                    action =>
+                    {
+                        MessengerInstance.Send(action);
+                        _navigationService.Navigate(NavPage.ActionSettings);
+                    }));
+            }
+        }
+        #endregion
+
+        #region LoadCommand
+        private RelayCommand _loadCommand;
+
+        /// <summary>
+        /// Gets the LoadCommand.
+        /// </summary>
+        public RelayCommand LoadCommand
+        {
+            get
+            {
+                return _loadCommand
+                    ?? (_loadCommand = new RelayCommand(
+                    () =>
+                    {
+                        var actions = _dataService.QueryableActions().ToList();
+                        actions?.ForEach(a => Actions.Add(a));
+                    }));
+            }
+        }
+        #endregion
+
         #region NewActionCommand
         private RelayCommand _newActionCommand;
 
@@ -78,7 +132,28 @@ namespace TimeXv2.ViewModel
                     ?? (_newActionCommand = new RelayCommand(
                     () =>
                     {
+                        MessengerInstance.Send((ActionModel)null);
                         _navigationService.Navigate(NavPage.ActionSettings);
+                    }));
+            }
+        }
+        #endregion
+
+        #region UnloadCommand
+        private RelayCommand _unloadCommand;
+
+        /// <summary>
+        /// Gets the UnloadCommand.
+        /// </summary>
+        public RelayCommand UnloadCommand
+        {
+            get
+            {
+                return _unloadCommand
+                    ?? (_unloadCommand = new RelayCommand(
+                    () =>
+                    {
+                        Actions.Clear();
                     }));
             }
         }

@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="TimeXv2.Controls.CalendarControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Style="{StaticResource BasicStyle}"
+             mc:Ignorable="d">
+    <StackPanel Orientation="Vertical" Margin="0">
+        <Calendar Grid.Row="0" x:Name="CallsCalendar"
+                  HorizontalAlignment="Center"
+                  Margin="24"
+                  SelectedDate="{Binding EditedAction.StartTime, Mode=TwoWay}"
+                  materialDesign:ShadowAssist.ShadowDepth="Depth4">
+            <Calendar.Resources>
+                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignButtonTextBlock}">
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}"/>
+            </Calendar.Resources>
+        </Calendar>
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Margin="8,8,0,0">
+            <Button Command="{Binding ChangeCallsListViewDateCommand, Mode=OneWay}"
+                    Click="CloseButton">
+                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                    <materialDesign:PackIcon Kind="Check"/>
+                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Выбрать"/>
+                </StackPanel>
+            </Button>
+            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                    <materialDesign:PackIcon Kind="CloseBox"/>
+                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Отменить"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
