@@ -15,21 +15,21 @@ namespace TimeXv2.Model.Data
 
         private readonly ActionContext _actionContext;
 
-        public Action GetActionByUid(Guid uid)
+        public Action GetActionByUid(string uid)
         {
-            return _actionContext.Actions.FirstOrDefault(a => a.Uid == uid);
+            return _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefault(a => a.Uid == uid);
         }
 
         public IQueryable<Action> QueryableActions()
         {
-            return _actionContext.Actions.Include($"{nameof(Checkpoint)}s").AsQueryable();
+            return _actionContext.Actions.AsQueryable();
         }
 
-        public Guid? AddAction(Action value)
+        public string AddAction(Action value)
         {
             try
             {
-                value.Uid = Guid.NewGuid();
+                value.Uid = Guid.NewGuid().ToString();
                 _actionContext.Actions.Add(value);
                 _actionContext.SaveChanges();
                 return value.Uid;
@@ -40,7 +40,7 @@ namespace TimeXv2.Model.Data
             }
         }
 
-        public bool DeleteAction(Guid uid)
+        public bool DeleteAction(string uid)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace TimeXv2.Model.Data
         {
             try
             {
-                var updatableAction = GetActionByUid(value.Uid.Value);
+                var updatableAction = GetActionByUid(value.Uid);
                 value.CopyPropertiesTo(updatableAction);
                 _actionContext.SaveChanges();
                 return true;

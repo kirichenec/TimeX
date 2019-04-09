@@ -9,6 +9,20 @@
              MinWidth="300" Loaded="Root_Loaded">
     <StackPanel Orientation="Vertical" DataContext="{Binding Source={StaticResource Locator}}">
         <StackPanel Orientation="Vertical" Margin="16">
+
+            <TextBlock Margin="{StaticResource RBMargin}">
+                <TextBlock.Resources>
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TitleTextBlock}">
+                        <Setter Property="Text" Value="Редактирование события"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding EditedChckpnt.Uid, ElementName=root}" Value="{x:Null}">
+                                <Setter Property="Text" Value="Новое событие"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Resources>
+            </TextBlock>
+            
             <TextBox Text="{Binding EditedChckpnt.Name, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <materialDesign:HintAssist.Hint>
                     <TextBlock Text="Наименование" Margin="0"/>

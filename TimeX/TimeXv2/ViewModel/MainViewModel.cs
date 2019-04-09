@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TimeXv2.Model.Data;
@@ -90,7 +91,7 @@ namespace TimeXv2.ViewModel
                     ?? (_editActionCommand = new RelayCommand<ActionModel>(
                     action =>
                     {
-                        MessengerInstance.Send(action);
+                        MessengerInstance.Send(action?.Uid);
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
             }
@@ -132,7 +133,7 @@ namespace TimeXv2.ViewModel
                     ?? (_newActionCommand = new RelayCommand(
                     () =>
                     {
-                        MessengerInstance.Send((ActionModel)null);
+                        MessengerInstance.Send((string)null);
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
             }

@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using UniversalKLibrary.Classic.Helpers;
 using UniversalKLibrary.Classic.Simplificators;
 
 namespace TimeXv2.Model
 {
+    [Table("Actions")]
     public class Action : SimplePropertyChanged
     {
         #region ctor
-        public Action() { Checkpoints = new ObservableCollection<Checkpoint>(); }
+        public Action() { Checkpoints = new ObservableCollection<Checkpoint>(); StartTime = DateTime.Now; }
 
         public Action(Action value)
         {
-            value.CopyPropertiesTo(this);
+            if (value == null) return;
+
+            this.Uid = value.Uid;
+            this.Name = value.Name;
+            this.StartTime = value.StartTime;
             this.Checkpoints = new ObservableCollection<Checkpoint>();
             foreach (var chk in value.Checkpoints)
             {
@@ -23,10 +29,11 @@ namespace TimeXv2.Model
         #endregion
 
         #region Uid
-        private Guid? _uid;
+        private string _uid;
 
+        [Column("Uid")]
         [Key]
-        public Guid? Uid
+        public string Uid
         {
             get { return _uid; }
             set { _uid = value; NotifyPropertyChanged(); }
@@ -36,7 +43,7 @@ namespace TimeXv2.Model
         #region Checkpoints
         private ObservableCollection<Checkpoint> _checkpoints;
 
-        public ObservableCollection<Checkpoint> Checkpoints
+        public virtual ObservableCollection<Checkpoint> Checkpoints
         {
             get { return _checkpoints; }
             set { _checkpoints = value; NotifyPropertyChanged(); }
@@ -46,6 +53,7 @@ namespace TimeXv2.Model
         #region Name
         private string _name;
 
+        [Column("Name")]
         public string Name
         {
             get { return _name; }
@@ -54,12 +62,19 @@ namespace TimeXv2.Model
         #endregion
 
         #region StartTime
-        private DateTime _startTime;
-
+        [NotMapped]
         public DateTime StartTime
         {
-            get { return _startTime; }
-            set { _startTime = value; NotifyPropertyChanged(); }
+            get { return new DateTime(StartTimeTicks); }
+            set { StartTimeTicks = value.Ticks; NotifyPropertyChanged(); }
+        }
+
+        private Int64 _startTimeTicks;
+        [Column("StartTimeTicks")]
+        public Int64 StartTimeTicks
+        {
+            get { return _startTimeTicks; }
+            set { _startTimeTicks = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTime)); }
         }
         #endregion
     }

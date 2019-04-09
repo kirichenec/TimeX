@@ -17,7 +17,17 @@ namespace TimeXv2.ViewModel
         {
             _dataService = dataService;
             _navigationService = navigationService;
-            MessengerInstance.Register<ModelAction>(this, action => this.EditedAction = action == null ? new ModelAction() : new ModelAction(action));
+            MessengerInstance
+                .Register<string>(this, 
+                uid =>
+                {
+                    this.EditedAction = 
+                        uid == null ?
+                        new ModelAction() :
+                        _dataService.GetActionByUid(uid);
+                    this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
+                    this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
+                });
         }
         #endregion
 
@@ -88,6 +98,70 @@ namespace TimeXv2.ViewModel
 
                 _editedCheckpoint = value;
                 RaisePropertyChanged(EditedCheckpointPropertyName);
+            }
+        }
+        #endregion
+
+        #region EditedDate
+        /// <summary>
+        /// The <see cref="EditedDate" /> property's name.
+        /// </summary>
+        public const string EditedDatePropertyName = "EditedDate";
+
+        private DateTime _editedDate = new DateTime(0);
+
+        /// <summary>
+        /// Sets and gets the EditedDate property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public DateTime EditedDate
+        {
+            get
+            {
+                return _editedDate;
+            }
+
+            set
+            {
+                if (_editedDate == value)
+                {
+                    return;
+                }
+
+                _editedDate = value;
+                RaisePropertyChanged(EditedDatePropertyName);
+            }
+        }
+        #endregion
+
+        #region EditedTime
+        /// <summary>
+        /// The <see cref="EditedTime" /> property's name.
+        /// </summary>
+        public const string EditedTimePropertyName = "EditedTime";
+
+        private DateTime _editedTime = new DateTime(0);
+
+        /// <summary>
+        /// Sets and gets the EditedTime property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public DateTime EditedTime
+        {
+            get
+            {
+                return _editedTime;
+            }
+
+            set
+            {
+                if (_editedTime == value)
+                {
+                    return;
+                }
+
+                _editedTime = value;
+                RaisePropertyChanged(EditedTimePropertyName);
             }
         }
         #endregion
@@ -185,7 +259,7 @@ namespace TimeXv2.ViewModel
                     {
                         if (checkpoint.Uid == null)
                         {
-                            checkpoint.Uid = Guid.NewGuid();
+                            checkpoint.Uid = Guid.NewGuid().ToString();
                             this.EditedAction.Checkpoints.Add(checkpoint);
                         }
                         else
@@ -216,6 +290,7 @@ namespace TimeXv2.ViewModel
                     ?? (_saveCommand = new RelayCommand(
                     () =>
                     {
+                        this.EditedAction.StartTime = this.EditedDate.Date.Add(this.EditedTime.TimeOfDay);
                         if (this.EditedAction.Uid == null)
                         {
                             _dataService.AddAction(this.EditedAction);

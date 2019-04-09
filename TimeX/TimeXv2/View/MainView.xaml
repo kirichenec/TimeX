@@ -35,8 +35,8 @@
                     <DataTemplate>
                         <materialDesign:Card Margin="{StaticResource RBMargin}">
                             <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Name}"/>
-                                <TextBlock Text="{Binding StartTime}"/>
+                                <TextBlock Text="{Binding Name, StringFormat=Наименование мероприятия: {0}}"/>
+                                <TextBlock Text="{Binding StartTime, StringFormat=Дата проведения: {0}}"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                             Style="{StaticResource ActionFlatButton}"

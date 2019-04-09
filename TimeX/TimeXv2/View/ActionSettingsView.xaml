@@ -18,6 +18,20 @@
 
         <ScrollViewer Grid.Row="0">
             <StackPanel Orientation="Vertical" Margin="24,24,16,16">
+
+                <TextBlock Margin="{StaticResource RBMargin}">
+                    <TextBlock.Resources>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TitleTextBlock}">
+                            <Setter Property="Text" Value="Редактирование мероприятия"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EditedAction.Uid}" Value="{x:Null}">
+                                    <Setter Property="Text" Value="Новое мероприятие"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Resources>
+                </TextBlock>
+
                 <materialDesign:Card Padding="16" Margin="{StaticResource RBMargin}">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
                         <TextBox Text="{Binding EditedAction.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -26,21 +40,42 @@
                             </materialDesign:HintAssist.Hint>
                         </TextBox>
                         <StackPanel Margin="0" Orientation="Horizontal">
-                            <TextBox Text="{Binding EditedAction.StartTime}"
-                                 IsReadOnly="True"
-                                 MinWidth="150">
+                            <TextBlock Text="Начало:"
+                                       Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                       Margin="{StaticResource RBMargin}"
+                                       VerticalAlignment="Bottom"/>
+                            <DatePicker Width="100"
+                                        Margin="{StaticResource RBMargin}"
+                                        SelectedDate="{Binding EditedDate, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                                <materialDesign:HintAssist.Hint>
+                                    <TextBlock Text="Дата" Margin="0"/>
+                                </materialDesign:HintAssist.Hint>
+                            </DatePicker>
+                            <materialDesign:TimePicker Width="100"
+                                                       Is24Hours="True"
+                                                       Margin="{StaticResource RBMargin}"
+                                                       SelectedTime="{Binding EditedTime, Mode=TwoWay}"
+                                                       Style="{StaticResource MaterialDesignFloatingHintTimePicker}">
+                                <materialDesign:HintAssist.Hint>
+                                    <TextBlock Text="Время" Margin="0"/>
+                                </materialDesign:HintAssist.Hint>
+                            </materialDesign:TimePicker>
+                            <!--<TextBox Text="{Binding EditedAction.StartTime, StringFormat=d}"
+                                     IsReadOnly="True"
+                                     MinWidth="70">
                                 <materialDesign:HintAssist.Hint>
                                     <TextBlock Text="Дата начала" Margin="0"/>
                                 </materialDesign:HintAssist.Hint>
                             </TextBox>
                             <Button  Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                     Style="{StaticResource ActionFlatButton}"
+                                     Style="{StaticResource ActionRaisedDarkButton}"
                                      ToolTip="Выбрать дату">
                                 <Button.CommandParameter>
                                     <controls:CalendarControl/>
                                 </Button.CommandParameter>
                                 <materialDesign:PackIcon Kind="Calendar"/>
-                            </Button>
+                            </Button>-->
                         </StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
