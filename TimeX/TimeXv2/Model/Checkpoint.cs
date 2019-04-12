@@ -52,11 +52,12 @@ namespace TimeXv2.Model
         [NotMapped]
         public TimeSpan Duration
         {
-            get { return TimeSpan.FromTicks(DurationTicks); }
-            set { DurationTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(EndTime)); }
+            get { return TimeSpan.FromTicks(_durationTicks); }
+            set { _durationTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(DurationTicks)); NotifyPropertyChanged(nameof(EndTime)); }
         }
 
         private Int64 _durationTicks;
+
         [Column("DurationTicks")]
         public Int64 DurationTicks
         {
@@ -71,7 +72,7 @@ namespace TimeXv2.Model
         #endregion
 
         #region IsOrderNeeded
-        private bool _isOrderNeeded;
+        private bool _isOrderNeeded = true;
 
         [Column("IsOrderNeeded")]
         public bool IsOrderNeeded
@@ -100,11 +101,12 @@ namespace TimeXv2.Model
         [NotMapped]
         public TimeSpan StartTime
         {
-            get { return TimeSpan.FromTicks(StartTimeTicks); }
-            set { StartTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(EndTime)); }
+            get { return TimeSpan.FromTicks(_startTimeTicks); }
+            set { _startTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTimeTicks)); NotifyPropertyChanged(nameof(EndTime)); }
         }
 
         private Int64 _startTimeTicks;
+
         [Column("StartTimeTicks")]
         public Int64 StartTimeTicks
         {

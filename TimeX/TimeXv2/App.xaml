@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:TimeXv2.ViewModel"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:global="clr-namespace:TimeXv2.Static"
 			 xmlns:ignore="http://www.galasoft.ch/ignore"
              StartupUri="View\MainView.xaml"
              mc:Ignorable="d ignore"
@@ -39,6 +40,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="Topmost" Value="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay}"/>
             </Style>
 
             <!--ScrollBar style-->
@@ -133,7 +135,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Page">
-                            <materialDesign:DialogHost x:Name="rootDialogHost">
+                            <materialDesign:DialogHost x:Name="rootDialogHost" DataContext="{Binding Source={StaticResource Locator}}">
                                 <materialDesign:DialogHost.DialogContent>
                                     <Grid Grid.Row="2">
                                         <Grid.RowDefinitions>
@@ -212,32 +214,25 @@
                                                                   DockPanel.Dock="Top"
                                                                   Grid.Row="0"
                                                                   Grid.ColumnSpan="3">
-                                            <Grid Grid.Row="0" Grid.ColumnSpan="3">
-                                                <Grid.Resources>
+                                            <StackPanel Orientation="Horizontal" Margin="0" Grid.Row="0">
+                                                <StackPanel.Resources>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Margin" Value="8"/>
                                                         <Setter Property="Padding" Value="0"/>
                                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                                     </Style>
-                                                </Grid.Resources>
+                                                </StackPanel.Resources>
 
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <ToggleButton Grid.Column="0"
+                                                <ToggleButton ToolTip="Меню"
                                                               x:Name="MenuToggleButton"
                                                               DockPanel.Dock="Top"
                                                               Height="24"
                                                               IsChecked="False"
-                                                              Style="{StaticResource MaterialDesignHamburgerToggleButton}"
-                                                              ToolTip="Меню"/>
-                                                <TextBlock Grid.Column="1"
+                                                              Style="{StaticResource MaterialDesignHamburgerToggleButton}"/>
+                                                <TextBlock Text="Мероприятия"
                                                            FontSize="18"
-                                                           SnapsToDevicePixels="True"
-                                                           Text="КВПМ"/>
-                                            </Grid>
+                                                           SnapsToDevicePixels="True"/>
+                                            </StackPanel>
                                         </materialDesign:ColorZone>
 
                                         <materialDesign:DrawerHost Grid.Row="1" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -293,7 +288,7 @@
                                                                     <TextBlock Text="О программе"/>
                                                                 </Grid>
                                                             </Button>
-                                                            <Button>
+                                                            <Button Command="{Binding GlobalCommands.InvertTopmostCommand}">
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="Auto"/>
@@ -303,10 +298,10 @@
                                                                     <materialDesign:PackIcon>
                                                                         <materialDesign:PackIcon.Resources>
                                                                             <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
-                                                                                <Setter Property="Kind" Value="VectorArrangeBelow"/>
+                                                                                <Setter Property="Kind" Value="CheckBoxOutlineBlank"/>
                                                                                 <Style.Triggers>
-                                                                                    <DataTrigger Binding="{Binding Path=Topmost, RelativeSource={RelativeSource AncestorType={x:Type NavigationWindow}}}" Value="True">
-                                                                                        <Setter Property="Kind" Value="VectorArrangeAbove"/>
+                                                                                    <DataTrigger Binding="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                                        <Setter Property="Kind" Value="CheckboxMarkedOutline"/>
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
                                                                             </Style>
@@ -320,7 +315,7 @@
                                                         <Separator Background="{DynamicResource MaterialDesignPaper}"/>
 
                                                         <StackPanel Orientation="Vertical">
-                                                            <Button ToolTip="Выход">
+                                                            <Button Command="{Binding GlobalCommands.CloseAppCommand}">
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="Auto"/>
@@ -357,7 +352,7 @@
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75"/>
             </Style>
-            
+
             <!--ScrollViewer style-->
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                 <Setter Property="CanContentScroll" Value="False"/>

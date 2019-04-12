@@ -65,11 +65,12 @@ namespace TimeXv2.Model
         [NotMapped]
         public DateTime StartTime
         {
-            get { return new DateTime(StartTimeTicks); }
-            set { StartTimeTicks = value.Ticks; NotifyPropertyChanged(); }
+            get { return new DateTime(_startTimeTicks); }
+            set { _startTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTimeTicks)); }
         }
 
         private Int64 _startTimeTicks;
+
         [Column("StartTimeTicks")]
         public Int64 StartTimeTicks
         {

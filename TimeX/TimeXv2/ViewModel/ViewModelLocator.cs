@@ -12,6 +12,7 @@ namespace TimeXv2.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
+            SimpleIoc.Default.Register<GlobalCommands>(true);
             SimpleIoc.Default.Register<ActionContext>(true);
             SimpleIoc.Default.Register<INavigationService, NavigationService>(true);
             SimpleIoc.Default.Register<IDataService, DataService>(true);
@@ -38,6 +39,17 @@ namespace TimeXv2.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<ActionSettingsViewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the GlobalCommands property.
+        /// </summary>
+        public GlobalCommands GlobalCommands
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<GlobalCommands>();
             }
         }
 

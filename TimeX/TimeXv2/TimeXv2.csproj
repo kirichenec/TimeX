@@ -123,6 +123,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditCheckpointControl.xaml.cs">
       <DependentUpon>EditCheckpointControl.xaml</DependentUpon>
     </Compile>
@@ -131,7 +134,9 @@
     <Compile Include="Model\Checkpoint.cs" />
     <Compile Include="Model\Data\DataService.cs" />
     <Compile Include="Model\Data\IDataService.cs" />
+    <Compile Include="Static\Properties.cs" />
     <Compile Include="ViewModel\ActionSettingsViewModel.cs" />
+    <Compile Include="ViewModel\GlobalCommands.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Navigation\INavigationService.cs" />
     <Compile Include="ViewModel\Navigation\NavigationService.cs" />
@@ -146,6 +151,10 @@
     <Compile Include="View\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\EditCheckpointControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

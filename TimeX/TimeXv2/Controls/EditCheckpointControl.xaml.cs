@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using TimeXv2.Model;
@@ -42,6 +43,30 @@ namespace TimeXv2.Controls
             DependencyProperty.Register(nameof(EditedChckpnt), typeof(Checkpoint), typeof(EditCheckpointControl), new PropertyMetadata(new Checkpoint()));
         #endregion
 
+        #region EditedStartTime
+        public DateTime EditedStartTime
+        {
+            get { return (DateTime)GetValue(EditedStartTimeProperty); }
+            set { SetValue(EditedStartTimeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for EditedDate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EditedStartTimeProperty =
+            DependencyProperty.Register(nameof(EditedStartTime), typeof(DateTime), typeof(EditCheckpointControl), new PropertyMetadata(DateTime.MinValue));
+        #endregion
+
+        #region EditedDuration
+        public DateTime EditedDuration
+        {
+            get { return (DateTime)GetValue(EditedDurationProperty); }
+            set { SetValue(EditedDurationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for EditedTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EditedDurationProperty =
+            DependencyProperty.Register(nameof(EditedDuration), typeof(DateTime), typeof(EditCheckpointControl), new PropertyMetadata(DateTime.MinValue));
+        #endregion
+
         #region Methods
         private void CloseDialog(object sender, RoutedEventArgs e)
         {
@@ -51,6 +76,8 @@ namespace TimeXv2.Controls
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
             this.EditedChckpnt = new Checkpoint(this.Checkpoint);
+            this.EditedDuration = new DateTime(this.EditedChckpnt.Duration.Ticks);
+            this.EditedStartTime = new DateTime(this.EditedChckpnt.StartTime.Ticks);
         }
         #endregion
     }
