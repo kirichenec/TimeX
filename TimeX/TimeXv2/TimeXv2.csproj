@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Media\Icon.ico</ApplicationIcon>
+    <ApplicationIcon>Media\action.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -211,6 +211,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExtDll\UniversalKLibrary.Classic.dll" />
+    <Resource Include="Media\action.ico" />
+    <Content Include="Media\action.svg" />
+    <Resource Include="Media\action.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net451\System.Data.SQLite.Core.targets')" />
