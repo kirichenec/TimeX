@@ -13,18 +13,27 @@ namespace TimeXv2.Model.Data
         }
         #endregion
 
+        #region Services
         private readonly ActionContext _actionContext;
+        #endregion
 
+        #region Methods
+
+        #region GetActionByUid
         public Action GetActionByUid(string uid)
         {
             return _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefault(a => a.Uid == uid);
         }
+        #endregion
 
+        #region QueryableActions
         public IQueryable<Action> QueryableActions()
         {
             return _actionContext.Actions.AsQueryable();
         }
+        #endregion
 
+        #region AddAction
         public string AddAction(Action value)
         {
             try
@@ -39,7 +48,9 @@ namespace TimeXv2.Model.Data
                 return null;
             }
         }
+        #endregion
 
+        #region DeleteAction
         public bool DeleteAction(string uid)
         {
             try
@@ -53,7 +64,9 @@ namespace TimeXv2.Model.Data
                 return false;
             }
         }
+        #endregion
 
+        #region UpdateAction
         public bool UpdateAction(Action value)
         {
             try
@@ -68,5 +81,8 @@ namespace TimeXv2.Model.Data
                 return false;
             }
         }
+        #endregion
+
+        #endregion
     }
 }

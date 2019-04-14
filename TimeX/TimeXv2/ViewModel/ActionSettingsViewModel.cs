@@ -17,6 +17,7 @@ namespace TimeXv2.ViewModel
         {
             _dataService = dataService;
             _navigationService = navigationService;
+
             MessengerInstance
                 .Register<string>(this, uid =>
                 {
