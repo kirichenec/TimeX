@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
-using ActionModel = TimeXv2.Model.Action;
+using ModelAction = TimeXv2.Model.Action;
 
 namespace TimeXv2.ViewModel
 {
@@ -17,6 +17,12 @@ namespace TimeXv2.ViewModel
         {
             _dataService = dataService;
             _navigationService = navigationService;
+
+            if (IsInDesignMode)
+            {
+                this.Actions = new ObservableCollection<ModelAction>();
+                this.Actions.Add(new ModelAction() { Name = "Name", StartTime = DateTime.Now });
+            }
         }
         #endregion
 
@@ -33,13 +39,13 @@ namespace TimeXv2.ViewModel
         /// </summary>
         public const string ActionsPropertyName = "Actions";
 
-        private ObservableCollection<ActionModel> _actions = new ObservableCollection<ActionModel>();
+        private ObservableCollection<ModelAction> _actions = new ObservableCollection<ModelAction>();
 
         /// <summary>
         /// Sets and gets the Actions property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<ActionModel> Actions
+        public ObservableCollection<ModelAction> Actions
         {
             get
             {
@@ -57,20 +63,21 @@ namespace TimeXv2.ViewModel
         #region Commands
 
         #region DeleteActionCommand
-        private RelayCommand<ActionModel> _deleteActionCommand;
+        private RelayCommand<ModelAction> _deleteActionCommand;
 
         /// <summary>
         /// Gets the DeleteActionCommand.
         /// </summary>
-        public RelayCommand<ActionModel> DeleteActionCommand
+        public RelayCommand<ModelAction> DeleteActionCommand
         {
             get
             {
                 return _deleteActionCommand
-                    ?? (_deleteActionCommand = new RelayCommand<ActionModel>(
+                    ?? (_deleteActionCommand = new RelayCommand<ModelAction>(
                     action =>
                     {
                         this.Actions.Remove(action);
+                        _dataService.DeleteAction(action.Uid);
                         DialogHost.CloseDialogCommand.Execute(null, null);
                     }));
             }
@@ -78,17 +85,17 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region EditActionCommand
-        private RelayCommand<ActionModel> _editActionCommand;
+        private RelayCommand<ModelAction> _editActionCommand;
 
         /// <summary>
         /// Gets the EditActionCommand.
         /// </summary>
-        public RelayCommand<ActionModel> EditActionCommand
+        public RelayCommand<ModelAction> EditActionCommand
         {
             get
             {
                 return _editActionCommand
-                    ?? (_editActionCommand = new RelayCommand<ActionModel>(
+                    ?? (_editActionCommand = new RelayCommand<ModelAction>(
                     action =>
                     {
                         MessengerInstance.Send(action?.Uid);

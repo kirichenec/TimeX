@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="clr-namespace:TimeXv2.Controls"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding Main, Source={StaticResource Locator}}"
@@ -19,79 +20,96 @@
             <i:InvokeCommandAction Command="{Binding UnloadCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
-    <Grid>
-        <ScrollViewer Margin="0"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalContentAlignment="Center"
-                      VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Actions}" Padding="16">
+
+    <Grid Margin="16" MaxWidth="816">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="{StaticResource LeftTop}" Grid.Row="0">
+            <TextBlock Text="Список мероприятий"
+                       Style="{StaticResource TitleTextBlock}"/>
+
+            <Button Command="{Binding NewActionCommand}">
+                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                    <materialDesign:PackIcon Kind="Add"/>
+                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Добавить"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="0">
+            <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
+                        <StackPanel Orientation="Vertical" Margin="{StaticResource LeftTop}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <materialDesign:Card Margin="{StaticResource RBMargin}">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Margin="16">
-                                    <TextBlock Text="{Binding Name, StringFormat=Наименование мероприятия: {0}}"/>
+                        <materialDesign:Card Margin="{StaticResource RightBottom}">
+                            <StackPanel Orientation="Vertical" Margin="0">
+                                <StackPanel Margin="24,24,16,16">
+                                    <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>
                                     <TextBlock Text="{Binding StartTime, StringFormat=Дата проведения: {0}}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                            Style="{StaticResource ActionFlatButton}"
-                                            ToolTip="Удалить">
-                                        <Button.CommandParameter>
-                                            <StackPanel Orientation="Vertical" MaxWidth="350">
-                                                <Grid Grid.Row="0" Margin="16">
-                                                    <TextBlock Text="{Binding Name, StringFormat=Вы действительно хотите удалить мероприятие \&quot;{0}\&quot;?}"
-                                                               TextWrapping="Wrap"/>
+                                <materialDesign:ColorZone>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                Style="{StaticResource ActionFlatButton}"
+                                                ToolTip="Удалить">
+                                            <Button.CommandParameter>
+                                                <Grid MaxWidth="350">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <StackPanel Orientation="Vertical" Grid.Row="0">
+                                                        <Grid Grid.Row="0" Margin="16">
+                                                            <TextBlock Text="{Binding Name, StringFormat=Вы действительно хотите удалить мероприятие \&quot;{0}\&quot;?}"
+                                                                   TextWrapping="Wrap"/>
+                                                        </Grid>
+                                                    </StackPanel>
+
+                                                    <materialDesign:ColorZone Grid.Row="1">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                    <materialDesign:PackIcon Kind="Close"/>
+                                                                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Отмена"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                            <Button Command="{Binding Main.DeleteActionCommand, Source={StaticResource Locator}}"
+                                                                CommandParameter="{Binding}">
+                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                    <materialDesign:PackIcon Kind="Delete"/>
+                                                                    <TextBlock Text="Удалить" Style="{StaticResource ButtonTextBlock}"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </materialDesign:ColorZone>
                                                 </Grid>
-                                                <StackPanel Grid.Row="1"
-                                                            Orientation="Horizontal"
-                                                            HorizontalAlignment="Right">
-                                                    <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
-                                                        <StackPanel Style="{StaticResource ButtonStackPanel}">
-                                                            <materialDesign:PackIcon Kind="Close"/>
-                                                            <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Отмена"/>
-                                                        </StackPanel>
-                                                    </Button>
-                                                    <Button Command="{Binding Main.DeleteActionCommand, Source={StaticResource Locator}}"
-                                                            CommandParameter="{Binding}">
-                                                        <StackPanel Style="{StaticResource ButtonStackPanel}">
-                                                            <materialDesign:PackIcon Kind="Delete"/>
-                                                            <TextBlock Text="Удалить" Style="{StaticResource ButtonTextBlock}"/>
-                                                        </StackPanel>
-                                                    </Button>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Button.CommandParameter>
-                                        <materialDesign:PackIcon Kind="Delete"/>
-                                    </Button>
-                                    <Button Command="{Binding Main.EditActionCommand, Source={StaticResource Locator}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource ActionFlatButton}"
-                                            ToolTip="Редактировать">
-                                        <materialDesign:PackIcon Kind="Edit"/>
-                                    </Button>
-                                    <Button Style="{StaticResource ActionRaisedDarkButton}" ToolTip="Запустить">
-                                        <materialDesign:PackIcon Kind="Play"/>
-                                    </Button>
-                                </StackPanel>
+                                            </Button.CommandParameter>
+                                            <materialDesign:PackIcon Kind="Delete"/>
+                                        </Button>
+                                        <Button Command="{Binding Main.EditActionCommand, Source={StaticResource Locator}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource ActionFlatButton}"
+                                                ToolTip="Редактировать">
+                                            <materialDesign:PackIcon Kind="Edit"/>
+                                        </Button>
+                                        <Button Style="{StaticResource ActionRaisedDarkButton}" ToolTip="Запустить">
+                                            <materialDesign:PackIcon Kind="Play"/>
+                                        </Button>
+                                    </StackPanel>
+                                </materialDesign:ColorZone>
                             </StackPanel>
                         </materialDesign:Card>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <Button Command="{Binding NewActionCommand}"
-                Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
-                HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                Margin="0,0,8,8"
-                ToolTip="Новое мероприятие">
-            <materialDesign:PackIcon Kind="Plus"/>
-        </Button>
     </Grid>
 </Page>

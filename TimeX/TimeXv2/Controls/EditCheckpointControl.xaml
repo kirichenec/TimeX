@@ -4,66 +4,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Style="{StaticResource BasicStyle}"
              MinWidth="300" Loaded="Root_Loaded">
-    <StackPanel Orientation="Vertical" DataContext="{Binding Source={StaticResource Locator}}">
-        <StackPanel Orientation="Vertical" Margin="16">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Vertical" DataContext="{Binding Source={StaticResource Locator}}">
+            <StackPanel Orientation="Vertical" Margin="16">
+                <TextBlock Margin="{StaticResource RightBottom}">
+                    <TextBlock.Resources>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TitleTextBlock}">
+                            <Setter Property="Text" Value="Редактирование события"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EditedChckpnt.Uid, ElementName=root}" Value="{x:Null}">
+                                    <Setter Property="Text" Value="Новое событие"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Resources>
+                </TextBlock>
 
-            <TextBlock Margin="{StaticResource RBMargin}">
-                <TextBlock.Resources>
-                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TitleTextBlock}">
-                        <Setter Property="Text" Value="Редактирование события"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding EditedChckpnt.Uid, ElementName=root}" Value="{x:Null}">
-                                <Setter Property="Text" Value="Новое событие"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Resources>
-            </TextBlock>
-
-            <TextBox Text="{Binding EditedChckpnt.Name, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <materialDesign:HintAssist.Hint>
-                    <TextBlock Text="Наименование" Margin="0"/>
-                </materialDesign:HintAssist.Hint>
-            </TextBox>
-            <materialDesign:TimePicker Is24Hours="True"
-                                       Margin="{StaticResource RBMargin}"
+                <TextBox Text="{Binding EditedChckpnt.Name, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <materialDesign:HintAssist.Hint>
+                        <TextBlock Text="Наименование" Margin="0"/>
+                    </materialDesign:HintAssist.Hint>
+                </TextBox>
+                <materialDesign:TimePicker Is24Hours="True"
+                                       Margin="{StaticResource RightBottom}"
                                        SelectedTime="{Binding EditedStartTime, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        Style="{StaticResource MaterialDesignFloatingHintTimePicker}">
-                <materialDesign:HintAssist.Hint>
-                    <TextBlock Text="Время начала" Margin="0"/>
-                </materialDesign:HintAssist.Hint>
-            </materialDesign:TimePicker>
-            <materialDesign:TimePicker Is24Hours="True"
-                                       Margin="{StaticResource RBMargin}"
+                    <materialDesign:HintAssist.Hint>
+                        <TextBlock Text="Время начала" Margin="0"/>
+                    </materialDesign:HintAssist.Hint>
+                </materialDesign:TimePicker>
+                <materialDesign:TimePicker Is24Hours="True"
+                                       Margin="{StaticResource RightBottom}"
                                        SelectedTime="{Binding EditedDuration, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        Style="{StaticResource MaterialDesignFloatingHintTimePicker}">
-                <materialDesign:HintAssist.Hint>
-                    <TextBlock Text="Длительность" Margin="0"/>
-                </materialDesign:HintAssist.Hint>
-            </materialDesign:TimePicker>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <TextBlock Text="Необходимо распоряжение"/>
-                <ToggleButton IsChecked="{Binding EditedChckpnt.IsOrderNeeded, ElementName=root, Mode=TwoWay}"
-                              Margin="{StaticResource RBMargin}"/>
+                    <materialDesign:HintAssist.Hint>
+                        <TextBlock Text="Длительность" Margin="0"/>
+                    </materialDesign:HintAssist.Hint>
+                </materialDesign:TimePicker>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock Text="Необходимо распоряжение"/>
+                    <ToggleButton IsChecked="{Binding EditedChckpnt.IsOrderNeeded, ElementName=root, Mode=TwoWay}"
+                              Margin="{StaticResource RightBottom}"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
-            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
-                <StackPanel Style="{StaticResource ButtonStackPanel}">
-                    <materialDesign:PackIcon Kind="Close"/>
-                    <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ActionSettings.SaveCheckpointCommand, Mode=OneWay}"
-                    CommandParameter="{Binding EditedChckpnt, ElementName=root}"
-                    Click="CloseDialog">
-                <StackPanel Style="{StaticResource ButtonStackPanel}">
-                    <materialDesign:PackIcon Kind="ContentSave"/>
-                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
-                </StackPanel>
-            </Button>
-        </StackPanel>
-    </StackPanel>
+        <materialDesign:ColorZone Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                        <materialDesign:PackIcon Kind="Close"/>
+                        <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ActionSettings.SaveCheckpointCommand, Mode=OneWay}"
+                        CommandParameter="{Binding EditedChckpnt, ElementName=root}"
+                        Click="SaveDialog">
+                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                        <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </materialDesign:ColorZone>
+    </Grid>
 </UserControl>

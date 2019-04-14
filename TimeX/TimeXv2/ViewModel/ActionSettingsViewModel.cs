@@ -18,16 +18,37 @@ namespace TimeXv2.ViewModel
             _dataService = dataService;
             _navigationService = navigationService;
             MessengerInstance
-                .Register<string>(this, 
-                uid =>
+                .Register<string>(this, uid =>
                 {
-                    this.EditedAction = 
+                    this.EditedAction =
                         uid == null ?
                         new ModelAction() :
                         _dataService.GetActionByUid(uid);
                     this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
                     this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
                 });
+
+            if (IsInDesignMode)
+            {
+                var chk = new System.Collections.ObjectModel.ObservableCollection<Checkpoint>();
+                chk.Add(
+                    new Checkpoint()
+                    {
+                        StartTime = TimeSpan.FromMinutes(0),
+                        Duration = TimeSpan.FromMinutes(5),
+                        IsOrderNeeded = true,
+                        ParentAction = this.EditedAction,
+                        Name = "new"
+                    });
+                this.EditedAction =
+                    new ModelAction()
+                    {
+                        Name = "Name",
+                        StartTime = DateTime.Now,
+                        StartTimeTicks = 0,
+                        Checkpoints = chk
+                    };
+            }
         }
         #endregion
 
@@ -39,11 +60,6 @@ namespace TimeXv2.ViewModel
         #region Properties
 
         #region EditedAction
-        /// <summary>
-        /// The <see cref="EditedAction" /> property's name.
-        /// </summary>
-        public const string EditedActionPropertyName = "EditedAction";
-
         private ModelAction _editedAction = null;
 
         /// <summary>
@@ -65,17 +81,12 @@ namespace TimeXv2.ViewModel
                 }
 
                 _editedAction = value;
-                RaisePropertyChanged(EditedActionPropertyName);
+                RaisePropertyChanged(nameof(EditedAction));
             }
         }
         #endregion
 
         #region EditedCheckpoint
-        /// <summary>
-        /// The <see cref="EditedCheckpoint" /> property's name.
-        /// </summary>
-        public const string EditedCheckpointPropertyName = "EditedCheckpoint";
-
         private Checkpoint _editedCheckpoint = new Checkpoint();
 
         /// <summary>
@@ -97,17 +108,62 @@ namespace TimeXv2.ViewModel
                 }
 
                 _editedCheckpoint = value;
-                RaisePropertyChanged(EditedCheckpointPropertyName);
+                RaisePropertyChanged(nameof(EditedCheckpoint));
+            }
+        }
+        #endregion
+
+        #region EditedCheckpointDate
+        private DateTime _editedCheckpointDate = new DateTime(0);
+
+        /// <summary>
+        /// Sets and gets the EditedCheckpointDate property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public DateTime EditedCheckpointDate
+        {
+            get
+            {
+                return _editedCheckpointDate;
+            }
+            set
+            {
+                if (_editedCheckpointDate == value)
+                {
+                    return;
+                }
+                _editedCheckpointDate = value;
+                RaisePropertyChanged(nameof(EditedCheckpointDate));
+            }
+        }
+        #endregion
+
+        #region EditedCheckpointTime
+        private DateTime _editedCheckpointTime = new DateTime(0);
+
+        /// <summary>
+        /// Sets and gets the EditedCheckpointDate property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public DateTime EditedCheckpointTime
+        {
+            get
+            {
+                return _editedCheckpointTime;
+            }
+            set
+            {
+                if (_editedCheckpointTime == value)
+                {
+                    return;
+                }
+                _editedCheckpointTime = value;
+                RaisePropertyChanged(nameof(EditedCheckpointTime));
             }
         }
         #endregion
 
         #region EditedDate
-        /// <summary>
-        /// The <see cref="EditedDate" /> property's name.
-        /// </summary>
-        public const string EditedDatePropertyName = "EditedDate";
-
         private DateTime _editedDate = new DateTime(0);
 
         /// <summary>
@@ -129,17 +185,12 @@ namespace TimeXv2.ViewModel
                 }
 
                 _editedDate = value;
-                RaisePropertyChanged(EditedDatePropertyName);
+                RaisePropertyChanged(nameof(EditedDate));
             }
         }
         #endregion
 
         #region EditedTime
-        /// <summary>
-        /// The <see cref="EditedTime" /> property's name.
-        /// </summary>
-        public const string EditedTimePropertyName = "EditedTime";
-
         private DateTime _editedTime = new DateTime(0);
 
         /// <summary>
@@ -161,17 +212,12 @@ namespace TimeXv2.ViewModel
                 }
 
                 _editedTime = value;
-                RaisePropertyChanged(EditedTimePropertyName);
+                RaisePropertyChanged(nameof(EditedTime));
             }
         }
         #endregion
 
         #region IsEdited
-        /// <summary>
-        /// The <see cref="IsEdited" /> property's name.
-        /// </summary>
-        public const string IsEditedPropertyName = "IsEdited";
-
         private bool _isEdited = false;
 
         /// <summary>
@@ -193,7 +239,7 @@ namespace TimeXv2.ViewModel
                 }
 
                 _isEdited = value;
-                RaisePropertyChanged(IsEditedPropertyName);
+                RaisePropertyChanged(nameof(IsEdited));
             }
         }
         #endregion
@@ -238,6 +284,26 @@ namespace TimeXv2.ViewModel
                     {
                         this.EditedAction.Checkpoints.Remove(checkpoint);
                         DialogHost.CloseDialogCommand.Execute(null, null);
+                    }));
+            }
+        }
+        #endregion
+
+        #region LoadCommand
+        private RelayCommand _loadCommand;
+
+        /// <summary>
+        /// Gets the LoadCommand.
+        /// </summary>
+        public RelayCommand LoadCommand
+        {
+            get
+            {
+                return _loadCommand
+                    ?? (_loadCommand = new RelayCommand(
+                    () =>
+                    {
+
                     }));
             }
         }
@@ -300,6 +366,26 @@ namespace TimeXv2.ViewModel
                             _dataService.UpdateAction(this.EditedAction);
                         }
                         _navigationService.Navigate(NavPage.Main);
+                    }));
+            }
+        }
+        #endregion
+
+        #region UnloadCommand
+        private RelayCommand _unloadCommand;
+
+        /// <summary>
+        /// Gets the UnloadCommand.
+        /// </summary>
+        public RelayCommand UnloadCommand
+        {
+            get
+            {
+                return _unloadCommand
+                    ?? (_unloadCommand = new RelayCommand(
+                    () =>
+                    {
+
                     }));
             }
         }

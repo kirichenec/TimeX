@@ -19,6 +19,8 @@ namespace TimeXv2.Controls
         }
         #endregion
 
+        #region Properties
+
         #region Checkpoint
         public Checkpoint Checkpoint
         {
@@ -67,18 +69,28 @@ namespace TimeXv2.Controls
             DependencyProperty.Register(nameof(EditedDuration), typeof(DateTime), typeof(EditCheckpointControl), new PropertyMetadata(DateTime.MinValue));
         #endregion
 
+        #endregion
+
         #region Methods
-        private void CloseDialog(object sender, RoutedEventArgs e)
+
+        #region SaveDialog
+        private void SaveDialog(object sender, RoutedEventArgs e)
         {
+            this.EditedChckpnt.Duration = TimeSpan.FromTicks(this.EditedDuration.Ticks);
+            this.EditedChckpnt.StartTime = TimeSpan.FromTicks(this.EditedStartTime.Ticks);
             DialogHost.CloseDialogCommand.Execute(null, null);
         }
+        #endregion
 
+        #region Root_Loaded
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
             this.EditedChckpnt = new Checkpoint(this.Checkpoint);
             this.EditedDuration = new DateTime(this.EditedChckpnt.Duration.Ticks);
             this.EditedStartTime = new DateTime(this.EditedChckpnt.StartTime.Ticks);
         }
+        #endregion
+
         #endregion
     }
 }
