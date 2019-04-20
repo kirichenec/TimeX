@@ -20,8 +20,10 @@ namespace TimeXv2.ViewModel
 
             if (IsInDesignMode)
             {
-                this.Actions = new ObservableCollection<ModelAction>();
-                this.Actions.Add(new ModelAction() { Name = "Name", StartTime = DateTime.Now });
+                this.Actions = new ObservableCollection<ModelAction>
+                {
+                    new ModelAction() { Name = "Name", StartTime = DateTime.Now }
+                };
             }
         }
         #endregion
@@ -98,7 +100,7 @@ namespace TimeXv2.ViewModel
                     ?? (_editActionCommand = new RelayCommand<ModelAction>(
                     action =>
                     {
-                        MessengerInstance.Send(action?.Uid);
+                        MessengerInstance.Send(new ActionSettingsMessage(action?.Uid));
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
             }
@@ -143,6 +145,24 @@ namespace TimeXv2.ViewModel
                         MessengerInstance.Send((string)null);
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
+            }
+        }
+        #endregion
+
+        #region PlayActionCommand
+        private RelayCommand<ModelAction> _playActionCommand;
+
+        public RelayCommand<ModelAction> PlayActionCommand
+        {
+            get
+            {
+                return _playActionCommand
+                    ?? (_playActionCommand = new RelayCommand<ModelAction>(
+                        action =>
+                        {
+                            MessengerInstance.Send(new ActionPlayingMessage(action?.Uid));
+                            _navigationService.Navigate(NavPage.ActionPlaying);
+                        }));
             }
         }
         #endregion

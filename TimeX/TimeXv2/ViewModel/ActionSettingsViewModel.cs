@@ -19,20 +19,20 @@ namespace TimeXv2.ViewModel
             _navigationService = navigationService;
 
             MessengerInstance
-                .Register<string>(this, uid =>
+                .Register<ActionSettingsMessage>(this, asm =>
                 {
                     this.EditedAction =
-                        uid == null ?
+                        asm.Uid == null ?
                         new ModelAction() :
-                        _dataService.GetActionByUid(uid);
+                        _dataService.GetActionByUid(asm.Uid);
                     this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
                     this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
                 });
 
             if (IsInDesignMode)
             {
-                var chk = new System.Collections.ObjectModel.ObservableCollection<Checkpoint>();
-                chk.Add(
+                var chk = new System.Collections.ObjectModel.ObservableCollection<Checkpoint>
+                {
                     new Checkpoint()
                     {
                         StartTime = TimeSpan.FromMinutes(0),
@@ -40,7 +40,8 @@ namespace TimeXv2.ViewModel
                         IsOrderNeeded = true,
                         ParentAction = this.EditedAction,
                         Name = "new"
-                    });
+                    }
+                };
                 this.EditedAction =
                     new ModelAction()
                     {

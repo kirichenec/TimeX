@@ -1,0 +1,84 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTemplate x:Key="ActionIcon">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="512" Height="512">
+                <Path Fill="#FF004FC4">
+                    <Path.Data>
+                        <PathGeometry Figures="m308 497h-104v-129h104zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF003480">
+                    <Path.Data>
+                        <PathGeometry Figures="m308 497h-52v-129h52zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF47F5FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m512 398h-512v-368h512zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF69A7FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m256 30h256v368h-256zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF004FC4">
+                    <Path.Data>
+                        <PathGeometry Figures="m452 278h-280v-278h280zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFFFCB00">
+                    <Path.Data>
+                        <PathGeometry Figures="m310 308h142v30h-142zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFF3EEE9">
+                    <Path.Data>
+                        <PathGeometry Figures="m312 218c-43.5625 0-79-35.4375-79-79s35.4375-79 79-79 79 35.4375 79 79-35.4375 79-79 79zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF69A7FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m90 165c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFE23E95">
+                    <Path.Data>
+                        <PathGeometry Figures="m90 105c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF69A7FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m90 225c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFFEE362">
+                    <Path.Data>
+                        <PathGeometry Figures="m60 308h82v30h-82zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF47F5FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m180 482h152v30h-152zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF69A7FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m256 482h76v30h-76zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF003480">
+                    <Path.Data>
+                        <PathGeometry Figures="m312 0h140v278h-140zm0 0"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFE9DFDA">
+                    <Path.Data>
+                        <PathGeometry Figures="m391 139c0-43.5625-35.4375-79-79-79v158c43.5625 0 79-35.4375 79-79zm0 0"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+</ResourceDictionary>

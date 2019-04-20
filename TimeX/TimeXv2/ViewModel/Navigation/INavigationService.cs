@@ -7,6 +7,8 @@
         /// </summary>
         /// <param name="page">Имя страницы</param>
         void Navigate(NavPage page);
+
+        NavPage CurrentPage { get; }
     }
 
     /// <summary>
@@ -21,6 +23,10 @@
         /// <summary>
         /// Страница настройки мероприятия
         /// </summary>
-        ActionSettings
+        ActionSettings,
+        /// <summary>
+        /// Ход мероприятия
+        /// </summary>
+        ActionPlaying
     }
 }

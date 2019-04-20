@@ -1,10 +1,25 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System.Diagnostics;
+using TimeXv2.ViewModel.Navigation;
 
 namespace TimeXv2.ViewModel
 {
     public class GlobalCommands : ViewModelBase
     {
+        #region ctor
+        public GlobalCommands(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+        }
+        #endregion
+
+        #region Services
+        private readonly INavigationService _navigationService;
+        #endregion
+
+        #region Commands
+
         #region CloseAppCommand
         private RelayCommand _closeAppCommand;
 
@@ -43,6 +58,45 @@ namespace TimeXv2.ViewModel
                     }));
             }
         }
+        #endregion
+
+        #region MainPageCommand
+        private RelayCommand _mainPageCommand;
+
+        public RelayCommand MainPageCommand
+        {
+            get
+            {
+                return _mainPageCommand
+                    ?? (_mainPageCommand = new RelayCommand(
+                    () =>
+                    {
+                        _navigationService.Navigate(NavPage.Main);
+                    }));
+            }
+        }
+        #endregion
+
+        #region OpenUriExternalCommand
+        private RelayCommand<string> _openUriExternalCommand;
+
+        public RelayCommand<string> OpenUriExternalCommand
+        {
+            get
+            {
+                return _openUriExternalCommand
+                    ?? (_openUriExternalCommand = new RelayCommand<string>(
+                    uri =>
+                    {
+                        if (!string.IsNullOrEmpty(uri))
+                        {
+                            Process.Start(uri);
+                        }
+                    }));
+            }
+        }
+        #endregion
+
         #endregion
     }
 }

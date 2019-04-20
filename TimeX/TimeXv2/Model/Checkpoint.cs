@@ -56,7 +56,7 @@ namespace TimeXv2.Model
             set { _durationTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(DurationTicks)); NotifyPropertyChanged(nameof(EndTime)); }
         }
 
-        private Int64 _durationTicks;
+        private Int64 _durationTicks = 0;
 
         [Column("DurationTicks")]
         public Int64 DurationTicks
@@ -105,7 +105,7 @@ namespace TimeXv2.Model
             set { _startTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTimeTicks)); NotifyPropertyChanged(nameof(EndTime)); }
         }
 
-        private Int64 _startTimeTicks;
+        private Int64 _startTimeTicks = 0;
 
         [Column("StartTimeTicks")]
         public Int64 StartTimeTicks

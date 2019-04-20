@@ -62,8 +62,7 @@
                                        VerticalAlignment="Bottom"/>
                             <DatePicker Width="100"
                                         Margin="{StaticResource RightBottom}"
-                                        SelectedDate="{Binding EditedDate, Mode=TwoWay}"
-                                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                                        SelectedDate="{Binding EditedDate, Mode=TwoWay}">
                                 <materialDesign:HintAssist.Hint>
                                     <TextBlock Text="Дата" Margin="0"/>
                                 </materialDesign:HintAssist.Hint>
@@ -71,8 +70,7 @@
                             <materialDesign:TimePicker Width="100"
                                                        Is24Hours="True"
                                                        Margin="{StaticResource RightBottom}"
-                                                       SelectedTime="{Binding EditedTime, Mode=TwoWay}"
-                                                       Style="{StaticResource MaterialDesignFloatingHintTimePicker}">
+                                                       SelectedTime="{Binding EditedTime, Mode=TwoWay}">
                                 <materialDesign:HintAssist.Hint>
                                     <TextBlock Text="Время" Margin="0"/>
                                 </materialDesign:HintAssist.Hint>
@@ -110,6 +108,7 @@
                                     <StackPanel Margin="24,24,16,16">
                                         <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>
                                         <TextBlock Text="{Binding StartTime, StringFormat=Время начала: {0}}"/>
+                                        <TextBlock Text="{Binding Duration, StringFormat=Продолжительность {0}}"/>
                                     </StackPanel>
                                     <materialDesign:ColorZone>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

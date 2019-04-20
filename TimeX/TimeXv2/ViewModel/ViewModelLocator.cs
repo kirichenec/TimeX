@@ -1,6 +1,5 @@
 ﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
-using System.Diagnostics.CodeAnalysis;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
 
@@ -12,17 +11,16 @@ namespace TimeXv2.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Register<GlobalCommands>(true);
-            SimpleIoc.Default.Register<ActionContext>(true);
             SimpleIoc.Default.Register<INavigationService, NavigationService>(true);
-            SimpleIoc.Default.Register<IDataService, DataService>(true);
+            SimpleIoc.Default.Register<ActionContext>();
+            SimpleIoc.Default.Register<IDataService, DataService>();
+            SimpleIoc.Default.Register<GlobalCommands>(true);
+
             SimpleIoc.Default.Register<MainViewModel>(true);
+            SimpleIoc.Default.Register<ActionPlayingViewModel>(true);
             SimpleIoc.Default.Register<ActionSettingsViewModel>(true);
         }
 
-        /// <summary>
-        /// Gets the Main property.
-        /// </summary>
         public MainViewModel Main
         {
             get
@@ -31,9 +29,14 @@ namespace TimeXv2.ViewModel
             }
         }
 
-        /// <summary>
-        /// Gets the ActionSettings property.
-        /// </summary>
+        public ActionPlayingViewModel ActionPlaying
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ActionPlayingViewModel>();
+            }
+        }
+
         public ActionSettingsViewModel ActionSettings
         {
             get
@@ -42,9 +45,6 @@ namespace TimeXv2.ViewModel
             }
         }
 
-        /// <summary>
-        /// Gets the GlobalCommands property.
-        /// </summary>
         public GlobalCommands GlobalCommands
         {
             get
@@ -53,9 +53,6 @@ namespace TimeXv2.ViewModel
             }
         }
 
-        /// <summary>
-        /// Cleans up all the resources.
-        /// </summary>
         public static void Cleanup()
         {
         }

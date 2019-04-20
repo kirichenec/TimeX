@@ -1,12 +1,120 @@
 ﻿<UserControl x:Class="TimeXv2.Controls.AboutControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TimeXv2.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             Style="{StaticResource BasicStyle}"
+             MinWidth="300" MaxWidth="400">
+    
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Hyperlink}">
+            <Setter Property="Command" Value="{Binding GlobalCommands.OpenUriExternalCommand}"/>
+            <Setter Property="CommandParameter" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid DataContext="{Binding Source={StaticResource Locator}}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" DataContext="{Binding Source={StaticResource Locator}}">
+            <StackPanel Orientation="Vertical" Margin="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <materialDesign:PackIcon Kind="CodeBraces"
+                                             Height="29"
+                                             Margin="{StaticResource RightBottom}"
+                                             Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+                    <TextBlock Grid.Column="1">
+                        Автор программы
+                        <Hyperlink ToolTip="https://github.com/kirichenec">
+                            kirichnenec
+                        </Hyperlink>
+                    </TextBlock>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Control Template="{StaticResource ActionIcon}"
+                             Height="29"
+                             Margin="{StaticResource RightBottom}"/>
+                    <TextBlock Grid.Column="1"
+                               TextWrapping="Wrap">
+                        Автор иконки
+                        <Hyperlink ToolTip="https://www.freepik.com/">
+                            Freepik
+                        </Hyperlink>
+                        с ресурса
+                        <Hyperlink ToolTip="www.flaticon.com">
+                            Flaticon</Hyperlink>, лицензировано
+                        <Hyperlink ToolTip="http://creativecommons.org/licenses/by/3.0/">
+                            Creative Commons BY 3.0
+                        </Hyperlink>
+                    </TextBlock>
+                </Grid>
+                <TextBlock Text="Использованные средства"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="/TimeX;component/Media/MD4XAML.png"
+                           Height="29"
+                           Margin="{StaticResource RightBottom}"/>
+                    <TextBlock Grid.Column="1"
+                               TextWrapping="Wrap">
+                        Библиотека стилей
+                        <Hyperlink ToolTip="http://materialdesigninxaml.net">
+                            Material Design In XAML Toolkit
+                        </Hyperlink>, проект на
+                        <Hyperlink ToolTip="https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit">
+                            Github</Hyperlink>
+                    </TextBlock>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="/TimeX;component/Media/MVVM.png"
+                           Height="29"
+                           Margin="{StaticResource RightBottom}"/>
+                    <TextBlock 
+                               Grid.Column="1"
+                               TextWrapping="Wrap">
+                        Шаблон проектирвания
+                        <Hyperlink ToolTip="http://www.mvvmlight.net/">
+                            MVVM Light Toolkit
+                        </Hyperlink>, проект на
+                        <Hyperlink ToolTip="https://github.com/lbugnion/mvvmlight">
+                            Github</Hyperlink>
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+        <materialDesign:ColorZone Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                        <materialDesign:PackIcon Kind="Check"/>
+                        <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Ok"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </materialDesign:ColorZone>
     </Grid>
 </UserControl>

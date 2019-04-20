@@ -1,15 +1,16 @@
-﻿<Application x:Class="TimeXv2.App"
+<Application x:Class="TimeXv2.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="clr-namespace:TimeXv2.Controls"
              xmlns:global="clr-namespace:TimeXv2.Static"
              xmlns:vm="clr-namespace:TimeXv2.ViewModel"
              StartupUri="View\MainView.xaml"
              mc:Ignorable="d"
              LoadCompleted="Application_LoadCompleted">
-
     <Application.Resources>
         <ResourceDictionary>
             <!--Material Design style-->
@@ -18,6 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.LightBlue.xaml" />
+                <ResourceDictionary Source="Media/ActionIcon.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <Thickness x:Key="RightBottom"
@@ -28,109 +30,111 @@
             <!--Global View Model Locator-->
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
 
+            <Style TargetType="{x:Type materialDesign:TimePicker}" BasedOn="{StaticResource MaterialDesignFloatingHintTimePicker}">
+                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75" />
+            </Style>
+
+            <Style TargetType="{x:Type DatePicker}" BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75" />
+            </Style>
+
             <!--NavigationWindow style-->
             <Style TargetType="{x:Type NavigationWindow}">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type NavigationWindow}">
                             <AdornerDecorator>
-                                <ContentPresenter Name="PART_NavWinCP" ClipToBounds="true"/>
+                                <ContentPresenter Name="PART_NavWinCP" ClipToBounds="true" />
                             </AdornerDecorator>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Topmost" Value="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay}"/>
+                <Setter Property="Topmost" Value="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay}" />
             </Style>
 
             <!--ScrollBar style-->
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource MaterialDesignScrollBar}">
-                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Cursor" Value="Hand" />
                 <Style.Triggers>
                     <Trigger Property="Orientation" Value="Vertical">
                         <Setter Property="Margin" Value="-10,0,-20,0" />
-                        <Setter Property="MinWidth" Value="8"/>
-                        <Setter Property="Width" Value="18"/>
+                        <Setter Property="MinWidth" Value="8" />
+                        <Setter Property="Width" Value="18" />
                     </Trigger>
                     <Trigger Property="Orientation" Value="Horizontal">
-                        <Setter Property="Margin" Value="0,-18,0,0"/>
-                        <Setter Property="MinHeight" Value="8"/>
-                        <Setter Property="Height" Value="18"/>
+                        <Setter Property="Margin" Value="0,-18,0,0" />
+                        <Setter Property="MinHeight" Value="8" />
+                        <Setter Property="Height" Value="18" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
             <!--Button styles-->
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
             </Style>
-
             <Style TargetType="{x:Type Button}" x:Key="RaisedButton" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
             </Style>
-
             <Style TargetType="{x:Type Button}" x:Key="ActionFlatButton" BasedOn="{StaticResource {x:Type Button}}">
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}" />
             </Style>
-
             <Style TargetType="{x:Type Button}" x:Key="ActionRaisedDarkButton" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Width" Value="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}" />
             </Style>
-
             <Style TargetType="{x:Type StackPanel}" x:Key="ButtonStackPanel">
-                <Setter Property="Orientation" Value="Horizontal"/>
-                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="Margin" Value="0" />
             </Style>
-
             <Style TargetType="{x:Type TextBlock}" x:Key="ButtonTextBlock">
-                <Setter Property="Margin" Value="8,0,0,0"/>
+                <Setter Property="Margin" Value="8,0,0,0" />
             </Style>
 
             <!--Icons style-->
             <Style TargetType="materialDesign:PackIcon">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0" />
             </Style>
 
             <!--StackPanel style-->
             <Style TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="{StaticResource LeftTop}"/>
+                <Setter Property="Margin" Value="{StaticResource LeftTop}" />
             </Style>
 
             <!--TextBlock style-->
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
             </Style>
-
             <Style TargetType="{x:Type TextBlock}" x:Key="TitleTextBlock" BasedOn="{StaticResource MaterialDesignTitleTextBlock}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
             </Style>
 
-            <!--Базовый стиль для UserControl, Window-->
+            <!--UserControl, Window style-->
             <Style TargetType="Control" x:Key="BasicStyle">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}"/>
-                <Setter Property="Language" Value="ru-RU"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TextElement.FontWeight" Value="Regular"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
+                <Setter Property="Language" Value="ru-RU" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
             </Style>
 
-            <!--Стиль страниц-->
+            <!--Page style-->
             <Style x:Key="PageStyle" TargetType="Page" BasedOn="{StaticResource {x:Type Page}}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}"/>
-                <Setter Property="Language" Value="ru-RU"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TextElement.FontWeight" Value="Regular"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
-                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
+                <Setter Property="Language" Value="ru-RU" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+                <Setter Property="Focusable" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Page">
@@ -138,64 +142,59 @@
                                 <materialDesign:DialogHost.DialogContent>
                                     <Grid Grid.Row="2">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-
                                         <Grid Grid.Row="0" Margin="24">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-
                                             <TextBlock Grid.Row="0" Grid.Column="0"
                                                        Margin="0,0,8,8"
                                                        Text="Opacity"
                                                        ToolTip="Прозрачность окна"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center" />
                                             <Grid Grid.Row="0" Grid.Column="1">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
-
                                                 <Slider Grid.Column="0"
                                                         Margin="0,0,0,8"
                                                         IsSnapToTickEnabled="True"
                                                         Maximum="1" Minimum="0.5"
-                                                        SmallChange="0.01"                            
+                                                        SmallChange="0.01"
                                                         TickFrequency="0.01"
                                                         TickPlacement="TopLeft"
-                                                        ToolTip="{Binding RootOpacity, ElementName=root}"                            
+                                                        ToolTip="{Binding RootOpacity, ElementName=root}"
                                                         Value="{Binding RootOpacity, ElementName=root, Mode=TwoWay}"
-                                                        Width="250"/>
+                                                        Width="250" />
                                                 <TextBlock Grid.Column="1" Text="{Binding RootOpacity, ElementName=root, Mode=TwoWay, StringFormat=\{0:n2\}}"
                                                            Width="30"
                                                            TextAlignment="Right"
-                                                           HorizontalAlignment="Right"/>
+                                                           HorizontalAlignment="Right" />
                                             </Grid>
-
                                             <TextBlock Grid.Row="1" Grid.Column="0"
                                                        Margin="0,0,8,8"
                                                        Text="Dark theme"
                                                        ToolTip="Тёмная тема"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center" />
                                             <ToggleButton Grid.Row="1" Grid.Column="1"
                                                           HorizontalAlignment="Left"
                                                           Height="14"
                                                           IsChecked="{Binding IsDark, ElementName=root, Mode=TwoWay}"
                                                           Margin="0,0,0,8"
-                                                          VerticalAlignment="Center"/>
+                                                          VerticalAlignment="Center" />
                                         </Grid>
-
                                         <Grid Grid.Row="1" Margin="8">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                <Button Content="Save" ToolTip="Сохранить"/>
-                                                <Button Content="Cancel" ToolTip="Отменить"/>
+                                                <Button Content="Save" ToolTip="Сохранить" />
+                                                <Button Content="Cancel" ToolTip="Отменить" />
                                             </StackPanel>
                                         </Grid>
                                     </Grid>
@@ -203,8 +202,8 @@
                                 <materialDesign:DialogHost>
                                     <Grid Background="{DynamicResource MaterialDesignPaper}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition/>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition />
                                         </Grid.RowDefinitions>
                                         <!--Панель элементов-->
                                         <materialDesign:ColorZone Name="HeaderZone"
@@ -217,121 +216,122 @@
                                             <StackPanel Orientation="Horizontal" Margin="0" Grid.Row="0">
                                                 <StackPanel.Resources>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Margin" Value="8"/>
-                                                        <Setter Property="Padding" Value="0"/>
-                                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                                        <Setter Property="Margin" Value="8" />
+                                                        <Setter Property="Padding" Value="0" />
+                                                        <Setter Property="VerticalAlignment" Value="Center" />
                                                     </Style>
                                                 </StackPanel.Resources>
-
                                                 <ToggleButton ToolTip="Меню"
                                                               x:Name="MenuToggleButton"
                                                               DockPanel.Dock="Top"
                                                               Height="24"
                                                               IsChecked="False"
-                                                              Style="{StaticResource MaterialDesignHamburgerToggleButton}"/>
+                                                              Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
                                                 <TextBlock Text="Мероприятия"
                                                            FontSize="18"
-                                                           SnapsToDevicePixels="True"/>
+                                                           SnapsToDevicePixels="True"
+                                                           Cursor="Hand"
+                                                           ToolTip="К списку мероприятий">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseUp">
+                                                            <i:InvokeCommandAction Command="{Binding GlobalCommands.MainPageCommand}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </TextBlock>
                                             </StackPanel>
                                         </materialDesign:ColorZone>
-
                                         <materialDesign:DrawerHost Grid.Row="1" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
                                             <materialDesign:DrawerHost.LeftDrawerContent>
                                                 <DockPanel MinWidth="150">
                                                     <StackPanel Orientation="Vertical">
                                                         <StackPanel.Resources>
                                                             <Style TargetType="materialDesign:PackIcon">
-                                                                <Setter Property="Grid.Column" Value="0"/>
-                                                                <Setter Property="Margin" Value="0,0,8,0"/>
-                                                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                                                <Setter Property="Width" Value="18"/>
+                                                                <Setter Property="Grid.Column" Value="0" />
+                                                                <Setter Property="Margin" Value="0,0,8,0" />
+                                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                                <Setter Property="Width" Value="18" />
                                                             </Style>
                                                             <Style TargetType="TextBlock">
-                                                                <Setter Property="Grid.Column" Value="1"/>
-                                                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                                                <Setter Property="TextAlignment" Value="Left"/>
+                                                                <Setter Property="Grid.Column" Value="1" />
+                                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                                <Setter Property="TextAlignment" Value="Left" />
                                                             </Style>
                                                             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                                                <Setter Property="Command" Value="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"/>
-                                                                <Setter Property="CommandParameter" Value="{x:Static Dock.Left}"/>
-                                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                                <Setter Property="Margin" Value="0"/>
-                                                                <Setter Property="Padding" Value="12,0,16,0"/>
+                                                                <Setter Property="Command" Value="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" />
+                                                                <Setter Property="CommandParameter" Value="{x:Static Dock.Left}" />
+                                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                                <Setter Property="Margin" Value="0" />
+                                                                <Setter Property="Padding" Value="12,0,16,0" />
                                                             </Style>
                                                             <Style TargetType="StackPanel">
-                                                                <Setter Property="Margin" Value="0"/>
+                                                                <Setter Property="Margin" Value="0" />
                                                             </Style>
                                                         </StackPanel.Resources>
-
-                                                        <Separator Background="{DynamicResource MaterialDesignPaper}"/>
-
+                                                        
+                                                        <Separator Background="{DynamicResource MaterialDesignPaper}" />
                                                         <StackPanel Orientation="Vertical">
                                                             <Button>
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition />
                                                                     </Grid.ColumnDefinitions>
-
                                                                     <materialDesign:PackIcon Kind="Settings" />
-                                                                    <TextBlock Text="Настройки"/>
+                                                                    <TextBlock Text="Настройки" />
                                                                 </Grid>
                                                             </Button>
-                                                            <Button>
+                                                            <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                                                <Button.CommandParameter>
+                                                                    <controls:AboutControl/>
+                                                                </Button.CommandParameter>
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition />
                                                                     </Grid.ColumnDefinitions>
-
                                                                     <materialDesign:PackIcon Kind="About" />
-                                                                    <TextBlock Text="О программе"/>
+                                                                    <TextBlock Text="О программе" />
                                                                 </Grid>
                                                             </Button>
                                                             <Button Command="{Binding GlobalCommands.InvertTopmostCommand}">
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition />
                                                                     </Grid.ColumnDefinitions>
-
                                                                     <materialDesign:PackIcon>
                                                                         <materialDesign:PackIcon.Resources>
                                                                             <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
-                                                                                <Setter Property="Kind" Value="CheckBoxOutlineBlank"/>
+                                                                                <Setter Property="Kind" Value="CheckBoxOutlineBlank" />
                                                                                 <Style.Triggers>
                                                                                     <DataTrigger Binding="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                                                                        <Setter Property="Kind" Value="CheckboxMarkedOutline"/>
+                                                                                        <Setter Property="Kind" Value="CheckboxMarkedOutline" />
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
                                                                             </Style>
                                                                         </materialDesign:PackIcon.Resources>
                                                                     </materialDesign:PackIcon>
-                                                                    <TextBlock Text="Поверх всех окон"/>
+                                                                    <TextBlock Text="Поверх всех окон" />
                                                                 </Grid>
                                                             </Button>
                                                         </StackPanel>
-
-                                                        <Separator Background="{DynamicResource MaterialDesignPaper}"/>
-
+                                                        <Separator Background="{DynamicResource MaterialDesignPaper}" />
                                                         <StackPanel Orientation="Vertical">
                                                             <Button Command="{Binding GlobalCommands.CloseAppCommand}">
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition />
                                                                     </Grid.ColumnDefinitions>
-
                                                                     <materialDesign:PackIcon Kind="ExitToApp" />
-                                                                    <TextBlock Text="Exit"/>
+                                                                    <TextBlock Text="Exit" />
                                                                 </Grid>
                                                             </Button>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </DockPanel>
                                             </materialDesign:DrawerHost.LeftDrawerContent>
-
-                                            <ContentPresenter/>
+                                            <ContentPresenter />
                                         </materialDesign:DrawerHost>
                                     </Grid>
                                 </materialDesign:DialogHost>
@@ -343,37 +343,37 @@
 
             <!--ToolTip style-->
             <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
-                <Setter Property="Padding" Value="{StaticResource LeftTop}"/>
+                <Setter Property="Padding" Value="{StaticResource LeftTop}" />
             </Style>
 
             <!--TextBox style-->
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <Setter Property="Margin" Value="{StaticResource RightBottom}"/>
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75"/>
+                <Setter Property="Margin" Value="{StaticResource RightBottom}" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75" />
             </Style>
 
             <!--ScrollViewer style-->
             <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
-                <Setter Property="CanContentScroll" Value="False"/>
-                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="CanContentScroll" Value="False" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
             </Style>
 
             <!--ItemsControl style-->
             <Style TargetType="ItemsControl">
-                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="IsTabStop" Value="False" />
             </Style>
 
             <Style TargetType="materialDesign:ColorZone">
-                <Setter Property="Margin" Value="0"/>
-                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth2"/>
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth2" />
             </Style>
 
             <Storyboard x:Key="OpacityFadeIn">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0:1"/>
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0:1" />
             </Storyboard>
             <Storyboard x:Key="OpacityFadeOut">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0:1"/>
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0:1" />
             </Storyboard>
         </ResourceDictionary>
     </Application.Resources>
