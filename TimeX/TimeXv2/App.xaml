@@ -30,6 +30,13 @@
             <!--Global View Model Locator-->
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
 
+            <Storyboard x:Key="OpacityFadeIn">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0:0.5" />
+            </Storyboard>
+            <Storyboard x:Key="OpacityFadeOut">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0:0.5" />
+            </Storyboard>
+            
             <Style TargetType="{x:Type materialDesign:TimePicker}" BasedOn="{StaticResource MaterialDesignFloatingHintTimePicker}">
                 <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75" />
             </Style>
@@ -127,6 +134,7 @@
             <!--Page style-->
             <Style x:Key="PageStyle" TargetType="Page" BasedOn="{StaticResource {x:Type Page}}">
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="Focusable" Value="False" />
                 <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
                 <Setter Property="Language" Value="ru-RU" />
                 <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -134,7 +142,6 @@
                 <Setter Property="TextElement.FontWeight" Value="Regular" />
                 <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
                 <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
-                <Setter Property="Focusable" Value="False" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Page">
@@ -267,7 +274,7 @@
                                                                 <Setter Property="Margin" Value="0" />
                                                             </Style>
                                                         </StackPanel.Resources>
-                                                        
+
                                                         <Separator Background="{DynamicResource MaterialDesignPaper}" />
                                                         <StackPanel Orientation="Vertical">
                                                             <Button>
@@ -331,7 +338,16 @@
                                                     </StackPanel>
                                                 </DockPanel>
                                             </materialDesign:DrawerHost.LeftDrawerContent>
-                                            <ContentPresenter />
+                                            <ContentPresenter>
+                                                <ContentPresenter.Triggers>
+                                                    <EventTrigger RoutedEvent="Loaded">
+                                                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
+                                                    </EventTrigger>
+                                                    <EventTrigger RoutedEvent="Unloaded">
+                                                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
+                                                    </EventTrigger>
+                                                </ContentPresenter.Triggers>
+                                            </ContentPresenter>
                                         </materialDesign:DrawerHost>
                                     </Grid>
                                 </materialDesign:DialogHost>
@@ -368,13 +384,6 @@
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth2" />
             </Style>
-
-            <Storyboard x:Key="OpacityFadeIn">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0:1" />
-            </Storyboard>
-            <Storyboard x:Key="OpacityFadeOut">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0:1" />
-            </Storyboard>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

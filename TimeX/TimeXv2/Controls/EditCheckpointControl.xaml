@@ -36,7 +36,7 @@
                 </TextBox>
 
                 <TextBlock>
-                    <Run Text="Время старта:"/>
+                    <Run Text="Время начала:"/>
                     <Run Text="{Binding EditedStartTime.AsTimeSpan,
                                         ElementName=root,
                                         Mode=OneWay,
@@ -65,7 +65,7 @@
                 </Grid>
                 
                 <TextBlock>
-                    <Run Text="Длительность:"/>
+                    <Run Text="Продолжительность:"/>
                     <Run Text="{Binding EditedDuration.AsTimeSpan,
                                         ElementName=root,
                                         Mode=OneWay,

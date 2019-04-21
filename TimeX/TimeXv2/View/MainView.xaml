@@ -11,7 +11,7 @@
       DataContext="{Binding Main, Source={StaticResource Locator}}"
       Style="{StaticResource PageStyle}"
       WindowTitle="Главная">
-
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadCommand}"/>
@@ -21,7 +21,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid Margin="16" MaxWidth="816">
+    <Grid Margin="16" MaxWidth="816">        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -49,6 +49,14 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <materialDesign:Card Margin="{StaticResource RightBottom}">
+                            <materialDesign:Card.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="Unloaded">
+                                    <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
+                                </EventTrigger>
+                            </materialDesign:Card.Triggers>
                             <StackPanel Orientation="Vertical" Margin="0">
                                 <StackPanel Margin="24,24,16,16">
                                     <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>
@@ -100,7 +108,10 @@
                                                 ToolTip="Редактировать">
                                             <materialDesign:PackIcon Kind="Edit"/>
                                         </Button>
-                                        <Button Style="{StaticResource ActionRaisedDarkButton}" ToolTip="Запустить">
+                                        <Button Command="{Binding Main.PlayActionCommand, Source={StaticResource Locator}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource ActionRaisedDarkButton}"
+                                                ToolTip="Запустить">
                                             <materialDesign:PackIcon Kind="Play"/>
                                         </Button>
                                     </StackPanel>

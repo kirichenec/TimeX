@@ -23,6 +23,11 @@ namespace TimeXv2.ViewModel.Navigation
             Uid = actionUid;
         }
 
+        public ActionSettingsMessage()
+        {
+
+        }
+
         public string Uid { get; set; }
     }
 }

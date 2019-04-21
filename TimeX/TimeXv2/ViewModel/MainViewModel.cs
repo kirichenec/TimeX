@@ -142,7 +142,7 @@ namespace TimeXv2.ViewModel
                     ?? (_newActionCommand = new RelayCommand(
                     () =>
                     {
-                        MessengerInstance.Send((string)null);
+                        MessengerInstance.Send(new ActionSettingsMessage());
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
             }
