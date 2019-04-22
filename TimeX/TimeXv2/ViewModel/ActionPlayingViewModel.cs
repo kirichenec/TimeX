@@ -85,9 +85,45 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region IsExpanded
+        private bool _isExpanded;
+
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set
+            {
+                if (_isExpanded == value)
+                {
+                    return;
+                }
+                _isExpanded = value;
+                RaisePropertyChanged(nameof(IsExpanded));
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Commands
+
+        #region ChangeIsExpandedCommand
+        private RelayCommand _changeIsExpandedCommand;
+
+        public RelayCommand ChangeIsExpandedCommand
+        {
+            get
+            {
+                return _changeIsExpandedCommand
+                    ?? (_changeIsExpandedCommand = new RelayCommand(
+                        () =>
+                        {
+                            this.IsExpanded = !this.IsExpanded;
+                        }));
+            }
+        }
+
+        #endregion
 
         #region LoadCommand
         private RelayCommand _loadCommand;

@@ -22,23 +22,103 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <Grid Margin="16" MaxWidth="816">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
+            <Grid Margin="16" MaxWidth="816">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="{Binding PlayedAction.Name}" Style="{StaticResource TitleTextBlock}"/>
+
+                    <materialDesign:Card Margin="{StaticResource RightBottom}">
+                        <materialDesign:Card.Resources>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </materialDesign:Card.Resources>
+                        <Grid Margin="16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding PlayedAction.StartTime}"/>
+                                <TextBlock Text="Время начала"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding PlayedAction.StartTime}"/>
+                                <TextBlock Text="Время окончания"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{Binding PlayedAction.StartTime}"/>
+                                <TextBlock Text="Осталось времени"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="{Binding PlayedAction.StartTime}"/>
+                                <TextBlock Text="Прошло времени"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="{Binding PlayedAction.StartTime}"/>
+                                <TextBlock Text="Текущее время"/>
+                            </StackPanel>
+                        </Grid>
+                    </materialDesign:Card>
+                </StackPanel>
+
+                <ItemsControl Grid.Row="1"
+                              ItemsSource="{Binding PlayedAction.Checkpoints}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <materialDesign:Card Margin="{StaticResource RightBottom}">
+                                <Grid Height="50"/>
+                                <!--CheckPoint progress bar-->
+                            </materialDesign:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
         </Grid>
 
-        <!--<Button Command="{Binding}"
-                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                ToolTip="На главную">
-            <materialDesign:PackIcon Kind="ViewList"/>
-        </Button>-->
+        <ToggleButton HorizontalAlignment="Right"
+                      IsChecked="{Binding IsExpanded, Mode=TwoWay}"
+                      Margin="{StaticResource RightBottom}"
+                      VerticalAlignment="Bottom">
+            <ToggleButton.Style>
+                <Style TargetType="{x:Type ToggleButton}" BasedOn="{ StaticResource MaterialDesignActionToggleButton}">
+                    <Setter Property="Opacity" Value="0.25"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Opacity" Value="1"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToggleButton.Style>
+            <ToggleButton.Content>
+                <materialDesign:PackIcon Kind="EyeOff" />
+            </ToggleButton.Content>
+            <materialDesign:ToggleButtonAssist.OnContent>
+                <materialDesign:PackIcon Kind="Eye" />
+            </materialDesign:ToggleButtonAssist.OnContent>
+        </ToggleButton>
     </Grid>
 </Page>
