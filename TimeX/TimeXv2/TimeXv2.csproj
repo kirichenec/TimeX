@@ -132,6 +132,7 @@
     <Compile Include="Controls\NumberEditor.xaml.cs">
       <DependentUpon>NumberEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\Classes.cs" />
     <Compile Include="Model\Data\ActionContext.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\Checkpoint.cs" />

@@ -28,6 +28,8 @@ namespace TimeXv2.Model
         }
         #endregion
 
+        #region Properties
+
         #region Uid
         private string _uid;
 
@@ -77,6 +79,8 @@ namespace TimeXv2.Model
             get { return _startTimeTicks; }
             set { _startTimeTicks = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTime)); }
         }
+        #endregion
+
         #endregion
     }
 }

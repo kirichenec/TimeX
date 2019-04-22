@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
-using System.Linq;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using TimeXv2.Extensions;
 using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
@@ -22,13 +24,13 @@ namespace TimeXv2.ViewModel
                 {
                     this.PlayedAction =
                         apm.Uid == null ?
-                        new ModelAction() :
-                        _dataService.GetActionByUid(apm.Uid);
+                        new ActionForPlaying() :
+                        new ActionForPlaying(_dataService.GetActionByUid(apm.Uid));
                 });
 
             if (IsInDesignMode)
             {
-                var chk = new System.Collections.ObjectModel.ObservableCollection<Checkpoint>
+                var chk = new ObservableCollection<Checkpoint>
                 {
                     new Checkpoint()
                     {
@@ -40,13 +42,13 @@ namespace TimeXv2.ViewModel
                     }
                 };
                 this.PlayedAction =
-                    new ModelAction()
+                    new ActionForPlaying(new ModelAction()
                     {
                         Name = "Name",
                         StartTime = DateTime.Now,
                         StartTimeTicks = 0,
                         Checkpoints = chk
-                    };
+                    });
             }
         }
         #endregion
@@ -59,13 +61,13 @@ namespace TimeXv2.ViewModel
         #region Properties
 
         #region PlayedAction
-        private ModelAction _playedAction = null;
+        private ActionForPlaying _playedAction = null;
 
         /// <summary>
         /// Sets and gets the <see cref="PlayedAction"/> property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ModelAction PlayedAction
+        public ActionForPlaying PlayedAction
         {
             get
             {
@@ -161,6 +163,94 @@ namespace TimeXv2.ViewModel
                     {
 
                     }));
+            }
+        }
+        #endregion
+
+        #endregion
+    }
+
+    [NotMapped]
+    public class ActionForPlaying : ModelAction
+    {
+        #region ctor
+        public ActionForPlaying() { }
+
+        public ActionForPlaying(ModelAction value)
+        {
+            this.Checkpoints = new ObservableCollection<Checkpoint>();
+            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(chk));
+
+            this.Uid = value.Uid;
+            this.Name = value.Name;
+            this.StartTime = value.StartTime;
+            this.EndTime = this.StartTime.Add(this.Checkpoints.GetDuration());
+            this.CurrentTime = DateTime.Now;
+        }
+        #endregion
+
+        #region Properties
+
+        #region EndTime
+        private DateTime _endTime;
+
+        public DateTime EndTime
+        {
+            get { return _endTime; }
+            set
+            {
+                _endTime = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(this.LeftTime));
+                NotifyPropertyChanged(nameof(this.RemainingTime));
+            }
+        }
+        #endregion
+
+        #region LeftTime
+        public TimeSpan LeftTime
+        {
+            get
+            {
+                var value =
+                    this.CurrentTime <= this.StartTime ?
+                    new TimeSpan() :
+                    this.CurrentTime <= this.EndTime ?
+                    this.CurrentTime - this.StartTime :
+                    this.EndTime - this.StartTime;
+                return value;
+            }
+        }
+        #endregion
+
+        #region RemainingTime
+        public TimeSpan RemainingTime
+        {
+            get
+            {
+                var value =
+                    this.EndTime < this.CurrentTime ?
+                    new TimeSpan() :
+                    this.CurrentTime >= this.StartTime ?
+                    this.EndTime - this.CurrentTime :
+                    this.EndTime - this.StartTime;
+                return value;
+            }
+        }
+        #endregion
+
+        #region CurrentTime
+        private DateTime _currentTime;
+
+        public DateTime CurrentTime
+        {
+            get { return _currentTime; }
+            set
+            {
+                _currentTime = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(this.LeftTime));
+                NotifyPropertyChanged(nameof(this.RemainingTime));
             }
         }
         #endregion
