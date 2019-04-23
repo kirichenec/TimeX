@@ -12,10 +12,14 @@
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Delay" Value="500"/>
             <Setter Property="Interval" Value="100"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
         </Style>
         <Style TargetType="materialDesign:PackIcon">
             <Setter Property="Height" Value="Auto"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
     </UserControl.Resources>
     <Grid>

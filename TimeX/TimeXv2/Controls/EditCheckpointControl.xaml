@@ -3,12 +3,10 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:TimeXv2.Controls"
-        xmlns:system="clr-namespace:System;assembly=mscorlib"
              Style="{StaticResource BasicStyle}"
              MinWidth="300"
-             Loaded="Root_Loaded"
-             DataContext="{Binding Source={StaticResource Locator}}">
-    <Grid>
+             Loaded="Root_Loaded">
+    <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
@@ -63,7 +61,7 @@
                                            Margin="{StaticResource RightBottom}"
                                            Value="{Binding EditedStartTime.Minutes, Mode=TwoWay, ElementName=root}"/>
                 </Grid>
-                
+
                 <TextBlock>
                     <Run Text="Продолжительность:"/>
                     <Run Text="{Binding EditedDuration.AsTimeSpan,
@@ -92,12 +90,12 @@
                                            Margin="{StaticResource RightBottom}"
                                            Value="{Binding EditedDuration.Minutes, Mode=TwoWay, ElementName=root}"/>
                 </Grid>
-                
+
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <TextBlock Text="Необходимо распоряжение"/>
                     <ToggleButton IsChecked="{Binding EditedChckpnt.IsOrderNeeded, ElementName=root, Mode=TwoWay}"
                               Margin="{StaticResource RightBottom}"/>
-                </StackPanel>                
+                </StackPanel>
             </StackPanel>
         </StackPanel>
         <materialDesign:ColorZone Grid.Row="1">

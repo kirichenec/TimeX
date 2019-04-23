@@ -178,13 +178,13 @@ namespace TimeXv2.ViewModel
 
         public ActionForPlaying(ModelAction value)
         {
-            this.Checkpoints = new ObservableCollection<Checkpoint>();
-            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(chk));
+            this.Checkpoints = new ObservableCollection<CheckpointForPlaying>();
+            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(new CheckpointForPlaying(chk)));
 
             this.Uid = value.Uid;
             this.Name = value.Name;
             this.StartTime = value.StartTime;
-            this.EndTime = this.StartTime.Add(this.Checkpoints.GetDuration());
+            this.EndTime = this.StartTime.Add(value.Checkpoints.GetDuration());
             this.CurrentTime = DateTime.Now;
         }
         #endregion
@@ -255,6 +255,31 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        private ObservableCollection<CheckpointForPlaying> _checkpoints;
+
+        public new ObservableCollection<CheckpointForPlaying> Checkpoints
+        {
+            get { return _checkpoints; }
+            set
+            {
+                _checkpoints = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
+    }
+
+    public class CheckpointForPlaying : Checkpoint
+    {
+        #region ctor
+        public CheckpointForPlaying()
+        {
+
+        }
+        public CheckpointForPlaying(Checkpoint value)
+        {
+
+        }
         #endregion
     }
 }
