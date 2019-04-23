@@ -28,7 +28,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Margin="16" MaxWidth="816">
+            <Grid Margin="24" MaxWidth="816">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -58,7 +58,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding PlayedAction.LeftTime}"/>
+                                <TextBlock Text="{Binding PlayedAction.LeftTime, StringFormat=d\\ hh\\:mm\\:ss}"/>
                                 <TextBlock Text="Прошло времени"/>
                             </StackPanel>
 
@@ -68,7 +68,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="3">
-                                <TextBlock Text="{Binding PlayedAction.RemainingTime}"/>
+                                <TextBlock Text="{Binding PlayedAction.RemainingTime, StringFormat=d\\ hh\\:mm\\:ss}"/>
                                 <TextBlock Text="Осталось времени"/>
                             </StackPanel>
 
@@ -80,22 +80,23 @@
                     </materialDesign:Card>
                 </StackPanel>
 
-                <ItemsControl Grid.Row="1"
-                              ItemsSource="{Binding PlayedAction.Checkpoints}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <materialDesign:Card Margin="{StaticResource RightBottom}">
-                                <Grid Height="50"/>
-                                <!--CheckPoint progress bar-->
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <ScrollViewer Grid.Row="1"
+                              CanContentScroll="False">
+                    <ItemsControl ItemsSource="{Binding PlayedAction.Checkpoints}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Margin="{StaticResource LeftTop}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <materialDesign:Card Margin="{StaticResource RightBottom}">
+                                    <Grid Height="50"/>
+                                </materialDesign:Card>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </Grid>
         </Grid>
 

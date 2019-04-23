@@ -176,14 +176,11 @@ namespace TimeXv2.ViewModel
         #region ctor
         public ActionForPlaying() { }
 
-        public ActionForPlaying(ModelAction value)
+        public ActionForPlaying(ModelAction value) : base(value)
         {
             this.Checkpoints = new ObservableCollection<CheckpointForPlaying>();
-            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(new CheckpointForPlaying(chk)));
+            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(new CheckpointForPlaying(chk, this)));
 
-            this.Uid = value.Uid;
-            this.Name = value.Name;
-            this.StartTime = value.StartTime;
             this.EndTime = this.StartTime.Add(value.Checkpoints.GetDuration());
             this.CurrentTime = DateTime.Now;
         }
@@ -255,6 +252,7 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region Checkpoints
         private ObservableCollection<CheckpointForPlaying> _checkpoints;
 
         public new ObservableCollection<CheckpointForPlaying> Checkpoints
@@ -267,19 +265,24 @@ namespace TimeXv2.ViewModel
             }
         }
         #endregion
+
+        #endregion
     }
 
+    [NotMapped]
     public class CheckpointForPlaying : Checkpoint
     {
         #region ctor
-        public CheckpointForPlaying()
-        {
+        public CheckpointForPlaying() { }
 
-        }
-        public CheckpointForPlaying(Checkpoint value)
+        public CheckpointForPlaying(Checkpoint baseValue, ActionForPlaying parent) : base(baseValue)
         {
-
+            this.ParentAction = parent;
         }
+        #endregion
+
+        #region CurrentPercent
+
         #endregion
     }
 }
