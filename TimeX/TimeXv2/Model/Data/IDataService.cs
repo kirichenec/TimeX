@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TimeXv2.Model.Data
 {
     public interface IDataService
     {
-        string AddAction(Action value);
-        bool DeleteAction(string uid);
-        Action GetActionByUid(string uid);
+        Task<string> AddActionAsync(Action value);
+        Task<bool> DeleteActionAsync(string uid);
+        Task<Action> GetActionByUidAsync(string uid);
+        Task<List<Action>> GetActionsListAsync(bool isFullLoad = false);
         IQueryable<Action> QueryableActions();
-        bool UpdateAction(Action value);
+        Task<bool> UpdateActionAsync(Action value);
     }
 }

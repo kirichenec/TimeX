@@ -1,0 +1,17 @@
+﻿<UserControl x:Name="root"
+             x:Class="TimeXv2.Controls.LoadingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <StackPanel HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+        <TextBlock Text="{Binding LoadingText, ElementName=root}"/>
+        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                     Value="0"
+                     IsIndeterminate="True"
+                     Margin="{StaticResource RightBottom}"/>
+    </StackPanel>
+</UserControl>

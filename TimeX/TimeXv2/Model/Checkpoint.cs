@@ -33,6 +33,9 @@ namespace TimeXv2.Model
         #region CheckedDate
         private DateTime? _checkedDate;
 
+        /// <summary>
+        /// Дата отметки о выполнении
+        /// </summary>
         [NotMapped]
         public DateTime? CheckedDate
         {
@@ -49,6 +52,9 @@ namespace TimeXv2.Model
         #endregion
 
         #region Duration
+        /// <summary>
+        /// Продолжительность
+        /// </summary>
         [NotMapped]
         public TimeSpan Duration
         {
@@ -67,6 +73,9 @@ namespace TimeXv2.Model
         #endregion
 
         #region EndTime
+        /// <summary>
+        /// Время окончания
+        /// </summary>
         [NotMapped]
         public TimeSpan EndTime { get { return StartTime + Duration; } }
         #endregion
@@ -74,6 +83,9 @@ namespace TimeXv2.Model
         #region IsOrderNeeded
         private bool _isOrderNeeded = true;
 
+        /// <summary>
+        /// Необходимость распоряжения
+        /// </summary>
         [Column("IsOrderNeeded")]
         public bool IsOrderNeeded
         {
@@ -85,6 +97,9 @@ namespace TimeXv2.Model
         #region Name
         private string _name;
 
+        /// <summary>
+        /// Наименование
+        /// </summary>
         [Column("Name")]
         public string Name
         {
@@ -94,10 +109,16 @@ namespace TimeXv2.Model
         #endregion
 
         #region ParentAction
+        /// <summary>
+        /// Мероприятие события
+        /// </summary>
         public virtual Action ParentAction { get; set; }
         #endregion
 
         #region StartTime
+        /// <summary>
+        /// Время начала мероприятия
+        /// </summary>
         [NotMapped]
         public TimeSpan StartTime
         {

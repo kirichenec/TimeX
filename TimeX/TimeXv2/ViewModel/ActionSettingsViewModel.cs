@@ -21,12 +21,7 @@ namespace TimeXv2.ViewModel
             MessengerInstance
                 .Register<ActionSettingsMessage>(this, asm =>
                 {
-                    this.EditedAction =
-                        asm.Uid == null ?
-                        new ModelAction() :
-                        _dataService.GetActionByUid(asm.Uid);
-                    this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
-                    this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
+                    _actionUidForLoad = asm.Uid;
                 });
 
             if (IsInDesignMode)
@@ -57,6 +52,14 @@ namespace TimeXv2.ViewModel
         #region Services
         private readonly INavigationService _navigationService;
         private readonly IDataService _dataService;
+        #endregion
+
+        #region Fields
+
+        #region _actionUidForLoad
+        private string _actionUidForLoad;
+        #endregion
+
         #endregion
 
         #region Properties
@@ -303,9 +306,14 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    () =>
+                    async () =>
                     {
-
+                        this.EditedAction =
+                            _actionUidForLoad == null ?
+                            new ModelAction() :
+                            await _dataService.GetActionByUidAsync(_actionUidForLoad);
+                        this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
+                        this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
                     }));
             }
         }
@@ -356,16 +364,16 @@ namespace TimeXv2.ViewModel
             {
                 return _saveCommand
                     ?? (_saveCommand = new RelayCommand(
-                    () =>
+                    async () =>
                     {
                         this.EditedAction.StartTime = this.EditedDate.Date.Add(this.EditedTime.TimeOfDay);
                         if (this.EditedAction.Uid == null)
                         {
-                            _dataService.AddAction(this.EditedAction);
+                            await _dataService.AddActionAsync(this.EditedAction);
                         }
                         else
                         {
-                            _dataService.UpdateAction(this.EditedAction);
+                            await _dataService.UpdateActionAsync(this.EditedAction);
                         }
                         _navigationService.Navigate(NavPage.Main);
                     }));

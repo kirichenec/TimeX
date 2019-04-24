@@ -17,17 +17,6 @@ namespace TimeXv2
         }
         #endregion
 
-        #region Properties
-
-        #region FilePath
-        /// <summary>
-        /// Путь к файлу данных
-        /// </summary>
-        public static string FilePath { get; set; } = "1.txt";
-        #endregion
-
-        #endregion
-
         #region Methods
 
         #region Application_LoadCompleted | Обработчик события загрузки приложения

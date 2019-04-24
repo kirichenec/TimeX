@@ -6,7 +6,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:TimeXv2.Controls"
-             xmlns:global="clr-namespace:TimeXv2.Static"
+             xmlns:statics="clr-namespace:TimeXv2.Static"
              xmlns:vm="clr-namespace:TimeXv2.ViewModel"
              StartupUri="View\MainView.xaml"
              mc:Ignorable="d"
@@ -56,7 +56,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Topmost" Value="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay}" />
+                <Setter Property="Topmost" Value="{Binding Source={x:Static statics:Properties.Instance}, Path=Topmost, Mode=TwoWay}" />
             </Style>
 
             <!--ScrollBar style-->
@@ -311,7 +311,7 @@
                                                                             <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
                                                                                 <Setter Property="Kind" Value="CheckBoxOutlineBlank" />
                                                                                 <Style.Triggers>
-                                                                                    <DataTrigger Binding="{Binding Source={x:Static global:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                                    <DataTrigger Binding="{Binding Source={x:Static statics:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                                                                         <Setter Property="Kind" Value="CheckboxMarkedOutline" />
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
@@ -378,6 +378,17 @@
             <!--ItemsControl style-->
             <Style TargetType="ItemsControl">
                 <Setter Property="IsTabStop" Value="False" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}" Value="false">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <controls:LoadingControl LoadingText="Подождите, идёт загрузка.."/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="materialDesign:ColorZone">

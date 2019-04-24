@@ -129,10 +129,13 @@
     <Compile Include="Controls\EditCheckpointControl.xaml.cs">
       <DependentUpon>EditCheckpointControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LoadingControl.xaml.cs">
+      <DependentUpon>LoadingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NumberEditor.xaml.cs">
       <DependentUpon>NumberEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Classes.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Model\Data\ActionContext.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\Checkpoint.cs" />
@@ -165,6 +168,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\EditCheckpointControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

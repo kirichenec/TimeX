@@ -3,7 +3,9 @@ using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
 using ModelAction = TimeXv2.Model.Action;
@@ -24,6 +26,7 @@ namespace TimeXv2.ViewModel
                 {
                     new ModelAction() { Name = "Name", StartTime = DateTime.Now }
                 };
+                Static.Properties.Instance.IsLoaded = true;
             }
         }
         #endregion
@@ -36,11 +39,6 @@ namespace TimeXv2.ViewModel
         #region Properties
 
         #region Actions
-        /// <summary>
-        /// The <see cref="Actions" /> property's name.
-        /// </summary>
-        public const string ActionsPropertyName = "Actions";
-
         private ObservableCollection<ModelAction> _actions = new ObservableCollection<ModelAction>();
 
         /// <summary>
@@ -49,14 +47,8 @@ namespace TimeXv2.ViewModel
         /// </summary>
         public ObservableCollection<ModelAction> Actions
         {
-            get
-            {
-                return _actions;
-            }
-            set
-            {
-                Set(ActionsPropertyName, ref _actions, value);
-            }
+            get { return _actions; }
+            set { Set(nameof(Actions), ref _actions, value); }
         }
         #endregion
 
@@ -76,10 +68,10 @@ namespace TimeXv2.ViewModel
             {
                 return _deleteActionCommand
                     ?? (_deleteActionCommand = new RelayCommand<ModelAction>(
-                    action =>
+                    async action =>
                     {
                         this.Actions.Remove(action);
-                        _dataService.DeleteAction(action.Uid);
+                        await _dataService.DeleteActionAsync(action.Uid);
                         DialogHost.CloseDialogCommand.Execute(null, null);
                     }));
             }
@@ -119,9 +111,9 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    () =>
+                    async () =>
                     {
-                        var actions = _dataService.QueryableActions().ToList();
+                        var actions = await _dataService.GetActionsListAsync();
                         actions?.ForEach(a => Actions.Add(a));
                     }));
             }

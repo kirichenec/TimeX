@@ -6,6 +6,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:controls="clr-namespace:TimeXv2.Controls"
+      xmlns:statics="clr-namespace:TimeXv2.Static"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding ActionSettings, Source={StaticResource Locator}}"
@@ -14,7 +15,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadCommand}"/>
+            <i:InvokeCommandAction Command="{Binding LoadCommand, IsAsync=True}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Unloaded">
             <i:InvokeCommandAction Command="{Binding UnloadCommand}"/>
@@ -48,7 +49,9 @@
                     </TextBlock.Resources>
                 </TextBlock>
 
-                <materialDesign:Card Margin="{StaticResource RightBottom}" Padding="16">
+                <materialDesign:Card IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}"
+                                     Margin="{StaticResource RightBottom}"
+                                     Padding="16">
                     <StackPanel Orientation="Vertical">
                         <TextBox Text="{Binding EditedAction.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <materialDesign:HintAssist.Hint>
@@ -83,7 +86,8 @@
                            Margin="{StaticResource RightBottom}"
                            Style="{StaticResource TitleTextBlock}"/>
 
-                <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                        IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}">
                     <Button.CommandParameter>
                         <controls:EditCheckpointControl Checkpoint="{Binding EditedCheckpoint}"/>
                     </Button.CommandParameter>
@@ -128,7 +132,7 @@
                                                                        TextWrapping="Wrap"/>
                                                             </Grid>
                                                         </StackPanel>
-                                                        
+
                                                         <materialDesign:ColorZone Grid.Row="1">
                                                             <StackPanel Orientation="Horizontal"
                                                                         HorizontalAlignment="Right">
@@ -180,7 +184,8 @@
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding SaveCommand}"
-                        Style="{StaticResource RaisedButton}">
+                        Style="{StaticResource RaisedButton}"
+                        IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}">
                     <StackPanel Style="{StaticResource ButtonStackPanel}">
                         <materialDesign:PackIcon Kind="ContentSave"/>
                         <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>

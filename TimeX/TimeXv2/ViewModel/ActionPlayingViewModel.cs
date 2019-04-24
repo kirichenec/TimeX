@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using TimeXv2.Extensions;
 using TimeXv2.Model;
@@ -17,15 +18,11 @@ namespace TimeXv2.ViewModel
         public ActionPlayingViewModel(INavigationService navigationService, IDataService dataService)
         {
             _dataService = dataService;
-            _navigationService = navigationService;
 
             MessengerInstance
                 .Register<ActionPlayingMessage>(this, apm =>
                 {
-                    this.PlayedAction =
-                        apm.Uid == null ?
-                        new ActionForPlaying() :
-                        new ActionForPlaying(_dataService.GetActionByUid(apm.Uid));
+                    _actionUidForLoad = apm.Uid;
                 });
 
             if (IsInDesignMode)
@@ -54,8 +51,15 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region Services
-        private readonly INavigationService _navigationService;
         private readonly IDataService _dataService;
+        #endregion
+
+        #region Fields
+
+        #region _actionUidForLoad
+        private string _actionUidForLoad;
+        #endregion
+
         #endregion
 
         #region Properties
@@ -139,9 +143,12 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    () =>
+                    async () =>
                     {
-
+                        this.PlayedAction =
+                            _actionUidForLoad == null ?
+                            new ActionForPlaying() :
+                            new ActionForPlaying(await _dataService.GetActionByUidAsync(_actionUidForLoad));
                     }));
             }
         }
@@ -186,11 +193,18 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region Events
+        public event PropertyChangedEventHandler CurrentTimeChanged;
+        #endregion
+
         #region Properties
 
         #region EndTime
         private DateTime _endTime;
 
+        /// <summary>
+        /// Время окончания
+        /// </summary>
         public DateTime EndTime
         {
             get { return _endTime; }
@@ -205,6 +219,9 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region LeftTime
+        /// <summary>
+        /// Прошло времени
+        /// </summary>
         public TimeSpan LeftTime
         {
             get
@@ -221,6 +238,9 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region RemainingTime
+        /// <summary>
+        /// Осталось времени
+        /// </summary>
         public TimeSpan RemainingTime
         {
             get
@@ -239,6 +259,9 @@ namespace TimeXv2.ViewModel
         #region CurrentTime
         private DateTime _currentTime;
 
+        /// <summary>
+        /// Текущее время
+        /// </summary>
         public DateTime CurrentTime
         {
             get { return _currentTime; }
@@ -248,6 +271,7 @@ namespace TimeXv2.ViewModel
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(this.LeftTime));
                 NotifyPropertyChanged(nameof(this.RemainingTime));
+                CurrentTimeChanged(this, new PropertyChangedEventArgs(nameof(CurrentTime)));
             }
         }
         #endregion
@@ -255,6 +279,9 @@ namespace TimeXv2.ViewModel
         #region Checkpoints
         private ObservableCollection<CheckpointForPlaying> _checkpoints;
 
+        /// <summary>
+        /// События
+        /// </summary>
         public new ObservableCollection<CheckpointForPlaying> Checkpoints
         {
             get { return _checkpoints; }
@@ -278,11 +305,46 @@ namespace TimeXv2.ViewModel
         public CheckpointForPlaying(Checkpoint baseValue, ActionForPlaying parent) : base(baseValue)
         {
             this.ParentAction = parent;
+            parent.CurrentTimeChanged += UpdateCheckpointProperties;
+        }
+
+        private void UpdateCheckpointProperties(object sender, PropertyChangedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(CurrentPercent));
         }
         #endregion
 
-        #region CurrentPercent
+        #region ParentAction
+        private ActionForPlaying _parentAction;
 
+        public new ActionForPlaying ParentAction
+        {
+            get { return _parentAction; }
+            set
+            {
+                _parentAction = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region CurrentPercent
+        public long CurrentPercent
+        {
+            get
+            {
+                long _currentPercent =
+                    ((this.ParentAction.CurrentTime - this.ParentAction.StartTime) + this.StartTime).Ticks /
+                    this.Duration.Ticks;
+                _currentPercent =
+                    _currentPercent < 0 ?
+                    0 :
+                    _currentPercent > 100 ?
+                    100 : _currentPercent;
+                return _currentPercent;
+            }
+        }
         #endregion
     }
 }
