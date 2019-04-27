@@ -22,10 +22,8 @@
                 <ResourceDictionary Source="Media/ActionIcon.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Thickness x:Key="RightBottom"
-                       Left="0" Top="0" Right="8" Bottom="8" />
-            <Thickness x:Key="LeftTop"
-                       Left="8" Top="8" Right="0" Bottom="0" />
+            <Thickness x:Key="RightBottom" Left="0" Top="0" Right="8" Bottom="8" />
+            <Thickness x:Key="LeftTop" Left="8" Top="8" Right="0" Bottom="0" />
 
             <!--Global View Model Locator-->
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
@@ -114,6 +112,7 @@
             <!--TextBlock style-->
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                 <Setter Property="Margin" Value="{StaticResource RightBottom}" />
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <Style TargetType="{x:Type TextBlock}" x:Key="TitleTextBlock" BasedOn="{StaticResource MaterialDesignTitleTextBlock}">
                 <Setter Property="Margin" Value="{StaticResource RightBottom}" />
@@ -308,7 +307,7 @@
                                                                     </Grid.ColumnDefinitions>
                                                                     <materialDesign:PackIcon>
                                                                         <materialDesign:PackIcon.Resources>
-                                                                            <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
+                                                                            <Style TargetType="materialDesign:PackIcon">
                                                                                 <Setter Property="Kind" Value="CheckBoxOutlineBlank" />
                                                                                 <Style.Triggers>
                                                                                     <DataTrigger Binding="{Binding Source={x:Static statics:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
@@ -379,11 +378,11 @@
             <Style TargetType="ItemsControl">
                 <Setter Property="IsTabStop" Value="False" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}" Value="false">
+                    <DataTrigger Binding="{Binding IsQueryExecuted, Source={x:Static statics:Properties.Instance}}" Value="false">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
-                                    <controls:LoadingControl LoadingText="Подождите, идёт загрузка.."/>
+                                    <controls:WaitingControl Message="Подождите, идёт загрузка.."/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -394,6 +393,17 @@
             <Style TargetType="materialDesign:ColorZone">
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="materialDesign:ShadowAssist.ShadowDepth" Value="Depth2" />
+            </Style>
+
+            <Style TargetType="materialDesign:Card" x:Key="FadeInOutCard" BasedOn="{StaticResource {x:Type materialDesign:Card}}">
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Unloaded">
+                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
+                    </EventTrigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

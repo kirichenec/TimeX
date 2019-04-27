@@ -15,7 +15,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadCommand, IsAsync=True}"/>
+            <i:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Unloaded">
             <i:InvokeCommandAction Command="{Binding UnloadCommand}"/>
@@ -49,7 +49,7 @@
                     </TextBlock.Resources>
                 </TextBlock>
 
-                <materialDesign:Card IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}"
+                <materialDesign:Card IsEnabled="{Binding IsQueryExecuted, Source={x:Static statics:Properties.Instance}}"
                                      Margin="{StaticResource RightBottom}"
                                      Padding="16">
                     <StackPanel Orientation="Vertical">
@@ -87,7 +87,7 @@
                            Style="{StaticResource TitleTextBlock}"/>
 
                 <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                        IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}">
+                        IsEnabled="{Binding IsQueryExecuted, Source={x:Static statics:Properties.Instance}}">
                     <Button.CommandParameter>
                         <controls:EditCheckpointControl Checkpoint="{Binding EditedCheckpoint}"/>
                     </Button.CommandParameter>
@@ -107,7 +107,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <materialDesign:Card Margin="{StaticResource RightBottom}">
+                            <materialDesign:Card Margin="{StaticResource RightBottom}" Style="{StaticResource FadeInOutCard}">
                                 <StackPanel Orientation="Vertical" Margin="0">
                                     <StackPanel Margin="24,24,16,16">
                                         <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>
@@ -185,7 +185,7 @@
                 </Button>
                 <Button Command="{Binding SaveCommand}"
                         Style="{StaticResource RaisedButton}"
-                        IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}">
+                        IsEnabled="{Binding IsQueryExecuted, Source={x:Static statics:Properties.Instance}}">
                     <StackPanel Style="{StaticResource ButtonStackPanel}">
                         <materialDesign:PackIcon Kind="ContentSave"/>
                         <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>

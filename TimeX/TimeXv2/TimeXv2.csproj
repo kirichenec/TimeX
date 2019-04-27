@@ -129,13 +129,12 @@
     <Compile Include="Controls\EditCheckpointControl.xaml.cs">
       <DependentUpon>EditCheckpointControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LoadingControl.xaml.cs">
-      <DependentUpon>LoadingControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\NumberEditor.xaml.cs">
       <DependentUpon>NumberEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Controls\WaitingControl.cs" />
+    <Compile Include="Extensions\Methods.cs" />
+    <Compile Include="Extensions\SpecialTimeSpan.cs" />
     <Compile Include="Model\Data\ActionContext.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\Checkpoint.cs" />
@@ -146,6 +145,8 @@
     <Compile Include="ViewModel\ActionSettingsViewModel.cs" />
     <Compile Include="ViewModel\GlobalCommands.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\Model\ActionForPlaying.cs" />
+    <Compile Include="ViewModel\Model\CheckpointForPlaying.cs" />
     <Compile Include="ViewModel\Navigation\Messages.cs" />
     <Compile Include="ViewModel\Navigation\INavigationService.cs" />
     <Compile Include="ViewModel\Navigation\NavigationService.cs" />
@@ -171,10 +172,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\LoadingControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\NumberEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +179,10 @@
     <Page Include="Media\ActionIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ActionPlayingView.xaml">
       <SubType>Designer</SubType>

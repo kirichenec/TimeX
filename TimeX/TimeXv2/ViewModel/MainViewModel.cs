@@ -3,9 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
 using ModelAction = TimeXv2.Model.Action;
@@ -26,7 +23,7 @@ namespace TimeXv2.ViewModel
                 {
                     new ModelAction() { Name = "Name", StartTime = DateTime.Now }
                 };
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
             }
         }
         #endregion

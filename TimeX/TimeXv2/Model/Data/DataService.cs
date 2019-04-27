@@ -26,9 +26,10 @@ namespace TimeXv2.Model.Data
         #region GetActionByUidAsync
         public async Task<Action> GetActionByUidAsync(string uid)
         {
-            Static.Properties.Instance.IsLoaded = false;
+            Static.Properties.Instance.IsQueryExecuted = false;
             var result = await _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefaultAsync(a => a.Uid == uid);
-            Static.Properties.Instance.IsLoaded = true;
+            //await Task.Delay(TimeSpan.FromSeconds(5));
+            Static.Properties.Instance.IsQueryExecuted = true;
             return result;
         }
         #endregion
@@ -36,7 +37,7 @@ namespace TimeXv2.Model.Data
         #region GetActionsListAsync
         public async Task<List<Action>> GetActionsListAsync(bool isFullLoad)
         {
-            Static.Properties.Instance.IsLoaded = false;
+            Static.Properties.Instance.IsQueryExecuted = false;
             try
             {
                 DbQuery<Action> query = _actionContext.Actions;
@@ -45,12 +46,12 @@ namespace TimeXv2.Model.Data
                     query = query.Include($"{nameof(Checkpoint)}s");
                 }
                 var result = await query.ToListAsync();
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return result;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return null;
             }
         }
@@ -66,18 +67,18 @@ namespace TimeXv2.Model.Data
         #region AddActionAsync
         public async Task<string> AddActionAsync(Action value)
         {
-            Static.Properties.Instance.IsLoaded = false;
+            Static.Properties.Instance.IsQueryExecuted = false;
             try
             {
                 value.Uid = Guid.NewGuid().ToString();
                 _actionContext.Actions.Add(value);
                 await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return value.Uid;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return null;
             }
         }
@@ -86,17 +87,17 @@ namespace TimeXv2.Model.Data
         #region DeleteActionAsync
         public async Task<bool> DeleteActionAsync(string uid)
         {
-            Static.Properties.Instance.IsLoaded = false;
+            Static.Properties.Instance.IsQueryExecuted = false;
             try
             {
                 _actionContext.Actions.Remove(await GetActionByUidAsync(uid));
                 await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return true;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return false;
             }
         }
@@ -105,18 +106,18 @@ namespace TimeXv2.Model.Data
         #region UpdateActionAsync
         public async Task<bool> UpdateActionAsync(Action value)
         {
-            Static.Properties.Instance.IsLoaded = false;
+            Static.Properties.Instance.IsQueryExecuted = false;
             try
             {
                 var updatableAction = await GetActionByUidAsync(value.Uid);
                 value.CopyPropertiesTo(updatableAction);
                 await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return true;
             }
-            catch (Exception)
+            catch
             {
-                Static.Properties.Instance.IsLoaded = true;
+                Static.Properties.Instance.IsQueryExecuted = true;
                 return false;
             }
         }

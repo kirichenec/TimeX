@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:statics="clr-namespace:TimeXv2.Static"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding Main, Source={StaticResource Locator}}"
@@ -31,8 +30,7 @@
             <TextBlock Text="Список мероприятий"
                        Style="{StaticResource TitleTextBlock}"/>
 
-            <Button Command="{Binding NewActionCommand}"
-                    IsEnabled="{Binding Source={x:Static statics:Properties.Instance}, Path=IsLoaded, Mode=TwoWay}">
+            <Button Command="{Binding NewActionCommand}">
                 <StackPanel Style="{StaticResource ButtonStackPanel}">
                     <materialDesign:PackIcon Kind="Add"/>
                     <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Добавить"/>
@@ -49,15 +47,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <materialDesign:Card Margin="{StaticResource RightBottom}">
-                            <materialDesign:Card.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Unloaded">
-                                    <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
-                                </EventTrigger>
-                            </materialDesign:Card.Triggers>
+                        <materialDesign:Card Margin="{StaticResource RightBottom}" Style="{StaticResource FadeInOutCard}">
                             <StackPanel Orientation="Vertical" Margin="0">
                                 <StackPanel Margin="24,24,16,16">
                                     <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>

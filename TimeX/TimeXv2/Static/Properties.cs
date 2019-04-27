@@ -13,17 +13,17 @@ namespace TimeXv2.Static
 
         #region Properties
 
-        #region IsLoaded
-        public bool IsLoaded
+        #region IsQueryExecuted
+        public bool IsQueryExecuted
         {
-            get { return (bool)GetValue(IsLoadedProperty); }
-            set { SetValue(IsLoadedProperty, value); }
+            get { return (bool)GetValue(IsQueryExecutedProperty); }
+            set { SetValue(IsQueryExecutedProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsLoaded.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsLoadedProperty =
+        // Using a DependencyProperty as the backing store for IsQueryExecuted.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsQueryExecutedProperty =
             DependencyProperty.Register(
-                nameof(IsLoaded),
+                nameof(IsQueryExecuted),
                 typeof(bool),
                 typeof(Properties),
                 new PropertyMetadata(false));
