@@ -133,6 +133,7 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding IsAlarmTime}" Value="True"/>
                                                                 <Condition Binding="{Binding IsOrderNeeded}" Value="True"/>
+                                                                <Condition Binding="{Binding CheckedDate}" Value="{x:Null}"/>
                                                             </MultiDataTrigger.Conditions>
                                                             <Setter Property="Foreground" Value="Red"/>
                                                         </MultiDataTrigger>
@@ -145,10 +146,57 @@
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            
-                                            <TextBlock Text="{Binding Name}"/>
-                                            
-                                            <Button Grid.Column="1" Style="{StaticResource RaisedButton}" IsEnabled="{Binding IsOrderNeeded}">
+
+                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+
+                                            <Button Grid.Column="1"
+                                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource RaisedButton}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsOrderNeeded}" Value="false">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                
+                                                <Button.CommandParameter>
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid Margin="16">
+                                                            <StackPanel Orientation="Vertical">
+                                                                <TextBox Text="{Binding Order}">
+                                                                    <materialDesign:HintAssist.Hint>
+                                                                        <TextBlock Text="Введите номер распоряжения" Margin="0"/>
+                                                                    </materialDesign:HintAssist.Hint>
+                                                                </TextBox>
+                                                            </StackPanel>
+                                                        </Grid>
+
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
+                                                            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                    <materialDesign:PackIcon Kind="Close"/>
+                                                                    <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                            <Button Command="{Binding ActionPlaying.CheckCheckpointCommand, Source={StaticResource Locator}}"
+                                                                    CommandParameter="{Binding}"
+                                                                    Click="CloseDialog">
+                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                    <materialDesign:PackIcon Kind="Check"/>
+                                                                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Button.CommandParameter>
                                                 <StackPanel Orientation="Horizontal" Margin="0">
                                                     <materialDesign:PackIcon Kind="Check"/>
                                                     <TextBlock Text="№ распоряжения" Style="{StaticResource ButtonTextBlock}"/>

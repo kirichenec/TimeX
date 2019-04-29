@@ -17,6 +17,7 @@ namespace TimeXv2.ViewModel.Model
             this.Duration = value.Duration;
             this.IsOrderNeeded = value.IsOrderNeeded;
             this.Name = value.Name;
+            this.Order = value.Order;
             this.StartTime = value.StartTime;
 
             this.ParentAction = parent;
@@ -119,6 +120,16 @@ namespace TimeXv2.ViewModel.Model
         }
         #endregion
 
+        #region Order
+        private string _order;
+
+        public string Order
+        {
+            get { return _order; }
+            set { _order = value; NotifyPropertyChanged(); }
+        }
+        #endregion
+
         #region StartTime
         private TimeSpan _startTime;
 
@@ -152,6 +163,10 @@ namespace TimeXv2.ViewModel.Model
 
         #endregion
 
+        #region ParentActionUID
+        public string ParentActionUID { get; set; }
+        #endregion
+
         #region CurrentPercent
         public double CurrentPercent
         {
@@ -177,6 +192,24 @@ namespace TimeXv2.ViewModel.Model
         #endregion
 
         #region Methods
+
+        #region ToCheckpoint
+        public Checkpoint ToCheckpoint()
+        {
+            var value = new Checkpoint
+            {
+                Uid = this.Uid,
+                CheckedDate = this.CheckedDate,
+                Duration = this.Duration,
+                IsOrderNeeded = this.IsOrderNeeded,
+                Name = this.Name,
+                Order = this.Order,
+                StartTime = this.StartTime,
+                ParentActionUID = this.ParentActionUID
+            };
+            return value;
+        }
+        #endregion
 
         #region UpdateCheckpointProperties
         private void UpdateCheckpointProperties(object sender, PropertyChangedEventArgs e)

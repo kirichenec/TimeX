@@ -110,11 +110,25 @@ namespace TimeXv2.Model
         }
         #endregion
 
+        #region Order
+        private string _order;
+
+        public string Order
+        {
+            get { return _order; }
+            set { _order = value; NotifyPropertyChanged(); }
+        }
+        #endregion
+
         #region ParentAction
         /// <summary>
         /// Мероприятие события
         /// </summary>
         public virtual Action ParentAction { get; set; }
+        #endregion
+
+        #region ParentActionUID
+        public string ParentActionUID { get; set; }
         #endregion
 
         #region StartTime

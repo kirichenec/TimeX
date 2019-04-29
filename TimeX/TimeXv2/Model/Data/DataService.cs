@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeXv2.Extensions;
 using UniversalKLibrary.Classic.Helpers;
 
 namespace TimeXv2.Model.Data
@@ -28,7 +29,6 @@ namespace TimeXv2.Model.Data
         {
             Static.Properties.Instance.IsQueryExecuted = false;
             var result = await _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefaultAsync(a => a.Uid == uid);
-            //await Task.Delay(TimeSpan.FromSeconds(5));
             Static.Properties.Instance.IsQueryExecuted = true;
             return result;
         }
@@ -54,6 +54,16 @@ namespace TimeXv2.Model.Data
                 Static.Properties.Instance.IsQueryExecuted = true;
                 return null;
             }
+        }
+        #endregion
+
+        #region GetCheckpointByUidAsync
+        public async Task<Checkpoint> GetCheckpointByUidAsync(string uid)
+        {
+            Static.Properties.Instance.IsQueryExecuted = false;
+            var result = await _actionContext.Checkpoints.FirstOrDefaultAsync(chk => chk.Uid == uid);
+            Static.Properties.Instance.IsQueryExecuted = true;
+            return result;
         }
         #endregion
 
@@ -110,7 +120,52 @@ namespace TimeXv2.Model.Data
             try
             {
                 var updatableAction = await GetActionByUidAsync(value.Uid);
-                value.CopyPropertiesTo(updatableAction);
+
+                updatableAction.Name = value.Name;
+                updatableAction.StartTime = value.StartTime;
+                
+                foreach (var chk in updatableAction.Checkpoints)
+                {
+                    var tempChk = value.Checkpoints.FirstOrDefault(vChk => vChk.Uid == chk.Uid);
+                    if (tempChk == null)
+                    {
+                        updatableAction.Checkpoints.Remove(chk);
+                    }
+                    else
+                    {
+                        chk.CheckedDate = tempChk.CheckedDate;
+                        chk.Duration = tempChk.Duration;
+                        chk.IsOrderNeeded = tempChk.IsOrderNeeded;
+                        chk.Name = tempChk.Name;
+                        chk.Order = tempChk.Order;
+                        chk.StartTime = tempChk.StartTime;
+                    }
+                }
+
+                var updatableChkUids = updatableAction.Checkpoints.Select(ch => ch.Uid);
+                var newCheckpoints = value.Checkpoints.Where(chk => !updatableChkUids.Contains(chk.Uid));
+                newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk)));
+
+                await _actionContext.SaveChangesAsync();
+                Static.Properties.Instance.IsQueryExecuted = true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Static.Properties.Instance.IsQueryExecuted = true;
+                return false;
+            }
+        }
+        #endregion
+
+        #region UpdateCheckpointAsync
+        public async Task<bool> UpdateCheckpointAsync(Checkpoint value)
+        {
+            Static.Properties.Instance.IsQueryExecuted = false;
+            try
+            {
+                var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid);
+                value.CopyPropertiesTo(updatableCheckpoint);
                 await _actionContext.SaveChangesAsync();
                 Static.Properties.Instance.IsQueryExecuted = true;
                 return true;

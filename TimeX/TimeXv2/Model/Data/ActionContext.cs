@@ -14,5 +14,7 @@ namespace TimeXv2.Model.Data
         }
 
         public DbSet<Action> Actions { get; set; }
+
+        public DbSet<Checkpoint> Checkpoints { get; set; }
     }
 }

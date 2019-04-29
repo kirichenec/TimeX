@@ -38,7 +38,6 @@ namespace TimeXv2.ViewModel
                         StartTime = TimeSpan.FromMinutes(0),
                         Duration = TimeSpan.FromDays(1),
                         IsOrderNeeded = true,
-                        ParentAction = this.PlayedAction,
                         Name = "new",
                         Uid = Guid.NewGuid().ToString()
                     }
@@ -145,6 +144,25 @@ namespace TimeXv2.ViewModel
                         () =>
                         {
                             this.IsExpanded = !this.IsExpanded;
+                        }));
+            }
+        }
+
+        #endregion
+
+        #region CheckCheckpointCommand
+        private RelayCommand<CheckpointForPlaying> _checkCheckpointCommand;
+
+        public RelayCommand<CheckpointForPlaying> CheckCheckpointCommand
+        {
+            get
+            {
+                return _checkCheckpointCommand ??
+                    (_checkCheckpointCommand = new RelayCommand<CheckpointForPlaying>(
+                        async value =>
+                        {
+                            value.CheckedDate = DateTime.Now;
+                            await _dataService.UpdateCheckpointAsync(value.ToCheckpoint());
                         }));
             }
         }

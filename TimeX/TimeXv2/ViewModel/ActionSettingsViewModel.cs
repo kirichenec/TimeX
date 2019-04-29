@@ -311,7 +311,7 @@ namespace TimeXv2.ViewModel
                         this.EditedAction =
                             _actionUidForLoad == null ?
                             new ModelAction() :
-                            await _dataService.GetActionByUidAsync(_actionUidForLoad);
+                            new ModelAction(await _dataService.GetActionByUidAsync(_actionUidForLoad));
                         this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
                         this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
                     }));

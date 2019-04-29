@@ -306,8 +306,8 @@
                                                                         <ColumnDefinition />
                                                                     </Grid.ColumnDefinitions>
                                                                     <materialDesign:PackIcon>
-                                                                        <materialDesign:PackIcon.Resources>
-                                                                            <Style TargetType="materialDesign:PackIcon">
+                                                                        <materialDesign:PackIcon.Style>
+                                                                            <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
                                                                                 <Setter Property="Kind" Value="CheckBoxOutlineBlank" />
                                                                                 <Style.Triggers>
                                                                                     <DataTrigger Binding="{Binding Source={x:Static statics:Properties.Instance}, Path=Topmost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
@@ -315,7 +315,7 @@
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
                                                                             </Style>
-                                                                        </materialDesign:PackIcon.Resources>
+                                                                        </materialDesign:PackIcon.Style>
                                                                     </materialDesign:PackIcon>
                                                                     <TextBlock Text="Поверх всех окон" />
                                                                 </Grid>
