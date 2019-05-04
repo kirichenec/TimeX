@@ -42,6 +42,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _checkpoints; }
             set
             {
+                if (_checkpoints == value)
+                {
+                    return;
+                }
                 _checkpoints = value;
                 NotifyPropertyChanged();
             }
@@ -59,6 +63,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _currentTime; }
             set
             {
+                if (_currentTime == value)
+                {
+                    return;
+                }
                 _currentTime = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(LeftTime));
@@ -80,6 +88,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _endTime; }
             set
             {
+                if (_endTime == value)
+                {
+                    return;
+                }
                 _endTime = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(this.LeftTime));
@@ -113,7 +125,15 @@ namespace TimeXv2.ViewModel.Model
         public string Name
         {
             get { return _name; }
-            set { _name = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_name == value)
+                {
+                    return;
+                }
+                _name = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -161,6 +181,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _startTimeTicks; }
             set
             {
+                if (_startTimeTicks == value)
+                {
+                    return;
+                }
                 _startTimeTicks = value;
                 NotifyPropertyChanged();
             }
@@ -173,7 +197,15 @@ namespace TimeXv2.ViewModel.Model
         public string Uid
         {
             get { return _uid; }
-            set { _uid = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_uid == value)
+                {
+                    return;
+                }
+                _uid = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 

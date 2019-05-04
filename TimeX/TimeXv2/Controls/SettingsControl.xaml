@@ -1,0 +1,43 @@
+﻿<UserControl x:Name="root"
+             x:Class="TimeXv2.Controls.SettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="ControlLoaded">
+    <Grid DataContext="{Binding Source={StaticResource Locator}}">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" Margin="16">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Тёмная тема"/>
+                <ToggleButton IsChecked="{Binding EditedSettings.IsDarkTheme, ElementName=root}"
+                              Margin="{StaticResource RightBottom}"
+                              Command="{Binding GlobalViewModel.ChangeIsDarkCommand}"
+                              CommandParameter="{Binding EditedSettings.IsDarkTheme, ElementName=root}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <materialDesign:ColorZone Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding GlobalViewModel.CloseSettingsCommand}"
+                        Click="CloseDialog">
+                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                        <materialDesign:PackIcon Kind="Close"/>
+                        <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding GlobalViewModel.SaveSettingsCommand}"
+                        CommandParameter="{Binding EditedSettings, ElementName=root}"
+                        Click="SaveDialog">
+                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                        <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </materialDesign:ColorZone>
+    </Grid>
+</UserControl>

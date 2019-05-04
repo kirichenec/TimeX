@@ -28,7 +28,15 @@ namespace TimeXv2.Model
         public string Uid
         {
             get { return _uid; }
-            set { _uid = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_uid == value)
+                {
+                    return;
+                }
+                _uid = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -42,7 +50,15 @@ namespace TimeXv2.Model
         public DateTime? CheckedDate
         {
             get { return _checkedDate; }
-            set { _checkedDate = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_checkedDate == value)
+                {
+                    return;
+                }
+                _checkedDate = value;
+                NotifyPropertyChanged();
+            }
         }
 
         [Column("CheckedDate")]
@@ -61,7 +77,17 @@ namespace TimeXv2.Model
         public TimeSpan Duration
         {
             get { return TimeSpan.FromTicks(_durationTicks); }
-            set { _durationTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(DurationTicks)); NotifyPropertyChanged(nameof(EndTime)); }
+            set
+            {
+                if (_durationTicks == value.Ticks)
+                {
+                    return;
+                }
+                _durationTicks = value.Ticks;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(DurationTicks));
+                NotifyPropertyChanged(nameof(EndTime));
+            }
         }
 
         private Int64 _durationTicks = 0;
@@ -92,7 +118,15 @@ namespace TimeXv2.Model
         public bool IsOrderNeeded
         {
             get { return _isOrderNeeded; }
-            set { _isOrderNeeded = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_isOrderNeeded == value)
+                {
+                    return;
+                }
+                _isOrderNeeded = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -106,7 +140,15 @@ namespace TimeXv2.Model
         public string Name
         {
             get { return _name; }
-            set { _name = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_name == value)
+                {
+                    return;
+                }
+                _name = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -116,7 +158,15 @@ namespace TimeXv2.Model
         public string Order
         {
             get { return _order; }
-            set { _order = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_order == value)
+                {
+                    return;
+                }
+                _order = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -139,7 +189,17 @@ namespace TimeXv2.Model
         public TimeSpan StartTime
         {
             get { return TimeSpan.FromTicks(_startTimeTicks); }
-            set { _startTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTimeTicks)); NotifyPropertyChanged(nameof(EndTime)); }
+            set
+            {
+                if (_startTimeTicks == value.Ticks)
+                {
+                    return;
+                }
+                _startTimeTicks = value.Ticks;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(StartTimeTicks));
+                NotifyPropertyChanged(nameof(EndTime));
+            }
         }
 
         private Int64 _startTimeTicks = 0;

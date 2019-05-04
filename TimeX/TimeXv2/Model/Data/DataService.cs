@@ -150,7 +150,7 @@ namespace TimeXv2.Model.Data
                 Static.Properties.Instance.IsQueryExecuted = true;
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 Static.Properties.Instance.IsQueryExecuted = true;
                 return false;

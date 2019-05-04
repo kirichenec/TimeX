@@ -14,7 +14,7 @@ namespace TimeXv2.ViewModel
             SimpleIoc.Default.Register<INavigationService, NavigationService>(true);
             SimpleIoc.Default.Register<ActionContext>();
             SimpleIoc.Default.Register<IDataService, DataService>();
-            SimpleIoc.Default.Register<GlobalCommands>(true);
+            SimpleIoc.Default.Register<GlobalViewModel>(true);
 
             SimpleIoc.Default.Register<MainViewModel>(true);
             SimpleIoc.Default.Register<ActionPlayingViewModel>(true);
@@ -45,11 +45,11 @@ namespace TimeXv2.ViewModel
             }
         }
 
-        public GlobalCommands GlobalCommands
+        public GlobalViewModel GlobalViewModel
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<GlobalCommands>();
+                return ServiceLocator.Current.GetInstance<GlobalViewModel>();
             }
         }
 

@@ -29,7 +29,11 @@ namespace TimeXv2.Controls
 
         // Using a DependencyProperty as the backing store for Checkpoint.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CheckpointProperty =
-            DependencyProperty.Register(nameof(Checkpoint), typeof(Checkpoint), typeof(EditCheckpointControl), new PropertyMetadata(new Checkpoint()));
+            DependencyProperty.Register(
+                nameof(Checkpoint),
+                typeof(Checkpoint),
+                typeof(EditCheckpointControl),
+                new PropertyMetadata(new Checkpoint()));
         #endregion
 
         #region EditedChckpnt
@@ -41,7 +45,11 @@ namespace TimeXv2.Controls
 
         // Using a DependencyProperty as the backing store for EditedChckpnt.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditedChckpntProperty =
-            DependencyProperty.Register(nameof(EditedChckpnt), typeof(Checkpoint), typeof(EditCheckpointControl), new PropertyMetadata(new Checkpoint()));
+            DependencyProperty.Register(
+                nameof(EditedChckpnt),
+                typeof(Checkpoint),
+                typeof(EditCheckpointControl),
+                new PropertyMetadata(new Checkpoint()));
         #endregion
 
         #region EditedStartTime
@@ -53,7 +61,11 @@ namespace TimeXv2.Controls
 
         // Using a DependencyProperty as the backing store for EditedStartTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditedStartTimeProperty =
-            DependencyProperty.Register(nameof(EditedStartTime), typeof(SpecialTimeSpan), typeof(EditCheckpointControl), new PropertyMetadata(new SpecialTimeSpan(0)));
+            DependencyProperty.Register(
+                nameof(EditedStartTime),
+                typeof(SpecialTimeSpan),
+                typeof(EditCheckpointControl),
+                new PropertyMetadata(new SpecialTimeSpan(0)));
         #endregion
 
         #region EditedDuration
@@ -65,7 +77,11 @@ namespace TimeXv2.Controls
 
         // Using a DependencyProperty as the backing store for EditedDuration.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EditedDurationProperty =
-            DependencyProperty.Register(nameof(EditedDuration), typeof(SpecialTimeSpan), typeof(EditCheckpointControl), new PropertyMetadata(new SpecialTimeSpan(0)));
+            DependencyProperty.Register(
+                nameof(EditedDuration),
+                typeof(SpecialTimeSpan),
+                typeof(EditCheckpointControl),
+                new PropertyMetadata(new SpecialTimeSpan(0)));
         #endregion
 
         #endregion

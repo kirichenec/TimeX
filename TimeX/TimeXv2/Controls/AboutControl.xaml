@@ -8,7 +8,7 @@
     
     <UserControl.Resources>
         <Style TargetType="{x:Type Hyperlink}">
-            <Setter Property="Command" Value="{Binding GlobalCommands.OpenUriExternalCommand}"/>
+            <Setter Property="Command" Value="{Binding GlobalViewModel.OpenUriExternalCommand}"/>
             <Setter Property="CommandParameter" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
         </Style>
         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
@@ -71,7 +71,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Image Source="/TimeX;component/Media/MD4XAML.png"
+                    <Image Source="pack://siteoforigin:,,,/Media/MD4XAML.png"
                            Height="29"
                            Margin="{StaticResource RightBottom}"/>
                     <TextBlock Grid.Column="1"
@@ -90,7 +90,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Image Source="/TimeX;component/Media/MVVM.png"
+                    <Image Source="pack://siteoforigin:,,,/Media/MVVM.png"
                            Height="29"
                            Margin="{StaticResource RightBottom}"/>
                     <TextBlock 

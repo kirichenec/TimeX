@@ -1,14 +1,16 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using MaterialDesignThemes.Wpf;
 using System.Diagnostics;
+using TimeXv2.Model;
 using TimeXv2.ViewModel.Navigation;
 
 namespace TimeXv2.ViewModel
 {
-    public class GlobalCommands : ViewModelBase
+    public class GlobalViewModel : ViewModelBase
     {
         #region ctor
-        public GlobalCommands(INavigationService navigationService)
+        public GlobalViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
         }
@@ -19,6 +21,23 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region Commands
+
+        #region ChangeIsDarkCommand
+        private RelayCommand<bool> _changeIsDarkCommand;
+
+        public RelayCommand<bool> ChangeIsDarkCommand
+        {
+            get
+            {
+                return _changeIsDarkCommand
+                    ?? (_changeIsDarkCommand = new RelayCommand<bool>(
+                        isDarkTheme =>
+                        {
+                            new PaletteHelper().SetLightDark(isDarkTheme);
+                        }));
+            }
+        }
+        #endregion
 
         #region CloseAppCommand
         private RelayCommand _closeAppCommand;
@@ -36,6 +55,23 @@ namespace TimeXv2.ViewModel
                     {
                         App.Current.MainWindow.Close();
                     }));
+            }
+        }
+        #endregion
+
+        #region CloseSettingsCommand
+        private RelayCommand _closeSettingsCommand;
+
+        public RelayCommand CloseSettingsCommand
+        {
+            get
+            {
+                return _closeSettingsCommand
+                    ?? (_closeSettingsCommand = new RelayCommand(
+                        ()=>
+                        {
+                            new PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
+                        }));
             }
         }
         #endregion
@@ -93,6 +129,27 @@ namespace TimeXv2.ViewModel
                             Process.Start(uri);
                         }
                     }));
+            }
+        }
+        #endregion
+
+        #region SaveSettingsCommand
+        private RelayCommand<LightSettings> _saveSettingsCommand;
+
+        public RelayCommand<LightSettings> SaveSettingsCommand
+        {
+            get
+            {
+                return _saveSettingsCommand
+                    ?? (_saveSettingsCommand = new RelayCommand<LightSettings>(
+                        lightSettings =>
+                        {
+                            if (lightSettings != null)
+                            {
+                                lightSettings.FillSettings(App.Settings);
+                            }
+                            App.SaveSettings();
+                        }));
             }
         }
         #endregion

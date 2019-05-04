@@ -37,7 +37,15 @@ namespace TimeXv2.Model
         public string Uid
         {
             get { return _uid; }
-            set { _uid = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_uid == value)
+                {
+                    return;
+                }
+                _uid = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -47,7 +55,15 @@ namespace TimeXv2.Model
         public virtual ObservableCollection<Checkpoint> Checkpoints
         {
             get { return _checkpoints; }
-            set { _checkpoints = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_checkpoints == value)
+                {
+                    return;
+                }
+                _checkpoints = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -58,7 +74,15 @@ namespace TimeXv2.Model
         public string Name
         {
             get { return _name; }
-            set { _name = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_name == value)
+                {
+                    return;
+                }
+                _name = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -67,7 +91,16 @@ namespace TimeXv2.Model
         public DateTime StartTime
         {
             get { return new DateTime(_startTimeTicks); }
-            set { _startTimeTicks = value.Ticks; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTimeTicks)); }
+            set
+            {
+                if (_startTimeTicks == value.Ticks)
+                {
+                    return;
+                }
+                _startTimeTicks = value.Ticks;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(StartTimeTicks));
+            }
         }
 
         private Int64 _startTimeTicks;
@@ -76,7 +109,16 @@ namespace TimeXv2.Model
         public Int64 StartTimeTicks
         {
             get { return _startTimeTicks; }
-            set { _startTimeTicks = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTime)); }
+            set
+            {
+                if (_startTimeTicks == value)
+                {
+                    return;
+                }
+                _startTimeTicks = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(StartTime));
+            }
         }
         #endregion
 

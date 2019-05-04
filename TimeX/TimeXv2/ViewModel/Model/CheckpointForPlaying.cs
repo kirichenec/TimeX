@@ -33,7 +33,15 @@ namespace TimeXv2.ViewModel.Model
         public string Uid
         {
             get { return _uid; }
-            set { _uid = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_uid == value)
+                {
+                    return;
+                }
+                _uid = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -43,7 +51,15 @@ namespace TimeXv2.ViewModel.Model
         public bool IsAlarmTime
         {
             get { return _isAlarmTime; }
-            set { _isAlarmTime = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_isAlarmTime == value)
+                {
+                    return;
+                }
+                _isAlarmTime = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -56,7 +72,15 @@ namespace TimeXv2.ViewModel.Model
         public DateTime? CheckedDate
         {
             get { return _checkedDate; }
-            set { _checkedDate = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_checkedDate == value)
+                {
+                    return;
+                }
+                _checkedDate = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -71,6 +95,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _duration; }
             set
             {
+                if (_duration == value)
+                {
+                    return;
+                }
                 _duration = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(EndTime));
@@ -97,6 +125,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _isOrderNeeded; }
             set
             {
+                if (_isOrderNeeded == value)
+                {
+                    return;
+                }
                 _isOrderNeeded = value;
                 NotifyPropertyChanged();
             }
@@ -114,6 +146,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _name; }
             set
             {
+                if (_name == value)
+                {
+                    return;
+                }
                 _name = value;
                 NotifyPropertyChanged();
             }
@@ -126,7 +162,15 @@ namespace TimeXv2.ViewModel.Model
         public string Order
         {
             get { return _order; }
-            set { _order = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_order == value)
+                {
+                    return;
+                }
+                _order = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 
@@ -141,6 +185,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _startTime; }
             set
             {
+                if (_startTime == value)
+                {
+                    return;
+                }
                 _startTime = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(EndTime));
@@ -156,6 +204,10 @@ namespace TimeXv2.ViewModel.Model
             get { return _parentAction; }
             set
             {
+                if (_parentAction == value)
+                {
+                    return;
+                }
                 _parentAction = value;
                 NotifyPropertyChanged();
             }
