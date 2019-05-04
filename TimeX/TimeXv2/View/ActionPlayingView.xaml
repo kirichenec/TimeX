@@ -143,9 +143,12 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                <StackPanel Margin="0">
+                                                    <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>
+                                                    <TextBlock Text="{Binding Duration, StringFormat=Длительность: {0}}"/>
+                                                </StackPanel>
 
-                                                <Button Grid.Column="1"
+                                                <Button Grid.Column="1" x:Name="OrderButton"
                                                         Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                                     <Button.Resources>
                                                         <Style TargetType="Button" BasedOn="{StaticResource RaisedButton}">
@@ -167,20 +170,59 @@
                                                         <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
                                                             <Setter Property="Kind" Value="Check"/>
                                                             <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding CheckedDate}" Value="{x:Null}"/>
-                                                                    </MultiDataTrigger.Conditions>
+                                                                <DataTrigger Binding="{Binding CheckedDate}" Value="{x:Null}">
                                                                     <Setter Property="Kind" Value="WarningBox"/>
-                                                                </MultiDataTrigger>
+                                                                </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource ButtonTextBlock}">
-                                                            <Setter Property="Width" Value="Auto"/>
+                                                            <Setter Property="Width" Value="97"/>
+                                                            <Setter Property="Text" Value="Распоряжение"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding CheckedDate, Converter={StaticResource isNotNullConverter}}" Value="true">
                                                                     <Setter Property="Width" Value="0"/>
+                                                                    <Setter Property="Text" Value="{Binding Order}"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding CheckedDate, Converter={StaticResource isNotNullConverter}}" Value="true"/>
+                                                                        <Condition  Binding="{Binding RelativeSource={RelativeSource 
+                                                                                              Mode=FindAncestor, AncestorType={x:Type Button}}, 
+                                                                                              Path=IsMouseOver}" Value="True"/>
+                                                                    </MultiDataTrigger.Conditions>
+
+                                                                    <MultiDataTrigger.EnterActions>
+                                                                        <BeginStoryboard x:Name="IncreaseWidth">
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                                                                 To="97" Duration="0:0:1" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </MultiDataTrigger.EnterActions>
+                                                                    <MultiDataTrigger.ExitActions>
+                                                                        <RemoveStoryboard BeginStoryboardName="IncreaseWidth"/>
+                                                                    </MultiDataTrigger.ExitActions>
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding CheckedDate, Converter={StaticResource isNotNullConverter}}" Value="true"/>
+                                                                        <Condition  Binding="{Binding RelativeSource={RelativeSource 
+                                                                                              Mode=FindAncestor, AncestorType={x:Type Button}}, 
+                                                                                              Path=IsMouseOver}" Value="False"/>
+                                                                    </MultiDataTrigger.Conditions>
+
+                                                                    <MultiDataTrigger.EnterActions>
+                                                                        <BeginStoryboard x:Name="DecreaseWidth">
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                                                                 To="0" Duration="0:0:1" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </MultiDataTrigger.EnterActions>
+                                                                    <MultiDataTrigger.ExitActions>
+                                                                        <RemoveStoryboard BeginStoryboardName="DecreaseWidth"/>
+                                                                    </MultiDataTrigger.ExitActions>
+                                                                </MultiDataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Button.Resources>
@@ -220,9 +262,10 @@
                                                             </StackPanel>
                                                         </Grid>
                                                     </Button.CommandParameter>
+
                                                     <StackPanel Orientation="Horizontal" Margin="0">
                                                         <materialDesign:PackIcon/>
-                                                        <TextBlock Text="Распоряжение"/>
+                                                        <TextBlock/>
                                                     </StackPanel>
                                                 </Button>
                                             </Grid>
