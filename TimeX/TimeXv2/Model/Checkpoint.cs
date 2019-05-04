@@ -213,5 +213,21 @@ namespace TimeXv2.Model
         #endregion
 
         #endregion
+
+        #region Methods
+
+        #region CopyPropertiesTo
+        public void CopyPropertiesTo(Checkpoint target)
+        {
+            target.CheckedDate = this.CheckedDate;
+            target.Duration = this.Duration;
+            target.IsOrderNeeded = this.IsOrderNeeded;
+            target.Name = this.Name;
+            target.Order = this.Order;
+            target.StartTime = this.StartTime;
+        }
+        #endregion
+
+        #endregion
     }
 }

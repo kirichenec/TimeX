@@ -6,6 +6,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      xmlns:extensions="clr-namespace:TimeXv2.Extensions"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding ActionPlaying, Source={StaticResource Locator}}"
@@ -17,6 +18,8 @@
                 <scm:SortDescription PropertyName="StartTime"/>
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+
+        <extensions:IsNotNullConverter x:Key="isNotNullConverter"/>
     </Page.Resources>
 
     <i:Interaction.Triggers>
@@ -115,95 +118,116 @@
                             <DataTemplate>
                                 <materialDesign:Card Margin="{StaticResource RightBottom}"
                                                      Style="{StaticResource FadeInOutCard}">
-                                    <Grid>
-                                        <ProgressBar Value="{Binding CurrentPercent, Mode=OneWay}"
+                                    <materialDesign:ColorZone Mode="Light">
+                                        <Grid>
+                                            <ProgressBar Value="{Binding CurrentPercent, Mode=OneWay}"
                                                      Height="Auto"
                                                      VerticalAlignment="Stretch"
                                                      materialDesign:TransitionAssist.DisableTransitions="True">
-                                            <ProgressBar.Style>
-                                                <Style TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
-                                                    <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                                                    <Setter Property="Foreground" Value="#BCE062"/>
-                                                    <Setter Property="BorderThickness" Value="0"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding CurrentPercent}" Value="100">
-                                                            <Setter Property="Foreground" Value="#DFDFDF"/>
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsAlarmTime}" Value="True"/>
-                                                                <Condition Binding="{Binding IsOrderNeeded}" Value="True"/>
-                                                                <Condition Binding="{Binding CheckedDate}" Value="{x:Null}"/>
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Foreground" Value="Red"/>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ProgressBar.Style>
-                                        </ProgressBar>
-                                        <Grid Margin="{StaticResource LeftTop}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-
-                                            <Button Grid.Column="1"
-                                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                                <Button.Style>
-                                                    <Style TargetType="Button" BasedOn="{StaticResource RaisedButton}">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                <ProgressBar.Style>
+                                                    <Style TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+                                                        <Setter Property="Background" Value="#D7FFF9"/>
+                                                        <Setter Property="Foreground" Value="#BCE062"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsOrderNeeded}" Value="false">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <DataTrigger Binding="{Binding CurrentPercent}" Value="100">
+                                                                <Setter Property="Foreground" Value="#DFDFDF"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Button.Style>
-                                                
-                                                <Button.CommandParameter>
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
+                                                </ProgressBar.Style>
+                                            </ProgressBar>
+                                            <Grid Margin="{StaticResource LeftTop}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                        <Grid Margin="16">
-                                                            <StackPanel Orientation="Vertical">
-                                                                <TextBox Text="{Binding Order}">
-                                                                    <materialDesign:HintAssist.Hint>
-                                                                        <TextBlock Text="Введите номер распоряжения" Margin="0"/>
-                                                                    </materialDesign:HintAssist.Hint>
-                                                                </TextBox>
-                                                            </StackPanel>
-                                                        </Grid>
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
 
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
-                                                            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
-                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
-                                                                    <materialDesign:PackIcon Kind="Close"/>
-                                                                    <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
+                                                <Button Grid.Column="1"
+                                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                                    <Button.Resources>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource RaisedButton}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsOrderNeeded}" Value="false">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsAlarmTime}" Value="True"/>
+                                                                        <Condition Binding="{Binding IsOrderNeeded}" Value="True"/>
+                                                                        <Condition Binding="{Binding CheckedDate}" Value="{x:Null}"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Background" Value="Red"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                        <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
+                                                            <Setter Property="Kind" Value="Check"/>
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding CheckedDate}" Value="{x:Null}"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Kind" Value="WarningBox"/>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource ButtonTextBlock}">
+                                                            <Setter Property="Width" Value="Auto"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CheckedDate, Converter={StaticResource isNotNullConverter}}" Value="true">
+                                                                    <Setter Property="Width" Value="0"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Resources>
+
+                                                    <Button.CommandParameter>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+
+                                                            <Grid Margin="16">
+                                                                <StackPanel Orientation="Vertical">
+                                                                    <TextBox Text="{Binding Order}">
+                                                                        <materialDesign:HintAssist.Hint>
+                                                                            <TextBlock Text="Введите номер распоряжения" Margin="0"/>
+                                                                        </materialDesign:HintAssist.Hint>
+                                                                    </TextBox>
                                                                 </StackPanel>
-                                                            </Button>
-                                                            <Button Command="{Binding ActionPlaying.CheckCheckpointCommand, Source={StaticResource Locator}}"
+                                                            </Grid>
+
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
+                                                                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                                                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                        <materialDesign:PackIcon Kind="Close"/>
+                                                                        <TextBlock Text="Закрыть" Style="{StaticResource ButtonTextBlock}"/>
+                                                                    </StackPanel>
+                                                                </Button>
+                                                                <Button Command="{Binding ActionPlaying.CheckCheckpointCommand, Source={StaticResource Locator}}"
                                                                     CommandParameter="{Binding}"
                                                                     Click="CloseDialog">
-                                                                <StackPanel Style="{StaticResource ButtonStackPanel}">
-                                                                    <materialDesign:PackIcon Kind="Check"/>
-                                                                    <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
-                                                                </StackPanel>
-                                                            </Button>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </Button.CommandParameter>
-                                                <StackPanel Orientation="Horizontal" Margin="0">
-                                                    <materialDesign:PackIcon Kind="Check"/>
-                                                    <TextBlock Text="№ распоряжения" Style="{StaticResource ButtonTextBlock}"/>
-                                                </StackPanel>
-                                            </Button>
+                                                                    <StackPanel Style="{StaticResource ButtonStackPanel}">
+                                                                        <materialDesign:PackIcon Kind="Check"/>
+                                                                        <TextBlock Style="{StaticResource ButtonTextBlock}" Text="Сохранить"/>
+                                                                    </StackPanel>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button.CommandParameter>
+                                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                                        <materialDesign:PackIcon/>
+                                                        <TextBlock Text="Распоряжение"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
+                                    </materialDesign:ColorZone>
                                 </materialDesign:Card>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

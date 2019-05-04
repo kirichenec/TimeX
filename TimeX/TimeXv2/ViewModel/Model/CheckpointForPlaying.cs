@@ -5,7 +5,7 @@ using UniversalKLibrary.Classic.Simplificators;
 
 namespace TimeXv2.ViewModel.Model
 {
-    public class CheckpointForPlaying : SimplePropertyChanged
+    public class CheckpointForPlaying : SimplePropertyChanged, IDisposable
     {
         #region ctor
         public CheckpointForPlaying() { }
@@ -21,7 +21,9 @@ namespace TimeXv2.ViewModel.Model
             this.StartTime = value.StartTime;
 
             this.ParentAction = parent;
-            parent.CurrentTimeChanged += UpdateCheckpointProperties;
+            this.ParentActionUID = parent.Uid;
+
+            this.ParentAction.CurrentTimeChanged += UpdateCheckpointProperties;
         }
         #endregion
 
@@ -244,6 +246,11 @@ namespace TimeXv2.ViewModel.Model
         #endregion
 
         #region Methods
+
+        public void Dispose()
+        {
+            this.ParentAction.CurrentTimeChanged -= UpdateCheckpointProperties;
+        }
 
         #region ToCheckpoint
         public Checkpoint ToCheckpoint()

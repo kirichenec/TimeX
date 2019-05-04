@@ -5,7 +5,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeXv2.Extensions;
-using UniversalKLibrary.Classic.Helpers;
 
 namespace TimeXv2.Model.Data
 {
@@ -165,7 +164,9 @@ namespace TimeXv2.Model.Data
             try
             {
                 var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid);
+
                 value.CopyPropertiesTo(updatableCheckpoint);
+
                 await _actionContext.SaveChangesAsync();
                 Static.Properties.Instance.IsQueryExecuted = true;
                 return true;

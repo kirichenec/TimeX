@@ -5,13 +5,24 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       xmlns:controls="clr-namespace:TimeXv2.Controls"
+      xmlns:extensions="clr-namespace:TimeXv2.Extensions"
       xmlns:statics="clr-namespace:TimeXv2.Static"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding ActionSettings, Source={StaticResource Locator}}"
       Style="{StaticResource PageStyle}"
       WindowTitle="Управление мероприятием">
+    <Page.Resources>
+        <CollectionViewSource Source="{Binding EditedAction.Checkpoints}" x:Key="Checkpoints">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="StartTime"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+
+        <extensions:IsNotNullConverter x:Key="isNotNullConverter"/>
+    </Page.Resources>
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -99,7 +110,7 @@
             </StackPanel>
 
             <ScrollViewer Grid.Row="1" Margin="0">
-                <ItemsControl ItemsSource="{Binding EditedAction.Checkpoints}">
+                <ItemsControl ItemsSource="{Binding Source={StaticResource Checkpoints}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" Margin="{StaticResource LeftTop}"/>
