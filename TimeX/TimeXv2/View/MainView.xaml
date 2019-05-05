@@ -10,7 +10,7 @@
       DataContext="{Binding Main, Source={StaticResource Locator}}"
       Style="{StaticResource PageStyle}"
       WindowTitle="Главная">
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadCommand}"/>
@@ -37,7 +37,7 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-
+        
         <ScrollViewer Grid.Row="1" Margin="0">
             <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemsPanel>
@@ -81,7 +81,8 @@
                                                                 </StackPanel>
                                                             </Button>
                                                             <Button Command="{Binding Main.DeleteActionCommand, Source={StaticResource Locator}}"
-                                                                CommandParameter="{Binding}">
+                                                                    CommandParameter="{Binding}"
+                                                                    Click="CloseDialog">
                                                                 <StackPanel Style="{StaticResource ButtonStackPanel}">
                                                                     <materialDesign:PackIcon Kind="Delete"/>
                                                                     <TextBlock Text="Удалить" Style="{StaticResource ButtonTextBlock}"/>

@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using MaterialDesignThemes.Wpf;
+using System.Windows.Controls;
 
 namespace TimeXv2.View
 {
@@ -10,6 +11,11 @@ namespace TimeXv2.View
         public ActionSettingsView()
         {
             InitializeComponent();
+        }
+
+        private void CloseDialog(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DialogHost.CloseDialogCommand.Execute(null, null);
         }
     }
 }

@@ -16,6 +16,8 @@
         <CollectionViewSource Source="{Binding PlayedAction.Checkpoints}" x:Key="Checkpoints">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="StartTime"/>
+                <scm:SortDescription PropertyName="Duration"/>
+                <scm:SortDescription PropertyName="Name"/>
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 

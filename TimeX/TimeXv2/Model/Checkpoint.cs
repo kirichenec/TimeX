@@ -12,9 +12,9 @@ namespace TimeXv2.Model
         #region ctor
         public Checkpoint() { }
 
-        public Checkpoint(Checkpoint value)
+        public Checkpoint(Checkpoint value, bool copyParent = false, Action parent = null)
         {
-            value.CopyPropertiesTo(this);
+            value.CopyPropertiesTo(this, copyParent, parent);
         }
         #endregion
 
@@ -217,7 +217,7 @@ namespace TimeXv2.Model
         #region Methods
 
         #region CopyPropertiesTo
-        public void CopyPropertiesTo(Checkpoint target)
+        public void CopyPropertiesTo(Checkpoint target, bool copyParent = false, Action parent = null)
         {
             target.CheckedDate = this.CheckedDate;
             target.Duration = this.Duration;
@@ -225,6 +225,17 @@ namespace TimeXv2.Model
             target.Name = this.Name;
             target.Order = this.Order;
             target.StartTime = this.StartTime;
+            target.Uid = this.Uid;
+            if (copyParent)
+            {
+                target.ParentActionUID = this.ParentActionUID;
+                target.ParentAction = this.ParentAction;
+            }
+            else
+            {
+                target.ParentActionUID = parent.Uid;
+                target.ParentAction = parent;
+            }
         }
         #endregion
 

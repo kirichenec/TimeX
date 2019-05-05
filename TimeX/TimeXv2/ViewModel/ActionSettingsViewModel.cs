@@ -1,8 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MaterialDesignThemes.Wpf;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
@@ -45,6 +45,7 @@ namespace TimeXv2.ViewModel
                         StartTimeTicks = 0,
                         Checkpoints = chk
                     };
+                IsQueryExecuted = true;
             }
         }
         #endregion
@@ -58,6 +59,10 @@ namespace TimeXv2.ViewModel
 
         #region _actionUidForLoad
         private string _actionUidForLoad;
+        #endregion
+
+        #region _currentTask
+        private Task _currentTask;
         #endregion
 
         #endregion
@@ -249,6 +254,16 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region IsQueryExecuted
+        private bool _isQueryExecuted = false;
+
+        public bool IsQueryExecuted
+        {
+            get { return _isQueryExecuted; }
+            set { Set(nameof(IsQueryExecuted), ref _isQueryExecuted, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Commands
@@ -288,7 +303,6 @@ namespace TimeXv2.ViewModel
                     checkpoint =>
                     {
                         this.EditedAction.Checkpoints.Remove(checkpoint);
-                        DialogHost.CloseDialogCommand.Execute(null, null);
                     }));
             }
         }
@@ -306,14 +320,18 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    async () =>
+                    () =>
                     {
-                        this.EditedAction =
-                            _actionUidForLoad == null ?
-                            new ModelAction() :
-                            new ModelAction(await _dataService.GetActionByUidAsync(_actionUidForLoad));
-                        this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
-                        this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
+                        IsQueryExecuted = false;
+                        _currentTask = _dataService.GetActionByUidAsync(_actionUidForLoad).ContinueWith(
+                            action =>
+                            {
+                                this.EditedAction = new ModelAction(action.Result);
+                                this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
+                                this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
+                                IsQueryExecuted = true;
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }
@@ -346,7 +364,6 @@ namespace TimeXv2.ViewModel
                         }
 
                         this.EditedCheckpoint = new Checkpoint();
-                        DialogHost.CloseDialogCommand.Execute(null, null);
                     }));
             }
         }
@@ -364,18 +381,36 @@ namespace TimeXv2.ViewModel
             {
                 return _saveCommand
                     ?? (_saveCommand = new RelayCommand(
-                    async () =>
+                    () =>
                     {
+                        IsQueryExecuted = false;
                         this.EditedAction.StartTime = this.EditedDate.Date.Add(this.EditedTime.TimeOfDay);
                         if (this.EditedAction.Uid == null)
                         {
-                            await _dataService.AddActionAsync(this.EditedAction);
+                            _dataService.AddActionAsync(this.EditedAction).ContinueWith(
+                                answer =>
+                                {
+                                    if (answer.Result != null)
+                                    {
+                                        _navigationService.Navigate(NavPage.Main);
+                                    }
+                                    IsQueryExecuted = true;
+                                },
+                                TaskScheduler.FromCurrentSynchronizationContext());
                         }
                         else
                         {
-                            await _dataService.UpdateActionAsync(this.EditedAction);
+                            _dataService.UpdateActionAsync(this.EditedAction).ContinueWith(
+                                answer =>
+                                {
+                                    if (answer.Result)
+                                    {
+                                        _navigationService.Navigate(NavPage.Main);
+                                    }
+                                    IsQueryExecuted = true;
+                                },
+                                TaskScheduler.FromCurrentSynchronizationContext());
                         }
-                        _navigationService.Navigate(NavPage.Main);
                     }));
             }
         }

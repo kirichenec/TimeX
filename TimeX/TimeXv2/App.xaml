@@ -329,7 +329,7 @@
             <Style TargetType="ItemsControl">
                 <Setter Property="IsTabStop" Value="False" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsQueryExecuted, Source={x:Static statics:Properties.Instance}}" Value="false">
+                    <DataTrigger Binding="{Binding IsQueryExecuted}" Value="false">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>

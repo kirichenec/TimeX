@@ -22,7 +22,7 @@ namespace TimeXv2.Model
             this.Checkpoints = new ObservableCollection<Checkpoint>();
             foreach (var chk in value.Checkpoints)
             {
-                this.Checkpoints.Add(new Checkpoint(chk));
+                this.Checkpoints.Add(new Checkpoint(chk, parent: this));
             }
         }
         #endregion

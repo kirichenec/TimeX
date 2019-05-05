@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
+using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeXv2.Extensions;
@@ -21,14 +23,30 @@ namespace TimeXv2.Model.Data
         private readonly ActionContext _actionContext;
         #endregion
 
+        #region Fields
+        private const double _debugDelaySeconds = 3;
+        #endregion
+
         #region Methods
+
+        #region DebugDelay
+        private static async Task DebugDelay()
+        {
+#if DEBUG
+            await Task.Delay(TimeSpan.FromSeconds(_debugDelaySeconds)).ConfigureAwait(false);
+#endif
+        }
+        #endregion
 
         #region GetActionByUidAsync
         public async Task<Action> GetActionByUidAsync(string uid)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
-            var result = await _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefaultAsync(a => a.Uid == uid);
-            Static.Properties.Instance.IsQueryExecuted = true;
+            await DebugDelay();
+
+            var result =
+                uid == null ?
+                null :
+                await _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -36,7 +54,8 @@ namespace TimeXv2.Model.Data
         #region GetActionsListAsync
         public async Task<List<Action>> GetActionsListAsync(bool isFullLoad)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
+            await DebugDelay();
+
             try
             {
                 DbQuery<Action> query = _actionContext.Actions;
@@ -44,13 +63,11 @@ namespace TimeXv2.Model.Data
                 {
                     query = query.Include($"{nameof(Checkpoint)}s");
                 }
-                var result = await query.ToListAsync();
-                Static.Properties.Instance.IsQueryExecuted = true;
+                var result = await query.ToListAsync().ConfigureAwait(false);
                 return result;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsQueryExecuted = true;
                 return null;
             }
         }
@@ -59,9 +76,9 @@ namespace TimeXv2.Model.Data
         #region GetCheckpointByUidAsync
         public async Task<Checkpoint> GetCheckpointByUidAsync(string uid)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
-            var result = await _actionContext.Checkpoints.FirstOrDefaultAsync(chk => chk.Uid == uid);
-            Static.Properties.Instance.IsQueryExecuted = true;
+            await DebugDelay();
+
+            var result = await _actionContext.Checkpoints.FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -76,18 +93,17 @@ namespace TimeXv2.Model.Data
         #region AddActionAsync
         public async Task<string> AddActionAsync(Action value)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
+            await DebugDelay();
+
             try
             {
                 value.Uid = Guid.NewGuid().ToString();
                 _actionContext.Actions.Add(value);
-                await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsQueryExecuted = true;
+                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return value.Uid;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsQueryExecuted = true;
                 return null;
             }
         }
@@ -96,33 +112,33 @@ namespace TimeXv2.Model.Data
         #region DeleteActionAsync
         public async Task<bool> DeleteActionAsync(string uid)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
+            await DebugDelay();
+
             try
             {
-                _actionContext.Actions.Remove(await GetActionByUidAsync(uid));
-                await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsQueryExecuted = true;
+                _actionContext.Actions.Remove(await GetActionByUidAsync(uid).ConfigureAwait(false));
+                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
             catch (Exception)
             {
-                Static.Properties.Instance.IsQueryExecuted = true;
                 return false;
             }
         }
         #endregion
 
         #region UpdateActionAsync
-        public async Task<bool> UpdateActionAsync(Action value)
+        public async Task<bool> UpdateActionAsync(Action value, bool firstTry = true)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
+            await DebugDelay();
+
             try
             {
-                var updatableAction = await GetActionByUidAsync(value.Uid);
+                var updatableAction = await GetActionByUidAsync(value.Uid).ConfigureAwait(false);
 
                 updatableAction.Name = value.Name;
                 updatableAction.StartTime = value.StartTime;
-                
+
                 foreach (var chk in updatableAction.Checkpoints)
                 {
                     var tempChk = value.Checkpoints.FirstOrDefault(vChk => vChk.Uid == chk.Uid);
@@ -143,15 +159,30 @@ namespace TimeXv2.Model.Data
 
                 var updatableChkUids = updatableAction.Checkpoints.Select(ch => ch.Uid);
                 var newCheckpoints = value.Checkpoints.Where(chk => !updatableChkUids.Contains(chk.Uid));
-                newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk)));
+                newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk, parent: updatableAction)));
 
-                await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsQueryExecuted = true;
+                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch
+            catch (EntityException dbException)
             {
-                Static.Properties.Instance.IsQueryExecuted = true;
+                var sqliteException = dbException.InnerException as SQLiteException;
+                if (sqliteException?.ErrorCode == 5)
+                {
+                    if (firstTry)
+                    {
+                        return await UpdateActionAsync(value, false).ConfigureAwait(false);
+                    }
+                }
+                return false;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // data removed or changed
+                return false;
+            }
+            catch (Exception)
+            {
                 return false;
             }
         }
@@ -160,20 +191,19 @@ namespace TimeXv2.Model.Data
         #region UpdateCheckpointAsync
         public async Task<bool> UpdateCheckpointAsync(Checkpoint value)
         {
-            Static.Properties.Instance.IsQueryExecuted = false;
+            await DebugDelay();
+
             try
             {
-                var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid);
+                var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid).ConfigureAwait(false);
 
-                value.CopyPropertiesTo(updatableCheckpoint);
+                value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
 
-                await _actionContext.SaveChangesAsync();
-                Static.Properties.Instance.IsQueryExecuted = true;
+                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
             catch
             {
-                Static.Properties.Instance.IsQueryExecuted = true;
                 return false;
             }
         }

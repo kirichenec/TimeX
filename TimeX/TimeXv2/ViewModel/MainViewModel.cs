@@ -1,8 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using TimeXv2.Extensions;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
 using ModelAction = TimeXv2.Model.Action;
@@ -23,7 +24,7 @@ namespace TimeXv2.ViewModel
                 {
                     new ModelAction() { Name = "Name", StartTime = DateTime.Now }
                 };
-                Static.Properties.Instance.IsQueryExecuted = true;
+                IsQueryExecuted = true;
             }
         }
         #endregion
@@ -49,6 +50,16 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region IsQueryExecuted
+        private bool _isQueryExecuted = false;
+
+        public bool IsQueryExecuted
+        {
+            get { return _isQueryExecuted; }
+            set { Set(nameof(IsQueryExecuted), ref _isQueryExecuted, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Commands
@@ -65,11 +76,19 @@ namespace TimeXv2.ViewModel
             {
                 return _deleteActionCommand
                     ?? (_deleteActionCommand = new RelayCommand<ModelAction>(
-                    async action =>
+                    action =>
                     {
-                        this.Actions.Remove(action);
-                        await _dataService.DeleteActionAsync(action.Uid);
-                        DialogHost.CloseDialogCommand.Execute(null, null);
+                        IsQueryExecuted = false;
+                        _dataService.DeleteActionAsync(action.Uid).ContinueWith(
+                            answer =>
+                            {
+                                if (answer.Result)
+                                {
+                                    this.Actions.Remove(action);
+                                }
+                                IsQueryExecuted = true;
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }
@@ -108,10 +127,16 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    async () =>
+                    () =>
                     {
-                        var actions = await _dataService.GetActionsListAsync();
-                        actions?.ForEach(a => Actions.Add(a));
+                        IsQueryExecuted = false;
+                        _dataService.GetActionsListAsync().ContinueWith(
+                            actions =>
+                            {
+                                actions.Result?.ForEach(a => Actions.Add(a));
+                                IsQueryExecuted = true;
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }

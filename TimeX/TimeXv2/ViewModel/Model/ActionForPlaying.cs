@@ -14,6 +14,8 @@ namespace TimeXv2.ViewModel.Model
 
         public ActionForPlaying(ModelAction value)
         {
+            if (value == null) return;
+
             this.Uid = value.Uid;
             this.Name = value.Name;
             this.StartTime = value.StartTime;

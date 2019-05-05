@@ -100,7 +100,7 @@ namespace TimeXv2.Controls
         #region Root_Loaded
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
-            this.EditedChckpnt = new Checkpoint(this.Checkpoint);
+            this.EditedChckpnt = new Checkpoint(this.Checkpoint, true);
             this.EditedDuration = new SpecialTimeSpan(this.EditedChckpnt.Duration);
             this.EditedStartTime = new SpecialTimeSpan(this.EditedChckpnt.StartTime);
         }

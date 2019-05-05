@@ -43,6 +43,7 @@ namespace TimeXv2.ViewModel
                     }
                 };
                 PlayedAction.Checkpoints = chk;
+                IsQueryExecuted = true;
             }
         }
         #endregion
@@ -98,6 +99,16 @@ namespace TimeXv2.ViewModel
                 _isPlay = value;
                 RaisePropertyChanged(nameof(IsPlay));
             }
+        }
+        #endregion
+
+        #region IsQueryExecuted
+        private bool _isQueryExecuted = false;
+
+        public bool IsQueryExecuted
+        {
+            get { return _isQueryExecuted; }
+            set { Set(nameof(IsQueryExecuted), ref _isQueryExecuted, value); }
         }
         #endregion
 
@@ -159,14 +170,18 @@ namespace TimeXv2.ViewModel
             {
                 return _checkCheckpointCommand ??
                     (_checkCheckpointCommand = new RelayCommand<CheckpointForPlaying>(
-                        async value =>
+                        value =>
                         {
+                            IsQueryExecuted = false;
                             value.CheckedDate = DateTime.Now;
-                            await _dataService.UpdateCheckpointAsync(value.ToCheckpoint());
+                            _dataService.UpdateCheckpointAsync(value.ToCheckpoint()).ContinueWith(answer =>
+                            {
+                                IsQueryExecuted = true;
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                         }));
             }
         }
-
         #endregion
 
         #region LoadCommand
@@ -181,22 +196,18 @@ namespace TimeXv2.ViewModel
             {
                 return _loadCommand
                     ?? (_loadCommand = new RelayCommand(
-                    async () =>
+                    () =>
                     {
-                        this.PlayedAction =
-                            _actionUidForLoad == null ?
-                            new ActionForPlaying() :
-                            new ActionForPlaying(await _dataService.GetActionByUidAsync(_actionUidForLoad));
-
-                        IsPlay = true;
-                        new Task(() =>
-                        {
-                            do
+                        IsQueryExecuted = false;
+                        _dataService.GetActionByUidAsync(_actionUidForLoad).ContinueWith(
+                            action =>
                             {
-                                this.PlayedAction.CurrentTime = DateTime.Now;
-                                Task.Delay(_timerDelay);
-                            } while (IsPlay);
-                        }).Start();
+                                this.PlayedAction = new ActionForPlaying(action.Result);
+                                IsPlay = true;
+                                new Task(() => Timer()).Start();
+                                IsQueryExecuted = true;
+                            },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }
@@ -220,6 +231,21 @@ namespace TimeXv2.ViewModel
                     }));
             }
         }
+        #endregion
+
+        #region Methods
+        
+        #region Timer
+        private void Timer()
+        {
+            do
+            {
+                this.PlayedAction.CurrentTime = DateTime.Now;
+                Task.Delay(_timerDelay);
+            } while (IsPlay);
+        }
+        #endregion
+
         #endregion
 
         #endregion
