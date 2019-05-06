@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using MaterialDesignThemes.Wpf;
+using System;
+using System.Windows;
 
 namespace TimeXv2.Static
 {
@@ -9,6 +11,10 @@ namespace TimeXv2.Static
         {
             Instance = new Properties();
         }
+        #endregion
+
+        #region Fields
+        private static double _messageVisibilityDuration = 5;
         #endregion
 
         #region Properties
@@ -27,6 +33,22 @@ namespace TimeXv2.Static
                 typeof(bool),
                 typeof(Properties),
                 new PropertyMetadata(false));
+        #endregion
+
+        #region MessageQueue
+        public SnackbarMessageQueue MessageQueue
+        {
+            get { return (SnackbarMessageQueue)GetValue(MessageQueueProperty); }
+            set { SetValue(MessageQueueProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MessageQueue.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MessageQueueProperty =
+            DependencyProperty.Register(
+                nameof(MessageQueue),
+                typeof(SnackbarMessageQueue),
+                typeof(Properties),
+                new PropertyMetadata(new SnackbarMessageQueue(TimeSpan.FromSeconds(_messageVisibilityDuration))));
         #endregion
 
         #endregion

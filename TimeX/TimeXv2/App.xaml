@@ -154,7 +154,7 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <!--Панель элементов-->
+                                        <!--Header-->
                                         <materialDesign:ColorZone Name="HeaderZone"
                                                                   materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                                                   Mode="PrimaryMid"
@@ -190,6 +190,7 @@
                                             </StackPanel>
                                         </materialDesign:ColorZone>
                                         <materialDesign:DrawerHost Grid.Row="1" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                                            <!--Menu-->
                                             <materialDesign:DrawerHost.LeftDrawerContent>
                                                 <DockPanel MinWidth="150">
                                                     <StackPanel Orientation="Vertical">
@@ -288,16 +289,24 @@
                                                     </StackPanel>
                                                 </DockPanel>
                                             </materialDesign:DrawerHost.LeftDrawerContent>
-                                            <ContentPresenter>
-                                                <ContentPresenter.Triggers>
-                                                    <EventTrigger RoutedEvent="Loaded">
-                                                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
-                                                    </EventTrigger>
-                                                    <EventTrigger RoutedEvent="Unloaded">
-                                                        <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
-                                                    </EventTrigger>
-                                                </ContentPresenter.Triggers>
-                                            </ContentPresenter>
+                                            <Grid>
+                                                <!--Content-->
+                                                <ContentPresenter>
+                                                    <ContentPresenter.Triggers>
+                                                        <EventTrigger RoutedEvent="Loaded">
+                                                            <BeginStoryboard Storyboard="{StaticResource OpacityFadeIn}"/>
+                                                        </EventTrigger>
+                                                        <EventTrigger RoutedEvent="Unloaded">
+                                                            <BeginStoryboard Storyboard="{StaticResource OpacityFadeOut}"/>
+                                                        </EventTrigger>
+                                                    </ContentPresenter.Triggers>
+                                                </ContentPresenter>
+                                                
+                                                <!--Snackbar for messages-->
+                                                <materialDesign:Snackbar HorizontalAlignment="Stretch"
+                                                                         Margin="{StaticResource RightBottom}"
+                                                                         MessageQueue="{Binding Source={x:Static statics:Properties.Instance}, Path=MessageQueue}"/>
+                                            </Grid>
                                         </materialDesign:DrawerHost>
                                     </Grid>
                                 </materialDesign:DialogHost>

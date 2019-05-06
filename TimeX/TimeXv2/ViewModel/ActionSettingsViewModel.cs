@@ -394,6 +394,10 @@ namespace TimeXv2.ViewModel
                                     {
                                         _navigationService.Navigate(NavPage.Main);
                                     }
+                                    else
+                                    {
+                                        Static.Properties.Instance.MessageQueue.Enqueue("Произошла ошибка сохранения нового мероприятия, повторите попытку");
+                                    }
                                     IsQueryExecuted = true;
                                 },
                                 TaskScheduler.FromCurrentSynchronizationContext());
@@ -406,6 +410,10 @@ namespace TimeXv2.ViewModel
                                     if (answer.Result)
                                     {
                                         _navigationService.Navigate(NavPage.Main);
+                                    }
+                                    else
+                                    {
+                                        Static.Properties.Instance.MessageQueue.Enqueue("Произошла ошибка обновления мероприятия, повторите попытку");
                                     }
                                     IsQueryExecuted = true;
                                 },

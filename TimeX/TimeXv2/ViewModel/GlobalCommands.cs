@@ -68,7 +68,7 @@ namespace TimeXv2.ViewModel
             {
                 return _closeSettingsCommand
                     ?? (_closeSettingsCommand = new RelayCommand(
-                        ()=>
+                        () =>
                         {
                             new PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
                         }));
@@ -150,6 +150,25 @@ namespace TimeXv2.ViewModel
                             }
                             App.SaveSettings();
                         }));
+            }
+        }
+        #endregion
+
+        #region TestCommand
+        //Command="{Binding GlobalViewModel.TestCommand, Source={StaticResource Locator}}"
+
+        private RelayCommand _testCommand;
+
+        public RelayCommand TestCommand
+        {
+            get
+            {
+                return _testCommand
+                    ??(_testCommand = new RelayCommand(
+                    () =>
+                    {
+                        var i = 1;
+                    }));
             }
         }
         #endregion

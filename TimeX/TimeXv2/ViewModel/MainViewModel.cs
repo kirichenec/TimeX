@@ -135,6 +135,17 @@ namespace TimeXv2.ViewModel
                             {
                                 actions.Result?.ForEach(a => Actions.Add(a));
                                 IsQueryExecuted = true;
+
+                                #region if debug
+#if DEBUG
+                                var message = "Data loaded";
+                                Static.Properties.Instance.MessageQueue.Enqueue(
+                                    message,
+                                    "OK",
+                                    _ => { },
+                                    message);
+#endif
+                                #endregion
                             },
                             TaskScheduler.FromCurrentSynchronizationContext());
                     }));
