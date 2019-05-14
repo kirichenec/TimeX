@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Model;
 using TimeXv2.ViewModel.Navigation;
@@ -19,7 +20,7 @@ namespace TimeXv2.ViewModel
             MessengerInstance
                 .Register<ActionPlayingMessage>(this, apm =>
                 {
-                    _actionUidForLoad = apm.Uid;
+                    _actionPlayingMessage = apm;
                 });
 
             if (IsInDesignMode)
@@ -55,7 +56,7 @@ namespace TimeXv2.ViewModel
         #region Fields
 
         #region _actionUidForLoad
-        private string _actionUidForLoad;
+        private ActionPlayingMessage _actionPlayingMessage;
         #endregion
 
         #region _timerDelay
@@ -172,11 +173,19 @@ namespace TimeXv2.ViewModel
                     (_checkCheckpointCommand = new RelayCommand<CheckpointForPlaying>(
                         value =>
                         {
-                            IsQueryExecuted = false;
                             value.CheckedDate = DateTime.Now;
                             _dataService.UpdateCheckpointAsync(value.ToCheckpoint()).ContinueWith(answer =>
                             {
-                                IsQueryExecuted = true;
+                                #region if debug
+#if DEBUG
+                                var message = "Событие сохранено";
+                                Static.Properties.Instance.MessageQueue.Enqueue(
+                                    message,
+                                    "OK",
+                                    _ => { },
+                                    message);
+#endif
+                                #endregion
                             },
                             TaskScheduler.FromCurrentSynchronizationContext());
                         }));
@@ -199,13 +208,27 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _dataService.GetActionByUidAsync(_actionUidForLoad).ContinueWith(
+                        _dataService.GetActionByUidAsync(_actionPlayingMessage?.Uid).ContinueWith(
                             action =>
                             {
-                                this.PlayedAction = new ActionForPlaying(action.Result);
-                                IsPlay = true;
-                                new Task(() => Timer()).Start();
-                                IsQueryExecuted = true;
+                                if (action?.Result != null)
+                                {
+                                    action.Result.StartTime = _actionPlayingMessage.StartTime ?? action.Result.StartTime;
+                                    this.PlayedAction = new ActionForPlaying(action.Result);
+
+                                    IsPlay = true;
+                                    new Task(() => Timer()).Start();
+                                    IsQueryExecuted = true; 
+                                }
+                                else
+                                {
+                                    var message = "Ошибк загрузки мероприятия";
+                                    Static.Properties.Instance.MessageQueue.Enqueue(
+                                        message,
+                                        "OK",
+                                        _ => { },
+                                        message);
+                                }
                             },
                             TaskScheduler.FromCurrentSynchronizationContext());
                     }));
@@ -233,19 +256,19 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #endregion
+
         #region Methods
-        
+
         #region Timer
-        private void Timer()
+        private async void Timer()
         {
             do
             {
                 this.PlayedAction.CurrentTime = DateTime.Now;
-                Task.Delay(_timerDelay);
+                await Task.Delay(_timerDelay);
             } while (IsPlay);
         }
-        #endregion
-
         #endregion
 
         #endregion

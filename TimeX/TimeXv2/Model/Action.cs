@@ -10,16 +10,19 @@ namespace TimeXv2.Model
     public class Action : SimplePropertyChanged
     {
         #region ctor
-        public Action() { Checkpoints = new ObservableCollection<Checkpoint>(); StartTime = DateTime.Now; }
+        public Action()
+        {
+            Checkpoints = new ObservableCollection<Checkpoint>();
+            StartTime = DateTime.Now;
+        }
 
-        public Action(Action value)
+        public Action(Action value) : this()
         {
             if (value == null) return;
 
             this.Uid = value.Uid;
             this.Name = value.Name;
             this.StartTime = value.StartTime;
-            this.Checkpoints = new ObservableCollection<Checkpoint>();
             foreach (var chk in value.Checkpoints)
             {
                 this.Checkpoints.Add(new Checkpoint(chk, parent: this));

@@ -185,8 +185,24 @@ namespace TimeXv2.ViewModel
                     ?? (_playActionCommand = new RelayCommand<ModelAction>(
                         action =>
                         {
-                            MessengerInstance.Send(new ActionPlayingMessage(action?.Uid));
-                            _navigationService.Navigate(NavPage.ActionPlaying);
+                            SendPlayingMessageAndNavigate(action?.Uid);
+                        }));
+            }
+        }
+        #endregion
+
+        #region PlayActionNowCommand
+        private RelayCommand<ModelAction> _playActionNowCommand;
+
+        public RelayCommand<ModelAction> PlayActionNowCommand
+        {
+            get
+            {
+                return _playActionNowCommand
+                    ?? (_playActionNowCommand = new RelayCommand<ModelAction>(
+                        action =>
+                        {
+                            SendPlayingMessageAndNavigate(action?.Uid, DateTime.Now);
                         }));
             }
         }
@@ -209,6 +225,18 @@ namespace TimeXv2.ViewModel
                         Actions.Clear();
                     }));
             }
+        }
+        #endregion
+
+        #endregion
+
+        #region Methods
+
+        #region SendPlayingMessageAndNavigate
+        private void SendPlayingMessageAndNavigate(string actionUid, DateTime? startTime = null)
+        {
+            MessengerInstance.Send(new ActionPlayingMessage(actionUid, startTime));
+            _navigationService.Navigate(NavPage.ActionPlaying);
         }
         #endregion
 

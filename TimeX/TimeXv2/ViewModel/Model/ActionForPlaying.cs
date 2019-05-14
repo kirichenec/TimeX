@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using TimeXv2.Extensions;
 using UniversalKLibrary.Classic.Simplificators;
 using ModelAction = TimeXv2.Model.Action;
@@ -75,6 +76,7 @@ namespace TimeXv2.ViewModel.Model
                 NotifyPropertyChanged(nameof(RemainingTime));
                 NotifyPropertyChanged(nameof(CurrentPercent));
                 CurrentTimeChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTime)));
+                IsAlarmNeeded = (Checkpoints?.Where(chk => chk.IsOrderNeeded && chk.IsAlarmTime && chk.CheckedDate == null)?.Count() ?? -1) > 0;
             }
         }
         #endregion
@@ -98,6 +100,24 @@ namespace TimeXv2.ViewModel.Model
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(this.LeftTime));
                 NotifyPropertyChanged(nameof(this.RemainingTime));
+            }
+        }
+        #endregion
+
+        #region IsAlarmNeeded
+        private bool _isAlarmNeeded;
+
+        public bool IsAlarmNeeded
+        {
+            get { return _isAlarmNeeded; }
+            set
+            {
+                if (_isAlarmNeeded == value)
+                {
+                    return;
+                }
+                _isAlarmNeeded = value;
+                NotifyPropertyChanged();
             }
         }
         #endregion
@@ -153,7 +173,6 @@ namespace TimeXv2.ViewModel.Model
                 return _currentPercent;
             }
         }
-
         #endregion
 
         #region RemainingTime

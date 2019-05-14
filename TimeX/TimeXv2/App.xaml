@@ -35,7 +35,14 @@
             <Storyboard x:Key="OpacityFadeOut">
                 <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0:0.5" />
             </Storyboard>
-            
+            <Storyboard x:Key="BlinkToRed" RepeatBehavior="Forever">
+                <ColorAnimation To="Red"
+                                Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                FillBehavior="HoldEnd"
+                                AutoReverse="True"
+                                Duration="0:0:2"/>
+            </Storyboard>
+
             <Style TargetType="{x:Type materialDesign:TimePicker}" BasedOn="{StaticResource MaterialDesignFloatingHintTimePicker}">
                 <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.75" />
             </Style>

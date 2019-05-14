@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid Margin="16" MaxWidth="816">        
+    <Grid Margin="16" MaxWidth="816">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -37,7 +37,7 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        
+
         <ScrollViewer Grid.Row="1" Margin="0">
             <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemsPanel>
@@ -99,6 +99,27 @@
                                                 Style="{StaticResource ActionFlatButton}"
                                                 ToolTip="Редактировать">
                                             <materialDesign:PackIcon Kind="Edit"/>
+                                        </Button>
+                                        <Button Command="{Binding Main.PlayActionNowCommand, Source={StaticResource Locator}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource ActionFlatButton}"
+                                                ToolTip="Запустить сейчас">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <materialDesign:PackIcon Grid.Column="0" Grid.ColumnSpan="2"
+                                                                         Grid.Row="0" Grid.RowSpan="2"
+                                                                         Kind="Play"/>
+                                                <materialDesign:PackIcon Grid.Column="1"
+                                                                         Grid.Row="1"
+                                                                         Kind="ClockOutline" Height="8" Width="8"/>
+                                            </Grid>
                                         </Button>
                                         <Button Command="{Binding Main.PlayActionCommand, Source={StaticResource Locator}}"
                                                 CommandParameter="{Binding}"

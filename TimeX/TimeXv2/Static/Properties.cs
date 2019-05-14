@@ -19,20 +19,16 @@ namespace TimeXv2.Static
 
         #region Properties
 
-        #region Topmost
-        public bool Topmost
+        #region AlarmRing
+        public Uri AlarmRing
         {
-            get { return (bool)GetValue(TopmostProperty); }
-            set { SetValue(TopmostProperty, value); }
+            get { return (Uri)GetValue(AlarmRingProperty); }
+            set { SetValue(AlarmRingProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Topmost.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TopmostProperty =
-            DependencyProperty.Register(
-                nameof(Topmost),
-                typeof(bool),
-                typeof(Properties),
-                new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for AlarmRing.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AlarmRingProperty =
+            DependencyProperty.Register("AlarmRing", typeof(Uri), typeof(Properties), new PropertyMetadata(new Uri(@"C:\Windows\media\Alarm01.wav")));
         #endregion
 
         #region MessageQueue
@@ -49,6 +45,22 @@ namespace TimeXv2.Static
                 typeof(SnackbarMessageQueue),
                 typeof(Properties),
                 new PropertyMetadata(new SnackbarMessageQueue(TimeSpan.FromSeconds(_messageVisibilityDuration))));
+        #endregion
+
+        #region Topmost
+        public bool Topmost
+        {
+            get { return (bool)GetValue(TopmostProperty); }
+            set { SetValue(TopmostProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Topmost.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TopmostProperty =
+            DependencyProperty.Register(
+                nameof(Topmost),
+                typeof(bool),
+                typeof(Properties),
+                new PropertyMetadata(false));
         #endregion
 
         #endregion
