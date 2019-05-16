@@ -2,7 +2,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using TimeXv2.ViewModel;
 
 namespace TimeXv2.View
 {

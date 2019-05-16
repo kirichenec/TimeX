@@ -264,7 +264,6 @@ namespace TimeXv2.ViewModel.Model
                 Name = this.Name,
                 Order = this.Order,
                 StartTime = this.StartTime,
-                ParentActionUID = this.ParentActionUID
             };
             return value;
         }

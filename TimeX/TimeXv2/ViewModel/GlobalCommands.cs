@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using TimeXv2.Model;
 using TimeXv2.ViewModel.Navigation;
@@ -34,6 +36,28 @@ namespace TimeXv2.ViewModel
                         isDarkTheme =>
                         {
                             new PaletteHelper().SetLightDark(isDarkTheme);
+                        }));
+            }
+        }
+        #endregion
+
+        #region ChangeMediaCommand
+        private RelayCommand<LightSettings> _changeMediaCommand;
+
+        public RelayCommand<LightSettings> ChangeMediaCommand
+        {
+            get
+            {
+                return _changeMediaCommand
+                    ?? (_changeMediaCommand = new RelayCommand<LightSettings>(
+                        settings =>
+                        {
+                            OpenFileDialog openFileDialog = new OpenFileDialog();
+                            openFileDialog.Filter =
+                                "Audio Files|" +
+                                "*.wav;*.aac;*.mp3;*.WMA;*.MP3;";
+                            if (openFileDialog.ShowDialog() == true)
+                                settings.AlarmRing = new Uri(openFileDialog.FileName);
                         }));
             }
         }
@@ -149,6 +173,7 @@ namespace TimeXv2.ViewModel
                                 lightSettings.FillSettings(App.Settings);
                             }
                             App.SaveSettings();
+                            Static.Properties.Instance.AlarmRing = App.Settings.AlarmRing;
                         }));
             }
         }
@@ -164,7 +189,7 @@ namespace TimeXv2.ViewModel
             get
             {
                 return _testCommand
-                    ??(_testCommand = new RelayCommand(
+                    ?? (_testCommand = new RelayCommand(
                     () =>
                     {
                         var i = 1;

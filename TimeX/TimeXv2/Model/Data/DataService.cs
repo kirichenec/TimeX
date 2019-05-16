@@ -46,7 +46,7 @@ namespace TimeXv2.Model.Data
             var result =
                 uid == null ?
                 null :
-                await _actionContext.Actions.Include($"{nameof(Checkpoint)}s").FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
+                await _actionContext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -66,7 +66,7 @@ namespace TimeXv2.Model.Data
                 var result = await query.ToListAsync().ConfigureAwait(false);
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -77,9 +77,15 @@ namespace TimeXv2.Model.Data
         public async Task<Checkpoint> GetCheckpointByUidAsync(string uid)
         {
             await DebugDelay();
-
-            var result = await _actionContext.Checkpoints.FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
-            return result;
+            try
+            {
+                var result = await _actionContext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
         #endregion
 
@@ -197,7 +203,7 @@ namespace TimeXv2.Model.Data
             {
                 var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid).ConfigureAwait(false);
 
-                value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
+                value.CopyPropertiesTo(updatableCheckpoint, parent: updatableCheckpoint.ParentAction);
 
                 await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;

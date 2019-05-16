@@ -19,6 +19,25 @@ namespace TimeXv2.Model
 
         #region Properties
 
+        #region AlarmRing
+        private Uri _alarmRing = new Uri(@"C:\Windows\media\Alarm01.wav");
+
+        public Uri AlarmRing
+        {
+            get { return _alarmRing; }
+            set
+            {
+                if (_alarmRing == value)
+                {
+                    return;
+                }
+                _alarmRing = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
         #region IsDarkTheme
         private bool _isDarkTheme = false;
 
@@ -172,13 +191,14 @@ namespace TimeXv2.Model
         #endregion
     }
 
-    public class LightSettings
+    public class LightSettings : SimplePropertyChanged
     {
         #region ctor
         public LightSettings() { }
 
         public LightSettings(Settings value)
         {
+            this.AlarmRing = value.AlarmRing;
             this.Height = value.Height;
             this.IsDarkTheme = value.IsDarkTheme;
             this.Left = value.Left;
@@ -190,6 +210,24 @@ namespace TimeXv2.Model
         #endregion
 
         #region Properties
+
+        #region AlarmRing
+        private Uri _alarmRing = new Uri(@"C:\Windows\media\Alarm01.wav");
+
+        public Uri AlarmRing
+        {
+            get { return _alarmRing; }
+            set
+            {
+                if (_alarmRing == value)
+                {
+                    return;
+                }
+                _alarmRing = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
 
         #region IsDarkTheme
         public bool IsDarkTheme { get; set; }
@@ -230,6 +268,7 @@ namespace TimeXv2.Model
         #region FillSettings
         public void FillSettings(Settings settings)
         {
+            settings.AlarmRing = this.AlarmRing;
             settings.Height = this.Height;
             settings.IsDarkTheme = this.IsDarkTheme;
             settings.Left = this.Left;

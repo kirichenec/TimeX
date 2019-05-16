@@ -123,6 +123,7 @@ namespace TimeXv2
                             IsolatedIO.LoadData<LightSettings>(nameof(TimeXv2))
                             ?? new LightSettings()
                             {
+                                AlarmRing = new Uri(@"C:\Windows\media\Alarm01.wav"),
                                 Top = 10,
                                 Left = 10,
                                 Width = 800,
@@ -134,6 +135,7 @@ namespace TimeXv2
             Settings = new Settings(window);
             loadedSettings.FillSettings(Settings);
 
+            Static.Properties.Instance.AlarmRing = Settings.AlarmRing;
             new MaterialDesignThemes.Wpf.PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
         }
         #endregion

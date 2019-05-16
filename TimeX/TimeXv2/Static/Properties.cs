@@ -28,7 +28,7 @@ namespace TimeXv2.Static
 
         // Using a DependencyProperty as the backing store for AlarmRing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AlarmRingProperty =
-            DependencyProperty.Register("AlarmRing", typeof(Uri), typeof(Properties), new PropertyMetadata(new Uri(@"C:\Windows\media\Alarm01.wav")));
+            DependencyProperty.Register(nameof(AlarmRing), typeof(Uri), typeof(Properties), new PropertyMetadata(new Uri(@"C:\Windows\media\Alarm01.wav")));
         #endregion
 
         #region MessageQueue

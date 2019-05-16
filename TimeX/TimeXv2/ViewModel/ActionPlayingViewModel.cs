@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Model;
 using TimeXv2.ViewModel.Navigation;

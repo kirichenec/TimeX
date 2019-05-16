@@ -18,6 +18,13 @@
                               Command="{Binding GlobalViewModel.ChangeIsDarkCommand}"
                               CommandParameter="{Binding EditedSettings.IsDarkTheme, ElementName=root}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding EditedSettings.AlarmRing, ElementName=root, Mode=TwoWay}" IsReadOnly="True"/>
+                <Button Command="{Binding GlobalViewModel.ChangeMediaCommand}"
+                        CommandParameter="{Binding EditedSettings, ElementName=root}">
+                    <materialDesign:PackIcon Kind="NotificationsActive"/>
+                </Button>
+            </StackPanel>
         </StackPanel>
 
         <materialDesign:ColorZone Grid.Row="1">

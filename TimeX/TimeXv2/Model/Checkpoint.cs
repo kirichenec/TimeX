@@ -177,10 +177,6 @@ namespace TimeXv2.Model
         public virtual Action ParentAction { get; set; }
         #endregion
 
-        #region ParentActionUID
-        public string ParentActionUID { get; set; }
-        #endregion
-
         #region StartTime
         /// <summary>
         /// Время начала мероприятия
@@ -228,12 +224,10 @@ namespace TimeXv2.Model
             target.Uid = this.Uid;
             if (copyParent)
             {
-                target.ParentActionUID = this.ParentActionUID;
                 target.ParentAction = this.ParentAction;
             }
             else
             {
-                target.ParentActionUID = parent.Uid;
                 target.ParentAction = parent;
             }
         }
