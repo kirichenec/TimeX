@@ -52,10 +52,12 @@ namespace TimeXv2.ViewModel
                     ?? (_changeMediaCommand = new RelayCommand<LightSettings>(
                         settings =>
                         {
-                            OpenFileDialog openFileDialog = new OpenFileDialog();
-                            openFileDialog.Filter =
-                                "Audio Files|" +
-                                "*.wav;*.aac;*.mp3;*.WMA;*.MP3;";
+                            OpenFileDialog openFileDialog = new OpenFileDialog
+                            {
+                                Filter =
+                                    "Audio Files|" +
+                                    "*.wav;*.aac;*.mp3;*.WMA;*.MP3;"
+                            };
                             if (openFileDialog.ShowDialog() == true)
                                 settings.AlarmRing = new Uri(openFileDialog.FileName);
                         }));
@@ -180,8 +182,6 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region TestCommand
-        //Command="{Binding GlobalViewModel.TestCommand, Source={StaticResource Locator}}"
-
         private RelayCommand _testCommand;
 
         public RelayCommand TestCommand

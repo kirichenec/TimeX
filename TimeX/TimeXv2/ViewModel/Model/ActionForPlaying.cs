@@ -24,7 +24,7 @@ namespace TimeXv2.ViewModel.Model
             this.EndTime = this.StartTime.Add(value.Checkpoints.GetDuration());
 
             this.Checkpoints.Clear();
-            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(new CheckpointForPlaying(chk, this)));
+            value?.Checkpoints?.ForEach(chk => this.Checkpoints.Add(new CheckpointForPlaying(chk, this, value)));
         }
         #endregion
 

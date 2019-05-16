@@ -14,7 +14,7 @@ namespace TimeXv2.Static
         #endregion
 
         #region Fields
-        private static double _messageVisibilityDuration = 5;
+        private static readonly double _messageVisibilityDuration = 5;
         #endregion
 
         #region Properties

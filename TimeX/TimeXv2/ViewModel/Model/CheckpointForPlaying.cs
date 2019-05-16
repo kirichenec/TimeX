@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using TimeXv2.Model;
 using UniversalKLibrary.Classic.Simplificators;
+using ModelAction = TimeXv2.Model.Action;
 
 namespace TimeXv2.ViewModel.Model
 {
@@ -10,7 +11,7 @@ namespace TimeXv2.ViewModel.Model
         #region ctor
         public CheckpointForPlaying() { }
 
-        public CheckpointForPlaying(Checkpoint value, ActionForPlaying parent)
+        public CheckpointForPlaying(Checkpoint value, ActionForPlaying parent, ModelAction originalParent)
         {
             this.Uid = value.Uid;
             this.CheckedDate = value.CheckedDate;
@@ -21,31 +22,13 @@ namespace TimeXv2.ViewModel.Model
             this.StartTime = value.StartTime;
 
             this.ParentAction = parent;
-            this.ParentActionUID = parent.Uid;
+            this.OriginalParentAction = originalParent;
 
             this.ParentAction.CurrentTimeChanged += UpdateCheckpointProperties;
         }
         #endregion
 
         #region Properties
-
-        #region Uid
-        private string _uid;
-
-        public string Uid
-        {
-            get { return _uid; }
-            set
-            {
-                if (_uid == value)
-                {
-                    return;
-                }
-                _uid = value;
-                NotifyPropertyChanged();
-            }
-        }
-        #endregion
 
         #region IsAlarmTime
         private bool _isAlarmTime;
@@ -82,6 +65,28 @@ namespace TimeXv2.ViewModel.Model
                 }
                 _checkedDate = value;
                 NotifyPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region CurrentPercent
+        public double CurrentPercent
+        {
+            get
+            {
+                double _currentPercent = (double)(ParentAction.CurrentTime - ParentAction.StartTime - StartTime).Ticks * 100 / Duration.Ticks;
+                _currentPercent =
+                    _currentPercent < 0 ?
+                    0 :
+                    _currentPercent > 100 ?
+                    100 : _currentPercent;
+
+                IsAlarmTime = _currentPercent > 90;
+                if (_currentPercent == 100)
+                {
+                    ParentAction.CurrentTimeChanged -= UpdateCheckpointProperties;
+                }
+                return _currentPercent;
             }
         }
         #endregion
@@ -176,24 +181,20 @@ namespace TimeXv2.ViewModel.Model
         }
         #endregion
 
-        #region StartTime
-        private TimeSpan _startTime;
+        #region OriginalParentAction
+        private ModelAction _originalParentAction;
 
-        /// <summary>
-        /// Время начала мероприятия
-        /// </summary>
-        public TimeSpan StartTime
+        public ModelAction OriginalParentAction
         {
-            get { return _startTime; }
+            get { return _originalParentAction; }
             set
             {
-                if (_startTime == value)
+                if (_originalParentAction == value)
                 {
                     return;
                 }
-                _startTime = value;
+                _originalParentAction = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(EndTime));
             }
         }
         #endregion
@@ -217,28 +218,42 @@ namespace TimeXv2.ViewModel.Model
 
         #endregion
 
-        #region ParentActionUID
-        public string ParentActionUID { get; set; }
+        #region StartTime
+        private TimeSpan _startTime;
+
+        /// <summary>
+        /// Время начала мероприятия
+        /// </summary>
+        public TimeSpan StartTime
+        {
+            get { return _startTime; }
+            set
+            {
+                if (_startTime == value)
+                {
+                    return;
+                }
+                _startTime = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(EndTime));
+            }
+        }
         #endregion
 
-        #region CurrentPercent
-        public double CurrentPercent
-        {
-            get
-            {
-                double _currentPercent = (double)(ParentAction.CurrentTime - ParentAction.StartTime - StartTime).Ticks * 100 / Duration.Ticks;
-                _currentPercent =
-                    _currentPercent < 0 ?
-                    0 :
-                    _currentPercent > 100 ?
-                    100 : _currentPercent;
+        #region Uid
+        private string _uid;
 
-                IsAlarmTime = _currentPercent > 90;
-                if (_currentPercent == 100)
+        public string Uid
+        {
+            get { return _uid; }
+            set
+            {
+                if (_uid == value)
                 {
-                    ParentAction.CurrentTimeChanged -= UpdateCheckpointProperties;
+                    return;
                 }
-                return _currentPercent;
+                _uid = value;
+                NotifyPropertyChanged();
             }
         }
         #endregion
@@ -247,10 +262,12 @@ namespace TimeXv2.ViewModel.Model
 
         #region Methods
 
+        #region Dispose
         public void Dispose()
         {
             this.ParentAction.CurrentTimeChanged -= UpdateCheckpointProperties;
         }
+        #endregion
 
         #region ToCheckpoint
         public Checkpoint ToCheckpoint()
@@ -264,6 +281,7 @@ namespace TimeXv2.ViewModel.Model
                 Name = this.Name,
                 Order = this.Order,
                 StartTime = this.StartTime,
+                ParentAction = OriginalParentAction
             };
             return value;
         }

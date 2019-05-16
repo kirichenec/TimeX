@@ -66,7 +66,7 @@ namespace TimeXv2.Model.Data
                 var result = await query.ToListAsync().ConfigureAwait(false);
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -82,7 +82,7 @@ namespace TimeXv2.Model.Data
                 var result = await _actionContext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -203,7 +203,7 @@ namespace TimeXv2.Model.Data
             {
                 var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid).ConfigureAwait(false);
 
-                value.CopyPropertiesTo(updatableCheckpoint, parent: updatableCheckpoint.ParentAction);
+                value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
 
                 await _actionContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
