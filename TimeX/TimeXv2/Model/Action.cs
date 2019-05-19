@@ -16,13 +16,22 @@ namespace TimeXv2.Model
             StartTime = DateTime.Now;
         }
 
-        public Action(Action value) : this()
+        public Action(Action value, bool isCopy = false) : this()
         {
             if (value == null) return;
 
-            this.Uid = value.Uid;
+            if (isCopy)
+            {
+                this.StartTime = DateTime.Now;
+            }
+            else
+            {
+                this.StartTime = value.StartTime;
+                this.Uid = value.Uid;
+            }
+
             this.Name = value.Name;
-            this.StartTime = value.StartTime;
+
             foreach (var chk in value.Checkpoints)
             {
                 this.Checkpoints.Add(new Checkpoint(chk, parent: this));
@@ -33,11 +42,12 @@ namespace TimeXv2.Model
         #region Properties
 
         #region Uid
-        private string _uid;
+        private int _uid;
 
         [Column("Uid")]
         [Key]
-        public string Uid
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Uid
         {
             get { return _uid; }
             set

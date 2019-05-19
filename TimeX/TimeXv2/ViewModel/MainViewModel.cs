@@ -64,6 +64,25 @@ namespace TimeXv2.ViewModel
 
         #region Commands
 
+        #region CopyActionCommand
+        private RelayCommand<ModelAction> _copyActionCommand;
+
+        public RelayCommand<ModelAction> CopyActionCommand
+        {
+            get
+            {
+                return _copyActionCommand
+                    ?? (_copyActionCommand = new RelayCommand<ModelAction>(
+                        action =>
+                        {
+
+                            MessengerInstance.Send(new ActionSettingsMessage(action?.Uid ?? 0, true));
+                            _navigationService.Navigate(NavPage.ActionSettings);
+                        }));
+            }
+        }
+        #endregion
+
         #region DeleteActionCommand
         private RelayCommand<ModelAction> _deleteActionCommand;
 
@@ -76,20 +95,20 @@ namespace TimeXv2.ViewModel
             {
                 return _deleteActionCommand
                     ?? (_deleteActionCommand = new RelayCommand<ModelAction>(
-                    action =>
-                    {
-                        IsQueryExecuted = false;
-                        _dataService.DeleteActionAsync(action.Uid).ContinueWith(
-                            answer =>
-                            {
-                                if (answer.Result)
+                        action =>
+                        {
+                            IsQueryExecuted = false;
+                            _dataService.DeleteActionAsync(action.Uid).ContinueWith(
+                                answer =>
                                 {
-                                    this.Actions.Remove(action);
-                                }
-                                IsQueryExecuted = true;
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
-                    }));
+                                    if (answer.Result)
+                                    {
+                                        this.Actions.Remove(action);
+                                    }
+                                    IsQueryExecuted = true;
+                                },
+                                TaskScheduler.FromCurrentSynchronizationContext());
+                        }));
             }
         }
         #endregion
@@ -108,7 +127,7 @@ namespace TimeXv2.ViewModel
                     ?? (_editActionCommand = new RelayCommand<ModelAction>(
                     action =>
                     {
-                        MessengerInstance.Send(new ActionSettingsMessage(action?.Uid));
+                        MessengerInstance.Send(new ActionSettingsMessage(action?.Uid ?? 0));
                         _navigationService.Navigate(NavPage.ActionSettings);
                     }));
             }
@@ -185,7 +204,7 @@ namespace TimeXv2.ViewModel
                     ?? (_playActionCommand = new RelayCommand<ModelAction>(
                         action =>
                         {
-                            SendPlayingMessageAndNavigate(action?.Uid);
+                            SendPlayingMessageAndNavigate(action?.Uid ?? 0);
                         }));
             }
         }
@@ -202,7 +221,7 @@ namespace TimeXv2.ViewModel
                     ?? (_playActionNowCommand = new RelayCommand<ModelAction>(
                         action =>
                         {
-                            SendPlayingMessageAndNavigate(action?.Uid, DateTime.Now);
+                            SendPlayingMessageAndNavigate(action?.Uid ?? 0, DateTime.Now);
                         }));
             }
         }
@@ -233,7 +252,7 @@ namespace TimeXv2.ViewModel
         #region Methods
 
         #region SendPlayingMessageAndNavigate
-        private void SendPlayingMessageAndNavigate(string actionUid, DateTime? startTime = null)
+        private void SendPlayingMessageAndNavigate(int actionUid, DateTime? startTime = null)
         {
             MessengerInstance.Send(new ActionPlayingMessage(actionUid, startTime));
             _navigationService.Navigate(NavPage.ActionPlaying);

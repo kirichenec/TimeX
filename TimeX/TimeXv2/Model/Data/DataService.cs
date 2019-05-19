@@ -39,12 +39,12 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region GetActionByUidAsync
-        public async Task<Action> GetActionByUidAsync(string uid)
+        public async Task<Action> GetActionByUidAsync(int uid)
         {
             await DebugDelay();
 
             var result =
-                uid == null ?
+                uid == 0 ?
                 null :
                 await _actionContext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
             return result;
@@ -74,7 +74,7 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region GetCheckpointByUidAsync
-        public async Task<Checkpoint> GetCheckpointByUidAsync(string uid)
+        public async Task<Checkpoint> GetCheckpointByUidAsync(int uid)
         {
             await DebugDelay();
             try
@@ -97,26 +97,25 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region AddActionAsync
-        public async Task<string> AddActionAsync(Action value)
+        public async Task<bool> AddActionAsync(Action value)
         {
             await DebugDelay();
 
             try
             {
-                value.Uid = Guid.NewGuid().ToString();
                 _actionContext.Actions.Add(value);
-                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
-                return value.Uid;
+                var result = await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+                return result > 0;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
         #endregion
 
         #region DeleteActionAsync
-        public async Task<bool> DeleteActionAsync(string uid)
+        public async Task<bool> DeleteActionAsync(int uid)
         {
             await DebugDelay();
 

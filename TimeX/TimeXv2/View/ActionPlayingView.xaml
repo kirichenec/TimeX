@@ -13,7 +13,6 @@
       d:DesignHeight="600" d:DesignWidth="800"
       DataContext="{Binding ActionPlaying, Source={StaticResource Locator}}"
       Style="{StaticResource PageStyle}"
-      Tag="{Binding PlayedAction.CheckpointsAlarmNeededCount}"
       WindowTitle="Ход мероприятия">
     <Page.Resources>
         <CollectionViewSource Source="{Binding PlayedAction.Checkpoints}" x:Key="Checkpoints">
@@ -25,6 +24,8 @@
         </CollectionViewSource>
 
         <extensions:IsNotNullConverter x:Key="isNotNullConverter"/>
+        
+        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
     </Page.Resources>
 
     <i:Interaction.Triggers>

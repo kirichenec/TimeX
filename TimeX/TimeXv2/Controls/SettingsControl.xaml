@@ -4,6 +4,10 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Loaded="ControlLoaded">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource GlobalTextblockStyle}"/>
+    </UserControl.Resources>
+    
     <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -13,7 +17,7 @@
         <StackPanel Orientation="Vertical" Margin="16">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Тёмная тема"/>
-                <ToggleButton IsChecked="{Binding EditedSettings.IsDarkTheme, ElementName=root}"
+                <ToggleButton IsChecked="{Binding EditedSettings.IsDarkTheme, ElementName=root, Mode=TwoWay}"
                               Margin="{StaticResource RightBottom}"
                               Command="{Binding GlobalViewModel.ChangeIsDarkCommand}"
                               CommandParameter="{Binding EditedSettings.IsDarkTheme, ElementName=root}"/>

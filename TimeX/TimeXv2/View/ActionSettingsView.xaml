@@ -53,7 +53,7 @@
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TitleTextBlock}">
                             <Setter Property="Text" Value="Редактирование мероприятия"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding EditedAction.Uid}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding EditedAction.Uid}" Value="0">
                                     <Setter Property="Text" Value="Новое мероприятие"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -79,7 +79,7 @@
                                         Margin="{StaticResource RightBottom}"
                                         SelectedDate="{Binding EditedDate, Mode=TwoWay}">
                                 <materialDesign:HintAssist.Hint>
-                                    <TextBlock Text="Дата" Margin="0"/>
+                                    <TextBlock Text="Дата"/>
                                 </materialDesign:HintAssist.Hint>
                             </DatePicker>
                             <materialDesign:TimePicker Width="100"
@@ -87,7 +87,7 @@
                                                        Margin="{StaticResource RightBottom}"
                                                        SelectedTime="{Binding EditedTime, Mode=TwoWay}">
                                 <materialDesign:HintAssist.Hint>
-                                    <TextBlock Text="Время" Margin="0"/>
+                                    <TextBlock Text="Время"/>
                                 </materialDesign:HintAssist.Hint>
                             </materialDesign:TimePicker>
                         </StackPanel>
@@ -120,6 +120,9 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <materialDesign:Card Margin="{StaticResource RightBottom}" Style="{StaticResource FadeInOutCard}">
+                                <materialDesign:Card.Resources>
+                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
+                                </materialDesign:Card.Resources>
                                 <StackPanel Orientation="Vertical" Margin="0">
                                     <StackPanel Margin="24,24,16,16">
                                         <TextBlock Text="{Binding Name, StringFormat=Наименование: {0}}"/>

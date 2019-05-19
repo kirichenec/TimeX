@@ -21,7 +21,7 @@ namespace TimeXv2.ViewModel
             MessengerInstance
                 .Register<ActionSettingsMessage>(this, asm =>
                 {
-                    _actionUidForLoad = asm.Uid;
+                    _actionForLoad = asm;
                 });
 
             if (IsInDesignMode)
@@ -58,7 +58,7 @@ namespace TimeXv2.ViewModel
         #region Fields
 
         #region _actionUidForLoad
-        private string _actionUidForLoad;
+        private ActionSettingsMessage _actionForLoad;
         #endregion
 
         #region _currentTask
@@ -323,10 +323,11 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _currentTask = _dataService.GetActionByUidAsync(_actionUidForLoad).ContinueWith(
+                        _currentTask = _dataService.GetActionByUidAsync(_actionForLoad.Uid).ContinueWith(
                             action =>
                             {
-                                this.EditedAction = new ModelAction(action.Result);
+                                this.EditedAction = new ModelAction(action.Result, _actionForLoad.IsCopy);
+
                                 this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
                                 this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
                                 IsQueryExecuted = true;
@@ -351,9 +352,8 @@ namespace TimeXv2.ViewModel
                     ?? (_saveCheckpointCommand = new RelayCommand<Checkpoint>(
                     checkpoint =>
                     {
-                        if (checkpoint.Uid == null)
+                        if (checkpoint.Uid == 0)
                         {
-                            checkpoint.Uid = Guid.NewGuid().ToString();
                             this.EditedAction.Checkpoints.Add(checkpoint);
                         }
                         else
@@ -385,12 +385,12 @@ namespace TimeXv2.ViewModel
                     {
                         IsQueryExecuted = false;
                         this.EditedAction.StartTime = this.EditedDate.Date.Add(this.EditedTime.TimeOfDay);
-                        if (this.EditedAction.Uid == null)
+                        if (this.EditedAction.Uid == 0)
                         {
                             _dataService.AddActionAsync(this.EditedAction).ContinueWith(
                                 answer =>
                                 {
-                                    if (answer.Result != null)
+                                    if (answer.Result)
                                     {
                                         _navigationService.Navigate(NavPage.Main);
                                     }
@@ -438,7 +438,7 @@ namespace TimeXv2.ViewModel
                     ?? (_unloadCommand = new RelayCommand(
                     () =>
                     {
-
+                        this.EditedAction = null;
                     }));
             }
         }

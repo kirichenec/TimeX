@@ -6,6 +6,9 @@
              Style="{StaticResource BasicStyle}"
              MinWidth="300"
              Loaded="Root_Loaded">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource GlobalTextblockStyle}"/>
+    </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -35,11 +38,6 @@
 
                 <TextBlock>
                     <Run Text="Время начала:"/>
-                    <Run Text="{Binding EditedStartTime.AsTimeSpan,
-                                        ElementName=root,
-                                        Mode=OneWay,
-                                        StringFormat=d\\ hh\\:mm}"
-                         FontStyle="Italic"/>
                 </TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -64,11 +62,6 @@
 
                 <TextBlock>
                     <Run Text="Продолжительность:"/>
-                    <Run Text="{Binding EditedDuration.AsTimeSpan,
-                                        ElementName=root,
-                                        Mode=OneWay,
-                                        StringFormat=d\\ hh\\:mm}"
-                         FontStyle="Italic"/>
                 </TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>

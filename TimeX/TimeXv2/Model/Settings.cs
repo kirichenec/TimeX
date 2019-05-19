@@ -230,7 +230,21 @@ namespace TimeXv2.Model
         #endregion
 
         #region IsDarkTheme
-        public bool IsDarkTheme { get; set; }
+        private bool _isDarkTheme;
+
+        public bool IsDarkTheme
+        {
+            get { return _isDarkTheme; }
+            set
+            {
+                if (_isDarkTheme == value)
+                {
+                    return;
+                }
+                _isDarkTheme = value;
+                NotifyPropertyChanged();
+            }
+        }
         #endregion
 
         #region Topmost

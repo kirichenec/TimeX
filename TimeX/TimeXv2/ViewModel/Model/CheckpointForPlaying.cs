@@ -241,9 +241,9 @@ namespace TimeXv2.ViewModel.Model
         #endregion
 
         #region Uid
-        private string _uid;
+        private int _uid;
 
-        public string Uid
+        public int Uid
         {
             get { return _uid; }
             set

@@ -12,20 +12,21 @@ namespace TimeXv2.Model
         #region ctor
         public Checkpoint() { }
 
-        public Checkpoint(Checkpoint value, bool copyParent = false, Action parent = null)
+        public Checkpoint(Checkpoint value, bool copyParent = false, Action parent = null, bool isCopy = false)
         {
-            value.CopyPropertiesTo(this, copyParent, parent);
+            value.CopyPropertiesTo(this, copyParent, parent, isCopy);
         }
         #endregion
 
         #region Properties
 
         #region Uid
-        private string _uid;
+        private int _uid;
 
         [Column("Uid")]
         [Key]
-        public string Uid
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Uid
         {
             get { return _uid; }
             set
@@ -213,15 +214,18 @@ namespace TimeXv2.Model
         #region Methods
 
         #region CopyPropertiesTo
-        public void CopyPropertiesTo(Checkpoint target, bool copyParent = false, Action parent = null)
+        public void CopyPropertiesTo(Checkpoint target, bool copyParent = false, Action parent = null, bool isCopy = false)
         {
-            target.CheckedDate = this.CheckedDate;
+            if (!isCopy)
+            {
+                target.CheckedDate = this.CheckedDate;
+                target.Order = this.Order;
+                target.Uid = this.Uid;
+            }
             target.Duration = this.Duration;
             target.IsOrderNeeded = this.IsOrderNeeded;
             target.Name = this.Name;
-            target.Order = this.Order;
             target.StartTime = this.StartTime;
-            target.Uid = this.Uid;
             if (copyParent)
             {
                 target.ParentAction = this.ParentAction;

@@ -28,8 +28,7 @@ namespace TimeXv2.ViewModel
                     new ActionForPlaying()
                     {
                         Name = "Name",
-                        StartTime = DateTime.Now.Date,
-                        Uid = Guid.NewGuid().ToString()
+                        StartTime = DateTime.Now.Date
                     };
                 var chk = new ObservableCollection<CheckpointForPlaying>
                 {
@@ -38,8 +37,7 @@ namespace TimeXv2.ViewModel
                         StartTime = TimeSpan.FromMinutes(0),
                         Duration = TimeSpan.FromDays(1),
                         IsOrderNeeded = true,
-                        Name = "new",
-                        Uid = Guid.NewGuid().ToString()
+                        Name = "new"
                     }
                 };
                 PlayedAction.Checkpoints = chk;
@@ -207,7 +205,7 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _dataService.GetActionByUidAsync(_actionPlayingMessage?.Uid).ContinueWith(
+                        _dataService.GetActionByUidAsync(_actionPlayingMessage?.Uid ?? 0).ContinueWith(
                             action =>
                             {
                                 if (action?.Result != null)
