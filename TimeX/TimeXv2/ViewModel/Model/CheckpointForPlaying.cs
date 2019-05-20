@@ -30,24 +30,6 @@ namespace TimeXv2.ViewModel.Model
 
         #region Properties
 
-        #region IsAlarmTime
-        private bool _isAlarmTime;
-
-        public bool IsAlarmTime
-        {
-            get { return _isAlarmTime; }
-            set
-            {
-                if (_isAlarmTime == value)
-                {
-                    return;
-                }
-                _isAlarmTime = value;
-                NotifyPropertyChanged();
-            }
-        }
-        #endregion
-
         #region CheckedDate
         private DateTime? _checkedDate;
 
@@ -74,7 +56,9 @@ namespace TimeXv2.ViewModel.Model
         {
             get
             {
-                double _currentPercent = (double)(ParentAction.CurrentTime - ParentAction.StartTime - StartTime).Ticks * 100 / Duration.Ticks;
+                double _currentPercent =
+                    Duration.Ticks > 0 ?
+                    (double)(ParentAction.CurrentTime - ParentAction.StartTime - StartTime).Ticks * 100 / Duration.Ticks : 100;
                 _currentPercent =
                     _currentPercent < 0 ?
                     0 :
@@ -119,6 +103,24 @@ namespace TimeXv2.ViewModel.Model
         /// Время окончания
         /// </summary>
         public TimeSpan EndTime { get { return StartTime + Duration; } }
+        #endregion
+
+        #region IsAlarmTime
+        private bool _isAlarmTime;
+
+        public bool IsAlarmTime
+        {
+            get { return _isAlarmTime; }
+            set
+            {
+                if (_isAlarmTime == value)
+                {
+                    return;
+                }
+                _isAlarmTime = value;
+                NotifyPropertyChanged();
+            }
+        }
         #endregion
 
         #region IsOrderNeeded

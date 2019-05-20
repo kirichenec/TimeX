@@ -14,6 +14,7 @@ namespace TimeXv2.ViewModel
             SimpleIoc.Default.Register<INavigationService, NavigationService>(true);
             SimpleIoc.Default.Register<ActionContext>();
             SimpleIoc.Default.Register<IDataService, DataService>();
+            //SimpleIoc.Default.Register < IRetryingDataService <,>, RetryingDataService <,> > ();
             SimpleIoc.Default.Register<GlobalViewModel>(true);
 
             SimpleIoc.Default.Register<MainViewModel>(true);

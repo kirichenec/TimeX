@@ -3,9 +3,11 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Model;
 using TimeXv2.ViewModel.Navigation;
+using ModelAction = TimeXv2.Model.Action;
 
 namespace TimeXv2.ViewModel
 {
@@ -171,20 +173,22 @@ namespace TimeXv2.ViewModel
                         value =>
                         {
                             value.CheckedDate = DateTime.Now;
-                            _dataService.UpdateCheckpointAsync(value.ToCheckpoint()).ContinueWith(answer =>
-                            {
-                                #region if debug
-#if DEBUG
-                                var message = "Событие сохранено";
-                                Static.Properties.Instance.MessageQueue.Enqueue(
-                                    message,
-                                    "OK",
-                                    _ => { },
-                                    message);
-#endif
-                                #endregion
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
+                            new RetryingDataService<bool, Checkpoint>()
+                                .RunTheMethod(_dataService.UpdateCheckpointAsync, value.ToCheckpoint())
+                                .ContinueWith(
+                                    boolAnswer =>
+                                    {
+                                        var answer = boolAnswer.Result;
+                                        if (!string.IsNullOrEmpty(answer.Message))
+                                        {
+                                            Static.Properties.ShowMessage(answer.Message);
+                                        }
+                                        else if (answer.Result)
+                                        {
+                                            Static.Properties.ShowMessage("Событие обновлено");
+                                        }
+                                    },
+                                    TaskScheduler.FromCurrentSynchronizationContext());
                         }));
             }
         }
@@ -205,29 +209,27 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _dataService.GetActionByUidAsync(_actionPlayingMessage?.Uid ?? 0).ContinueWith(
-                            action =>
-                            {
-                                if (action?.Result != null)
+                        new RetryingDataService<ModelAction, int>()
+                            .RunTheMethod(_dataService.GetActionByUidAsync, _actionPlayingMessage.Uid)
+                            .ContinueWith(
+                                actionAnswer =>
                                 {
-                                    action.Result.StartTime = _actionPlayingMessage.StartTime ?? action.Result.StartTime;
-                                    this.PlayedAction = new ActionForPlaying(action.Result);
+                                    var answer = actionAnswer.Result;
+                                    if (!string.IsNullOrEmpty(answer.Message))
+                                    {
+                                        Static.Properties.ShowMessage(answer.Message);
+                                    }
+                                    else
+                                    {
+                                        answer.Result.StartTime = _actionPlayingMessage.StartTime ?? answer.Result.StartTime;
+                                        this.PlayedAction = new ActionForPlaying(answer.Result);
 
-                                    IsPlay = true;
-                                    new Task(() => Timer()).Start();
-                                    IsQueryExecuted = true; 
-                                }
-                                else
-                                {
-                                    var message = "Ошибк загрузки мероприятия";
-                                    Static.Properties.Instance.MessageQueue.Enqueue(
-                                        message,
-                                        "OK",
-                                        _ => { },
-                                        message);
-                                }
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
+                                        IsPlay = true;
+                                        new Task(() => Timer()).Start();
+                                        IsQueryExecuted = true;
+                                    }
+                                },
+                                TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }

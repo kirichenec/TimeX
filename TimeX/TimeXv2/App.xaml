@@ -323,7 +323,7 @@
                                                         </EventTrigger>
                                                     </ContentPresenter.Triggers>
                                                 </ContentPresenter>
-                                                
+
                                                 <!--Snackbar for messages-->
                                                 <materialDesign:Snackbar HorizontalAlignment="Stretch"
                                                                          Margin="{StaticResource RightBottom}"
@@ -336,11 +336,6 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
-
-            <!--ToolTip style-->
-            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
-                <Setter Property="Padding" Value="{StaticResource LeftTop}" />
             </Style>
 
             <!--TextBox style-->

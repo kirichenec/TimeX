@@ -164,7 +164,10 @@ namespace TimeXv2.ViewModel.Model
         {
             get
             {
-                double _currentPercent = this.LeftTime.Ticks * 100 / (this.EndTime - this.StartTime).Ticks;
+                var duration = (this.EndTime - this.StartTime).Ticks;
+                var _currentPercent =
+                    duration > 0 ?
+                    (double)(this.LeftTime.Ticks * 100 / duration) : 100;
                 _currentPercent =
                     _currentPercent < 0 ?
                     0 :

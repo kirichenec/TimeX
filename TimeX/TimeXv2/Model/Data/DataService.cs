@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
-using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeXv2.Extensions;
@@ -24,10 +22,21 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region Fields
-        private const double _debugDelaySeconds = 3;
+        private const double _debugDelaySeconds = 1;
         #endregion
 
         #region Methods
+
+        #region AddActionAsync
+        public async Task<bool> AddActionAsync(Action value)
+        {
+            await DebugDelay();
+
+            _actionContext.Actions.Add(value);
+            var result = await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            return result > 0;
+        }
+        #endregion
 
         #region DebugDelay
         private static async Task DebugDelay()
@@ -38,15 +47,26 @@ namespace TimeXv2.Model.Data
         }
         #endregion
 
+        #region DeleteActionAsync
+        public async Task<bool> DeleteActionAsync(int uid)
+        {
+            await DebugDelay();
+
+            _actionContext.Actions.Remove(await GetActionByUidAsync(uid).ConfigureAwait(false));
+            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            return true;
+        }
+        #endregion
+
         #region GetActionByUidAsync
         public async Task<Action> GetActionByUidAsync(int uid)
         {
             await DebugDelay();
 
             var result =
-                uid == 0 ?
-                null :
-                await _actionContext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
+                    uid == 0 ?
+                    null :
+                    await _actionContext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -56,20 +76,13 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            try
+            DbQuery<Action> query = _actionContext.Actions;
+            if (isFullLoad)
             {
-                DbQuery<Action> query = _actionContext.Actions;
-                if (isFullLoad)
-                {
-                    query = query.Include($"{nameof(Checkpoint)}s");
-                }
-                var result = await query.ToListAsync().ConfigureAwait(false);
-                return result;
+                query = query.Include($"{nameof(Checkpoint)}s");
             }
-            catch (Exception)
-            {
-                return null;
-            }
+            var result = await query.ToListAsync().ConfigureAwait(false);
+            return result;
         }
         #endregion
 
@@ -77,15 +90,9 @@ namespace TimeXv2.Model.Data
         public async Task<Checkpoint> GetCheckpointByUidAsync(int uid)
         {
             await DebugDelay();
-            try
-            {
-                var result = await _actionContext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
-                return result;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+
+            var result = await _actionContext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
+            return result;
         }
         #endregion
 
@@ -96,100 +103,40 @@ namespace TimeXv2.Model.Data
         }
         #endregion
 
-        #region AddActionAsync
-        public async Task<bool> AddActionAsync(Action value)
-        {
-            await DebugDelay();
-
-            try
-            {
-                _actionContext.Actions.Add(value);
-                var result = await _actionContext.SaveChangesAsync().ConfigureAwait(false);
-                return result > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        #endregion
-
-        #region DeleteActionAsync
-        public async Task<bool> DeleteActionAsync(int uid)
-        {
-            await DebugDelay();
-
-            try
-            {
-                _actionContext.Actions.Remove(await GetActionByUidAsync(uid).ConfigureAwait(false));
-                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        #endregion
-
         #region UpdateActionAsync
-        public async Task<bool> UpdateActionAsync(Action value, bool firstTry = true)
+        public async Task<bool> UpdateActionAsync(Action value)
         {
             await DebugDelay();
 
-            try
+            var updatableAction = await GetActionByUidAsync(value.Uid).ConfigureAwait(false);
+
+            updatableAction.Name = value.Name;
+            updatableAction.StartTime = value.StartTime;
+
+            foreach (var chk in updatableAction.Checkpoints)
             {
-                var updatableAction = await GetActionByUidAsync(value.Uid).ConfigureAwait(false);
-
-                updatableAction.Name = value.Name;
-                updatableAction.StartTime = value.StartTime;
-
-                foreach (var chk in updatableAction.Checkpoints)
+                var tempChk = value.Checkpoints.FirstOrDefault(vChk => vChk.Uid == chk.Uid);
+                if (tempChk == null)
                 {
-                    var tempChk = value.Checkpoints.FirstOrDefault(vChk => vChk.Uid == chk.Uid);
-                    if (tempChk == null)
-                    {
-                        updatableAction.Checkpoints.Remove(chk);
-                    }
-                    else
-                    {
-                        chk.CheckedDate = tempChk.CheckedDate;
-                        chk.Duration = tempChk.Duration;
-                        chk.IsOrderNeeded = tempChk.IsOrderNeeded;
-                        chk.Name = tempChk.Name;
-                        chk.Order = tempChk.Order;
-                        chk.StartTime = tempChk.StartTime;
-                    }
+                    updatableAction.Checkpoints.Remove(chk);
                 }
-
-                var updatableChkUids = updatableAction.Checkpoints.Select(ch => ch.Uid);
-                var newCheckpoints = value.Checkpoints.Where(chk => !updatableChkUids.Contains(chk.Uid));
-                newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk, parent: updatableAction)));
-
-                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
-                return true;
-            }
-            catch (EntityException dbException)
-            {
-                var sqliteException = dbException.InnerException as SQLiteException;
-                if (sqliteException?.ErrorCode == 5)
+                else
                 {
-                    if (firstTry)
-                    {
-                        return await UpdateActionAsync(value, false).ConfigureAwait(false);
-                    }
+                    chk.CheckedDate = tempChk.CheckedDate;
+                    chk.Duration = tempChk.Duration;
+                    chk.IsOrderNeeded = tempChk.IsOrderNeeded;
+                    chk.Name = tempChk.Name;
+                    chk.Order = tempChk.Order;
+                    chk.StartTime = tempChk.StartTime;
                 }
-                return false;
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                // data removed or changed
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+
+            var updatableChkUids = updatableAction.Checkpoints.Select(ch => ch.Uid);
+            var newCheckpoints = value.Checkpoints.Where(chk => !updatableChkUids.Contains(chk.Uid));
+            newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk, parent: updatableAction)));
+
+            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            return true;
         }
         #endregion
 
@@ -198,19 +145,12 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            try
-            {
-                var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid).ConfigureAwait(false);
+            var updatableCheckpoint = await GetCheckpointByUidAsync(value.Uid).ConfigureAwait(false);
 
-                value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
+            value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
 
-                await _actionContext.SaveChangesAsync().ConfigureAwait(false);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            return true;
         }
         #endregion
 

@@ -65,6 +65,17 @@ namespace TimeXv2.Static
 
         #endregion
 
+        #region Methods
+        public static void ShowMessage(string message)
+        {
+            Instance.MessageQueue.Enqueue(
+                message,
+                "OK",
+                _ => { },
+                message);
+        }
+        #endregion
+
         public static Properties Instance { get; private set; }
     }
 }

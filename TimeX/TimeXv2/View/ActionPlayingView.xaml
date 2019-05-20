@@ -133,6 +133,9 @@
                             <DataTemplate>
                                 <materialDesign:Card Margin="{StaticResource RightBottom}"
                                                      Style="{StaticResource FadeInOutCard}">
+                                    <materialDesign:Card.Resources>
+                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
+                                    </materialDesign:Card.Resources>
                                     <materialDesign:ColorZone Mode="Light">
                                         <Grid>
                                             <ProgressBar Value="{Binding CurrentPercent, Mode=OneWay}"

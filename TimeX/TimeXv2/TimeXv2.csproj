@@ -146,8 +146,11 @@
     <Compile Include="Model\Data\ActionContext.cs" />
     <Compile Include="Model\Action.cs" />
     <Compile Include="Model\Checkpoint.cs" />
+    <Compile Include="Model\Data\DataResult.cs" />
     <Compile Include="Model\Data\DataService.cs" />
     <Compile Include="Model\Data\IDataService.cs" />
+    <Compile Include="Model\Data\IRetryingDataService.cs" />
+    <Compile Include="Model\Data\RetryingDataService.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Static\Properties.cs" />
     <Compile Include="ViewModel\ActionPlayingViewModel.cs" />

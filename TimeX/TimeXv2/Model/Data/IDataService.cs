@@ -12,8 +12,7 @@ namespace TimeXv2.Model.Data
         Task<Checkpoint> GetCheckpointByUidAsync(int uid);
         Task<List<Action>> GetActionsListAsync(bool isFullLoad = false);
         IQueryable<Action> QueryableActions();
-        // TODO: Make first try in all methods
-        Task<bool> UpdateActionAsync(Action value, bool firstTry = true);
+        Task<bool> UpdateActionAsync(Action value);
         Task<bool> UpdateCheckpointAsync(Checkpoint value);
     }
 }

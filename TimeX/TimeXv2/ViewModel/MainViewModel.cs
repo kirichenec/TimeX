@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TimeXv2.Extensions;
@@ -76,7 +77,7 @@ namespace TimeXv2.ViewModel
                         action =>
                         {
 
-                            MessengerInstance.Send(new ActionSettingsMessage(action?.Uid ?? 0, true));
+                            MessengerInstance.Send(new ActionSettingsMessage(action?.Uid ?? 0, isCopy: true));
                             _navigationService.Navigate(NavPage.ActionSettings);
                         }));
             }
@@ -98,16 +99,22 @@ namespace TimeXv2.ViewModel
                         action =>
                         {
                             IsQueryExecuted = false;
-                            _dataService.DeleteActionAsync(action.Uid).ContinueWith(
-                                answer =>
+                            new RetryingDataService<bool, int>()
+                                .RunTheMethod(_dataService.DeleteActionAsync, action.Uid).ContinueWith(
+                                isDeletedAnswer =>
                                 {
-                                    if (answer.Result)
+                                    var answer = isDeletedAnswer.Result;
+                                    if (answer.Message != null)
+                                    {
+                                        Static.Properties.ShowMessage(answer.Message);
+                                    }
+                                    else if (answer.Result)
                                     {
                                         this.Actions.Remove(action);
                                     }
                                     IsQueryExecuted = true;
                                 },
-                                TaskScheduler.FromCurrentSynchronizationContext());
+                            TaskScheduler.FromCurrentSynchronizationContext());
                         }));
             }
         }
@@ -149,22 +156,21 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _dataService.GetActionsListAsync().ContinueWith(
-                            actions =>
-                            {
-                                actions.Result?.ForEach(a => Actions.Add(a));
-                                IsQueryExecuted = true;
 
-                                #region if debug
-#if DEBUG
-                                var message = "Data loaded";
-                                Static.Properties.Instance.MessageQueue.Enqueue(
-                                    message,
-                                    "OK",
-                                    _ => { },
-                                    message);
-#endif
-                                #endregion
+                        new RetryingDataService<List<ModelAction>, bool>()
+                            .RunTheMethod(new Func<Task<List<ModelAction>>>(() => _dataService.GetActionsListAsync())).ContinueWith(
+                            actionsAnswer =>
+                            {
+                                var answer = actionsAnswer.Result;
+                                if (answer.Message != null)
+                                {
+                                    Static.Properties.ShowMessage(answer.Message);
+                                }
+                                else
+                                {
+                                    answer.Result?.ForEach(a => Actions.Add(a));
+                                }
+                                IsQueryExecuted = true;
                             },
                             TaskScheduler.FromCurrentSynchronizationContext());
                     }));

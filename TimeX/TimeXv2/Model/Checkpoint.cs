@@ -20,27 +20,6 @@ namespace TimeXv2.Model
 
         #region Properties
 
-        #region Uid
-        private int _uid;
-
-        [Column("Uid")]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Uid
-        {
-            get { return _uid; }
-            set
-            {
-                if (_uid == value)
-                {
-                    return;
-                }
-                _uid = value;
-                NotifyPropertyChanged();
-            }
-        }
-        #endregion
-
         #region CheckedDate
         private DateTime? _checkedDate;
 
@@ -206,6 +185,27 @@ namespace TimeXv2.Model
         {
             get { return _startTimeTicks; }
             set { _startTimeTicks = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(StartTime)); NotifyPropertyChanged(nameof(EndTime)); }
+        }
+        #endregion
+
+        #region Uid
+        private int _uid;
+
+        [Column("Uid")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Uid
+        {
+            get { return _uid; }
+            set
+            {
+                if (_uid == value)
+                {
+                    return;
+                }
+                _uid = value;
+                NotifyPropertyChanged();
+            }
         }
         #endregion
 

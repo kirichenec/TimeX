@@ -323,16 +323,26 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        _currentTask = _dataService.GetActionByUidAsync(_actionForLoad.Uid).ContinueWith(
-                            action =>
-                            {
-                                this.EditedAction = new ModelAction(action.Result, _actionForLoad.IsCopy);
+                        new RetryingDataService<ModelAction, int>()
+                            .RunTheMethod(_dataService.GetActionByUidAsync, _actionForLoad.Uid)
+                            .ContinueWith(
+                                actionAnswer =>
+                                {
+                                    var answer = actionAnswer.Result;
+                                    if (string.IsNullOrEmpty(answer.Message))
+                                    {
+                                        this.EditedAction = new ModelAction(answer.Result, _actionForLoad.IsCopy);
 
-                                this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
-                                this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
-                                IsQueryExecuted = true;
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
+                                        this.EditedDate = this.EditedAction?.StartTime.Date ?? DateTime.Now;
+                                        this.EditedTime = new DateTime(0).Add(this.EditedAction?.StartTime.TimeOfDay ?? TimeSpan.FromTicks(0));
+                                    }
+                                    else
+                                    {
+                                        Static.Properties.ShowMessage(answer.Message);
+                                    }
+                                    IsQueryExecuted = true;
+                                },
+                                TaskScheduler.FromCurrentSynchronizationContext());
                     }));
             }
         }
@@ -384,41 +394,30 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         IsQueryExecuted = false;
-                        this.EditedAction.StartTime = this.EditedDate.Date.Add(this.EditedTime.TimeOfDay);
-                        if (this.EditedAction.Uid == 0)
-                        {
-                            _dataService.AddActionAsync(this.EditedAction).ContinueWith(
-                                answer =>
+                        EditedAction.StartTime = this.EditedDate.Date.Add(EditedTime.TimeOfDay);
+
+                        var function =
+                            EditedAction.Uid == 0 ?
+                            new Func<ModelAction, Task<bool>>(_dataService.AddActionAsync) :
+                            new Func<ModelAction, Task<bool>>(_dataService.UpdateActionAsync);
+
+                        new RetryingDataService<bool, ModelAction>()
+                            .RunTheMethod(function, this.EditedAction)
+                            .ContinueWith(
+                                isSaveAnswer =>
                                 {
-                                    if (answer.Result)
+                                    var answer = isSaveAnswer.Result;
+                                    if (!string.IsNullOrEmpty(answer.Message))
+                                    {
+                                        Static.Properties.ShowMessage(answer.Message);
+                                    }
+                                    else if (answer.Result)
                                     {
                                         _navigationService.Navigate(NavPage.Main);
-                                    }
-                                    else
-                                    {
-                                        Static.Properties.Instance.MessageQueue.Enqueue("Произошла ошибка сохранения нового мероприятия, повторите попытку");
                                     }
                                     IsQueryExecuted = true;
                                 },
                                 TaskScheduler.FromCurrentSynchronizationContext());
-                        }
-                        else
-                        {
-                            _dataService.UpdateActionAsync(this.EditedAction).ContinueWith(
-                                answer =>
-                                {
-                                    if (answer.Result)
-                                    {
-                                        _navigationService.Navigate(NavPage.Main);
-                                    }
-                                    else
-                                    {
-                                        Static.Properties.Instance.MessageQueue.Enqueue("Произошла ошибка обновления мероприятия, повторите попытку");
-                                    }
-                                    IsQueryExecuted = true;
-                                },
-                                TaskScheduler.FromCurrentSynchronizationContext());
-                        }
                     }));
             }
         }
