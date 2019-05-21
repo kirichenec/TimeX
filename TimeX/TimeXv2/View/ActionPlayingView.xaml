@@ -44,6 +44,9 @@
         <ie:DataTrigger Binding="{Binding PlayedAction.IsAlarmNeeded}" Value="true">
             <ie:CallMethodAction MethodName="Play" TargetObject="{Binding ElementName=ActionMediaElement}"/>
         </ie:DataTrigger>
+        <ie:DataTrigger Binding="{Binding PlayedAction.Checkpoints}" Value="{x:Null}" Comparison="NotEqual">
+            <i:InvokeCommandAction Command="{Binding CheckpointsLoadedCommand}" CommandParameter="{Binding Source={StaticResource Checkpoints}}"/>
+        </ie:DataTrigger>
     </i:Interaction.Triggers>
 
     <Grid>
@@ -68,6 +71,7 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                             </Style>
                         </materialDesign:Card.Resources>
+                        
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -311,6 +315,11 @@
                       IsChecked="{Binding IsExpanded, Mode=TwoWay}"
                       Margin="{StaticResource RightBottom}"
                       VerticalAlignment="Bottom">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <ie:CallMethodAction MethodName="Refresh" TargetObject="{Binding Source={StaticResource Checkpoints}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ToggleButton.Style>
                 <Style TargetType="{x:Type ToggleButton}" BasedOn="{ StaticResource MaterialDesignActionToggleButton}">
                     <Setter Property="Opacity" Value="0.25"/>

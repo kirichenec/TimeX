@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Model;
@@ -194,6 +195,23 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region CheckpointsLoadedCommand
+        private RelayCommand<ListCollectionView> _checkpointsLoadedCommand;
+
+        public RelayCommand<ListCollectionView> CheckpointsLoadedCommand
+        {
+            get
+            {
+                return _checkpointsLoadedCommand ??
+                    (_checkpointsLoadedCommand = new RelayCommand<ListCollectionView>(
+                        checkpointsSource =>
+                        {
+                            checkpointsSource.Filter = FilterCheckpoints;
+                        }));
+            }
+        }
+        #endregion
+
         #region LoadCommand
         private RelayCommand _loadCommand;
 
@@ -250,6 +268,7 @@ namespace TimeXv2.ViewModel
                     () =>
                     {
                         this.IsPlay = false;
+                        PlayedAction = null;
                     }));
             }
         }
@@ -258,6 +277,16 @@ namespace TimeXv2.ViewModel
         #endregion
 
         #region Methods
+
+        #region FilterCheckpoints
+        private bool FilterCheckpoints(object obj)
+        {
+            var value = obj as CheckpointForPlaying;
+            return
+                IsExpanded ||
+                (value.CurrentPercent != 0 && value.CurrentPercent != 100);
+        }
+        #endregion
 
         #region Timer
         private async void Timer()

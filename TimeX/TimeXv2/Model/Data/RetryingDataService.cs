@@ -8,9 +8,29 @@ namespace TimeXv2.Model.Data
 {
     public class RetryingDataService<T, TV> : IRetryingDataService<T, TV>
     {
+        #region ctor
+        public RetryingDataService()
+        {
+            RetryDelay = TimeSpan.FromSeconds(2);
+        }
+
+        public RetryingDataService(TimeSpan retryDelay)
+        {
+            RetryDelay = retryDelay;
+        }
+        #endregion
+
         #region Properties
 
-        public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(1);
+        #region RetryDelay
+        private TimeSpan _retryDelay;
+
+        public TimeSpan RetryDelay
+        {
+            get { return _retryDelay; }
+            set { _retryDelay = value; }
+        }
+        #endregion
 
         #endregion
 
