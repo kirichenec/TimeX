@@ -229,6 +229,42 @@ namespace TimeXv2.Model
         }
         #endregion
 
+        #region AlarmVolume
+        private double _alarmVolume = 1;
+
+        public double AlarmVolume
+        {
+            get { return _alarmVolume; }
+            set
+            {
+                if (_alarmVolume == value)
+                {
+                    return;
+                }
+                _alarmVolume = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region IsAlarmOn
+        private bool _isAlarmOn = true;
+
+        public bool IsAlarmOn
+        {
+            get { return _isAlarmOn; }
+            set
+            {
+                if (_isAlarmOn == value)
+                {
+                    return;
+                }
+                _isAlarmOn = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
+
         #region IsDarkTheme
         private bool _isDarkTheme;
 

@@ -284,7 +284,8 @@ namespace TimeXv2.ViewModel
             var value = obj as CheckpointForPlaying;
             return
                 IsExpanded ||
-                (value.CurrentPercent != 0 && value.CurrentPercent != 100);
+                (value.CurrentPercent != 0 && value.CurrentPercent != 100) ||
+                (value.IsAlarmTime && value.IsOrderNeeded);
         }
         #endregion
 

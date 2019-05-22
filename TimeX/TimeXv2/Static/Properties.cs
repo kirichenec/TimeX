@@ -1,6 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Data;
 
 namespace TimeXv2.Static
 {
@@ -28,7 +30,27 @@ namespace TimeXv2.Static
 
         // Using a DependencyProperty as the backing store for AlarmRing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AlarmRingProperty =
-            DependencyProperty.Register(nameof(AlarmRing), typeof(Uri), typeof(Properties), new PropertyMetadata(new Uri(@"C:\Windows\media\Alarm01.wav")));
+            DependencyProperty.Register(
+                nameof(AlarmRing),
+                typeof(Uri),
+                typeof(Properties),
+                new PropertyMetadata(new Uri(@"C:\Windows\media\Alarm10.wav")));
+        #endregion
+
+        #region IsAlarmMuted
+        public bool IsAlarmMuted
+        {
+            get { return (bool)GetValue(IsAlarmOnProperty); }
+            set { SetValue(IsAlarmOnProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAlarmOn.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAlarmOnProperty =
+            DependencyProperty.Register(
+                nameof(IsAlarmMuted),
+                typeof(bool),
+                typeof(Properties),
+                new PropertyMetadata(false));
         #endregion
 
         #region MessageQueue
@@ -77,5 +99,18 @@ namespace TimeXv2.Static
         #endregion
 
         public static Properties Instance { get; private set; }
+    }
+
+    public class ValueToPercentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)((double)value * 100);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (double)((int)value / 100);
+        }
     }
 }

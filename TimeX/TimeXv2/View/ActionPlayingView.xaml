@@ -24,7 +24,8 @@
         </CollectionViewSource>
 
         <extensions:IsNotNullConverter x:Key="isNotNullConverter"/>
-        
+        <statics:ValueToPercentConverter x:Key="ValueToPercent"/>
+
         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
     </Page.Resources>
 
@@ -71,7 +72,7 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                             </Style>
                         </materialDesign:Card.Resources>
-                        
+
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -218,9 +219,9 @@
                                                                 <MultiDataTrigger>
                                                                     <MultiDataTrigger.Conditions>
                                                                         <Condition Binding="{Binding CheckedDate, Converter={StaticResource isNotNullConverter}}" Value="true"/>
-                                                                        <Condition  Binding="{Binding RelativeSource={RelativeSource 
-                                                                                              Mode=FindAncestor, AncestorType={x:Type Button}}, 
-                                                                                              Path=IsMouseOver}" Value="True"/>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource 
+                                                                                                     Mode=FindAncestor, AncestorType={x:Type Button}}, 
+                                                                                                     Path=IsMouseOver}" Value="True"/>
                                                                     </MultiDataTrigger.Conditions>
 
                                                                     <MultiDataTrigger.EnterActions>
@@ -311,18 +312,13 @@
             </Grid>
         </Grid>
 
-        <ToggleButton HorizontalAlignment="Right"
-                      IsChecked="{Binding IsExpanded, Mode=TwoWay}"
-                      Margin="{StaticResource RightBottom}"
-                      VerticalAlignment="Bottom">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <ie:CallMethodAction MethodName="Refresh" TargetObject="{Binding Source={StaticResource Checkpoints}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <ToggleButton.Style>
-                <Style TargetType="{x:Type ToggleButton}" BasedOn="{ StaticResource MaterialDesignActionToggleButton}">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource {x:Type StackPanel}}">
                     <Setter Property="Opacity" Value="0.25"/>
+                    <Setter Property="Background" Value="Transparent"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Trigger.EnterActions>
@@ -342,16 +338,94 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </ToggleButton.Style>
-            <ToggleButton.Content>
-                <materialDesign:PackIcon Kind="EyeOff" />
-            </ToggleButton.Content>
-            <materialDesign:ToggleButtonAssist.OnContent>
-                <materialDesign:PackIcon Kind="Eye" />
-            </materialDesign:ToggleButtonAssist.OnContent>
-        </ToggleButton>
+            </StackPanel.Style>
+
+            <StackPanel Orientation="Horizontal"
+                        Background="Transparent"
+                        Margin="0"
+                        ToolTip="{Binding Volume, Converter={StaticResource ValueToPercent}, ElementName=ActionMediaElement}">
+                <Slider Margin="{StaticResource RightBottom}"
+                        Maximum="1"
+                        Value="{Binding Volume, ElementName=ActionMediaElement, Mode=TwoWay}"
+                        VerticalAlignment="Center">
+                    <Slider.Style>
+                        <Style TargetType="Slider" BasedOn="{StaticResource {x:Type Slider}}">
+                            <Setter Property="Width" Value="12"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource 
+                                                               Mode=FindAncestor, AncestorType={x:Type StackPanel}}, 
+                                                               Path=IsMouseOver}" Value="true">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="IncreaseVolSliderWidth">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:1"
+                                                                 Storyboard.TargetProperty="Width"
+                                                                 To="100"/>
+                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" BeginTime="00:00:00">
+                                                    <SplineThicknessKeyFrame KeyTime="00:00:01" Value="{StaticResource RightBottom}" />
+                                                </ThicknessAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="IncreaseVolSliderWidth"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource 
+                                                               Mode=FindAncestor, AncestorType={x:Type StackPanel}}, 
+                                                               Path=IsMouseOver}" Value="false">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="DecreaseVolSliderWidth">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:1"
+                                                                 Storyboard.TargetProperty="Width"
+                                                                 To="12"/>
+                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" BeginTime="00:00:00">
+                                                    <SplineThicknessKeyFrame KeyTime="00:00:01" Value="0,0,-22,8" />
+                                                </ThicknessAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="DecreaseVolSliderWidth"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Slider.Style>
+                </Slider>
+
+                <ToggleButton IsChecked="{Binding IsAlarmMuted, Source={x:Static statics:Properties.Instance}, Mode=TwoWay}"
+                              Margin="{StaticResource RightBottom}"
+                              Style="{StaticResource MaterialDesignActionToggleButton}">
+                    <ToggleButton.Content>
+                        <materialDesign:PackIcon Kind="VolumeHigh"/>
+                    </ToggleButton.Content>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <materialDesign:PackIcon Kind="VolumeMute" />
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>
+            </StackPanel>
+
+            <ToggleButton IsChecked="{Binding IsExpanded, Mode=TwoWay}"
+                          Margin="{StaticResource RightBottom}"
+                          Style="{StaticResource MaterialDesignActionToggleButton}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <ie:CallMethodAction MethodName="Refresh" TargetObject="{Binding Source={StaticResource Checkpoints}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ToggleButton.Content>
+                    <materialDesign:PackIcon Kind="EyeOff" />
+                </ToggleButton.Content>
+                <materialDesign:ToggleButtonAssist.OnContent>
+                    <materialDesign:PackIcon Kind="Eye" />
+                </materialDesign:ToggleButtonAssist.OnContent>
+            </ToggleButton>
+        </StackPanel>
 
         <MediaElement x:Name="ActionMediaElement"
+                      IsMuted="{Binding IsAlarmMuted, Source={x:Static statics:Properties.Instance}}"
                       Source="{Binding AlarmRing, Source={x:Static statics:Properties.Instance}}"
                       Visibility="Collapsed"
                       LoadedBehavior="Manual"

@@ -61,10 +61,6 @@ namespace TimeXv2.ViewModel
         private ActionSettingsMessage _actionForLoad;
         #endregion
 
-        #region _currentTask
-        private Task _currentTask;
-        #endregion
-
         #endregion
 
         #region Properties
