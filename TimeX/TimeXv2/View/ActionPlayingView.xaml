@@ -343,7 +343,15 @@
             <StackPanel Orientation="Horizontal"
                         Background="Transparent"
                         Margin="0"
-                        ToolTip="{Binding Volume, Converter={StaticResource ValueToPercent}, ElementName=ActionMediaElement}">
+                        ToolTip="{Binding Volume,
+                                          Converter={StaticResource ValueToPercent},
+                                          ElementName=ActionMediaElement}">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="Margin" Value="{StaticResource ZeroMargin}"/>
+                    </Style>
+                </StackPanel.Resources>
+                
                 <Slider Margin="{StaticResource RightBottom}"
                         Maximum="1"
                         Value="{Binding Volume, ElementName=ActionMediaElement, Mode=TwoWay}"
@@ -394,7 +402,6 @@
                         </Style>
                     </Slider.Style>
                 </Slider>
-
                 <ToggleButton IsChecked="{Binding IsAlarmMuted, Source={x:Static statics:Properties.Instance}, Mode=TwoWay}"
                               Margin="{StaticResource RightBottom}"
                               Style="{StaticResource MaterialDesignActionToggleButton}">

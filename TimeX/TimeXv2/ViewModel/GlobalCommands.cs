@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using TimeXv2.Model;
+using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
 
 namespace TimeXv2.ViewModel
@@ -12,14 +13,16 @@ namespace TimeXv2.ViewModel
     public class GlobalViewModel : ViewModelBase
     {
         #region ctor
-        public GlobalViewModel(INavigationService navigationService)
+        public GlobalViewModel(INavigationService navigationService, IDataService dataService)
         {
             _navigationService = navigationService;
+            _dataService = dataService;
         }
         #endregion
 
         #region Services
         private readonly INavigationService _navigationService;
+        private readonly IDataService _dataService;
         #endregion
 
         #region Commands

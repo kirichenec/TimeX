@@ -35,6 +35,18 @@ namespace TimeXv2.Controls
                 new PropertyMetadata(new LightSettings()));
         #endregion
 
+        #region IsAdvancedSettings
+        public bool IsAdvancedSettings
+        {
+            get { return (bool)GetValue(IsAdvancedSettingsProperty); }
+            set { SetValue(IsAdvancedSettingsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAdvancedSettings.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAdvancedSettingsProperty =
+            DependencyProperty.Register("IsAdvancedSettings", typeof(bool), typeof(SettingsControl), new PropertyMetadata(false));
+        #endregion
+
         #endregion
 
         #region Methods

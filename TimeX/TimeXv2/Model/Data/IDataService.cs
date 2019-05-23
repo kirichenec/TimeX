@@ -9,8 +9,8 @@ namespace TimeXv2.Model.Data
         Task<bool> AddActionAsync(Action value);
         Task<bool> DeleteActionAsync(int uid);
         Task<Action> GetActionByUidAsync(int uid);
-        Task<Checkpoint> GetCheckpointByUidAsync(int uid);
         Task<List<Action>> GetActionsListAsync(bool isFullLoad = false);
+        Task<Checkpoint> GetCheckpointByUidAsync(int uid);
         IQueryable<Action> QueryableActions();
         Task<bool> UpdateActionAsync(Action value);
         Task<bool> UpdateCheckpointAsync(Checkpoint value);

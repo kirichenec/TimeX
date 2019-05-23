@@ -13,6 +13,9 @@
             <Setter Property="Delay" Value="500"/>
             <Setter Property="Interval" Value="100"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignPaper}"/>
+            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
         </Style>
         <Style TargetType="materialDesign:PackIcon">
             <Setter Property="Height" Value="Auto"/>

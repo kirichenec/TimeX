@@ -11,14 +11,14 @@ namespace TimeXv2.Model.Data
     public class DataService : IDataService
     {
         #region ctor
-        public DataService(ActionContext context)
+        public DataService(ActionContext timeXcontext)
         {
-            _actionContext = context;
+            _timeXcontext = timeXcontext;
         }
         #endregion
 
         #region Services
-        private readonly ActionContext _actionContext;
+        private readonly ActionContext _timeXcontext;
         #endregion
 
         #region Fields
@@ -32,8 +32,8 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            _actionContext.Actions.Add(value);
-            var result = await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            _timeXcontext.Actions.Add(value);
+            var result = await _timeXcontext.SaveChangesAsync().ConfigureAwait(false);
             return result > 0;
         }
         #endregion
@@ -52,8 +52,8 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            _actionContext.Actions.Remove(await GetActionByUidAsync(uid).ConfigureAwait(false));
-            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            _timeXcontext.Actions.Remove(await GetActionByUidAsync(uid).ConfigureAwait(false));
+            await _timeXcontext.SaveChangesAsync().ConfigureAwait(false);
             return true;
         }
         #endregion
@@ -66,7 +66,7 @@ namespace TimeXv2.Model.Data
             var result =
                     uid == 0 ?
                     null :
-                    await _actionContext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
+                    await _timeXcontext.Actions.Include(a => a.Checkpoints).FirstOrDefaultAsync(a => a.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -76,7 +76,7 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            DbQuery<Action> query = _actionContext.Actions;
+            DbQuery<Action> query = _timeXcontext.Actions;
             if (isFullLoad)
             {
                 query = query.Include($"{nameof(Checkpoint)}s");
@@ -91,7 +91,7 @@ namespace TimeXv2.Model.Data
         {
             await DebugDelay();
 
-            var result = await _actionContext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
+            var result = await _timeXcontext.Checkpoints.Include(c => c.ParentAction).FirstOrDefaultAsync(chk => chk.Uid == uid).ConfigureAwait(false);
             return result;
         }
         #endregion
@@ -99,7 +99,7 @@ namespace TimeXv2.Model.Data
         #region QueryableActions
         public IQueryable<Action> QueryableActions()
         {
-            return _actionContext.Actions.AsQueryable();
+            return _timeXcontext.Actions.AsQueryable();
         }
         #endregion
 
@@ -135,7 +135,7 @@ namespace TimeXv2.Model.Data
             var newCheckpoints = value.Checkpoints.Where(chk => !updatableChkUids.Contains(chk.Uid));
             newCheckpoints.ForEach(newChk => updatableAction.Checkpoints.Add(new Checkpoint(newChk, parent: updatableAction)));
 
-            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            await _timeXcontext.SaveChangesAsync().ConfigureAwait(false);
             return true;
         }
         #endregion
@@ -149,7 +149,7 @@ namespace TimeXv2.Model.Data
 
             value.CopyPropertiesTo(updatableCheckpoint, parent: value.ParentAction);
 
-            await _actionContext.SaveChangesAsync().ConfigureAwait(false);
+            await _timeXcontext.SaveChangesAsync().ConfigureAwait(false);
             return true;
         }
         #endregion

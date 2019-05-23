@@ -3,11 +3,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              Loaded="ControlLoaded">
     <UserControl.Resources>
-        <Style TargetType="TextBlock" BasedOn="{StaticResource GlobalTextblockStyle}"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
     </UserControl.Resources>
-    
+
     <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -15,6 +17,13 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="16">
+            <StackPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}"/>
+                </Style>
+            </StackPanel.Resources>
+            
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Тёмная тема"/>
                 <ToggleButton IsChecked="{Binding EditedSettings.IsDarkTheme, ElementName=root, Mode=TwoWay}"
@@ -22,13 +31,29 @@
                               Command="{Binding GlobalViewModel.ChangeIsDarkCommand}"
                               CommandParameter="{Binding EditedSettings.IsDarkTheme, ElementName=root}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBox Text="{Binding EditedSettings.AlarmRing, ElementName=root, Mode=TwoWay}" IsReadOnly="True"/>
-                <Button Command="{Binding GlobalViewModel.ChangeMediaCommand}"
+            <Grid Margin="{StaticResource LeftTop}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Grid.Column="0"
+                         Text="{Binding EditedSettings.AlarmRing, ElementName=root, Mode=TwoWay}"
+                         IsReadOnly="True"/>
+                <Button Grid.Column="1"
+                        Command="{Binding GlobalViewModel.ChangeMediaCommand}"
                         CommandParameter="{Binding EditedSettings, ElementName=root}">
                     <materialDesign:PackIcon Kind="NotificationsActive"/>
                 </Button>
-            </StackPanel>
+            </Grid>
+
+            <!--Advanced settings-->
+            <Grid Visibility="{Binding IsAdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}">
+                <StackPanel>
+                    <Separator Margin="{StaticResource RightBottom}" Opacity="0.25"/>
+                    <TextBlock Text="Расширенные настройки"/>
+                </StackPanel>
+            </Grid>
         </StackPanel>
 
         <materialDesign:ColorZone Grid.Row="1">

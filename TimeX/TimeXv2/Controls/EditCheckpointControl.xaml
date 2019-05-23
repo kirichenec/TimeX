@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <Style TargetType="TextBlock" BasedOn="{StaticResource GlobalTextblockStyle}"/>
     </UserControl.Resources>
+    
     <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
             <RowDefinition/>
