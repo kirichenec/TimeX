@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +12,9 @@ namespace TimeXv2.Model.Data
         Task<Action> GetActionByUidAsync(int uid);
         Task<List<Action>> GetActionsListAsync(bool isFullLoad = false);
         Task<Checkpoint> GetCheckpointByUidAsync(int uid);
+        string GetDataBaseConnectionString();
         IQueryable<Action> QueryableActions();
+        void SetDataBaseConnectionString(string connectionString);
         Task<bool> UpdateActionAsync(Action value);
         Task<bool> UpdateCheckpointAsync(Checkpoint value);
     }

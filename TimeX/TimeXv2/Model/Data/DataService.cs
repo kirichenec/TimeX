@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -96,10 +98,35 @@ namespace TimeXv2.Model.Data
         }
         #endregion
 
+        #region GetDataBaseConnectionString
+        public string GetDataBaseConnectionString()
+        {
+            DbConnectionStringBuilder builder = new DbConnectionStringBuilder
+            {
+                ConnectionString = _timeXcontext.Database.Connection.ConnectionString
+            };
+
+            return builder["Data Source"] as string;
+        }
+        #endregion
+
         #region QueryableActions
         public IQueryable<Action> QueryableActions()
         {
             return _timeXcontext.Actions.AsQueryable();
+        }
+        #endregion
+
+        #region SetDataBaseConnectionString
+        public void SetDataBaseConnectionString(string connectionPath)
+        {
+            _timeXcontext.Database.Connection.ConnectionString = "Data Source=" + connectionPath;
+
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+            connectionStringsSection.ConnectionStrings[$"{nameof(TimeXv2)}Context"].ConnectionString = _timeXcontext.Database.Connection.ConnectionString;
+            config.Save();
+            ConfigurationManager.RefreshSection("connectionStrings");
         }
         #endregion
 

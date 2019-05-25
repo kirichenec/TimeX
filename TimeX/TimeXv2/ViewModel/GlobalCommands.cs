@@ -44,6 +44,25 @@ namespace TimeXv2.ViewModel
         }
         #endregion
 
+        #region ChangeDataBaseCommand
+        private RelayCommand<LightSettings> _changeDataBaseCommand;
+
+        public RelayCommand<LightSettings> ChangeDataBaseCommand
+        {
+            get
+            {
+                return _changeDataBaseCommand
+                  ?? (_changeDataBaseCommand = new RelayCommand<LightSettings>(
+                      settings =>
+                      {
+                          var openFileDialog = new OpenFileDialog();
+                          if (openFileDialog.ShowDialog() == true)
+                              settings.DataBasePath = openFileDialog.FileName;
+                      }));
+            }
+        }
+        #endregion
+
         #region ChangeMediaCommand
         private RelayCommand<LightSettings> _changeMediaCommand;
 
@@ -100,6 +119,23 @@ namespace TimeXv2.ViewModel
                         () =>
                         {
                             new PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
+                        }));
+            }
+        }
+        #endregion
+
+        #region FillDataBasePathCommand
+        private RelayCommand<LightSettings> _fillDataBasePathCommand;
+
+        public RelayCommand<LightSettings> FillDataBasePathCommand
+        {
+            get
+            {
+                return _fillDataBasePathCommand
+                    ?? (_fillDataBasePathCommand = new RelayCommand<LightSettings>(
+                        lightSettings =>
+                        {
+                            lightSettings.DataBasePath = _dataService.GetDataBaseConnectionString();
                         }));
             }
         }
@@ -179,6 +215,7 @@ namespace TimeXv2.ViewModel
                             }
                             App.SaveSettings();
                             Static.Properties.Instance.AlarmRing = App.Settings.AlarmRing;
+                            _dataService.SetDataBaseConnectionString(lightSettings.DataBasePath);
                         }));
             }
         }

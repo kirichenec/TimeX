@@ -2,13 +2,20 @@
              x:Class="TimeXv2.Controls.SettingsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              Loaded="ControlLoaded">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GlobalTextblockStyle}"/>
     </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GlobalViewModel.FillDataBasePathCommand}"
+                                   CommandParameter="{Binding EditedSettings, ElementName=root}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid DataContext="{Binding Source={StaticResource Locator}}">
         <Grid.RowDefinitions>
@@ -23,7 +30,7 @@
                     <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Self}}"/>
                 </Style>
             </StackPanel.Resources>
-            
+
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Тёмная тема"/>
                 <ToggleButton IsChecked="{Binding EditedSettings.IsDarkTheme, ElementName=root, Mode=TwoWay}"
@@ -36,10 +43,14 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <TextBox Grid.Column="0"
                          Text="{Binding EditedSettings.AlarmRing, ElementName=root, Mode=TwoWay}"
-                         IsReadOnly="True"/>
+                         IsReadOnly="True">
+                    <materialDesign:HintAssist.Hint>
+                        <TextBlock Text="Звук уведомления" Margin="{StaticResource ZeroMargin}"/>
+                    </materialDesign:HintAssist.Hint>
+                </TextBox>
                 <Button Grid.Column="1"
                         Command="{Binding GlobalViewModel.ChangeMediaCommand}"
                         CommandParameter="{Binding EditedSettings, ElementName=root}">
@@ -50,8 +61,23 @@
             <!--Advanced settings-->
             <Grid Visibility="{Binding IsAdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=root}">
                 <StackPanel>
-                    <Separator Margin="{StaticResource RightBottom}" Opacity="0.25"/>
+                    <Separator Margin="{StaticResource RightBottom}" Opacity="0.5"/>
                     <TextBlock Text="Расширенные настройки"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding EditedSettings.DataBasePath, ElementName=root}">
+                            <materialDesign:HintAssist.Hint>
+                                <TextBlock Text="Путь к базе" Margin="{StaticResource ZeroMargin}"/>
+                            </materialDesign:HintAssist.Hint>
+                        </TextBox>
+                        <Button Grid.Column="1" Command="{Binding GlobalViewModel.ChangeDataBaseCommand, Mode=OneWay}" CommandParameter="{Binding EditedSettings, ElementName=root}">
+                            <materialDesign:PackIcon Kind="Database"/>
+                        </Button>
+                    </Grid>
                 </StackPanel>
             </Grid>
         </StackPanel>

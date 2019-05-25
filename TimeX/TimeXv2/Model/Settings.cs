@@ -38,6 +38,25 @@ namespace TimeXv2.Model
 
         #endregion
 
+        #region DataBasePath
+        private string _dataBasePath = "TimeX.sqlite";
+
+        [JsonIgnore]
+        public string DataBasePath
+        {
+            get { return _dataBasePath; }
+            set
+            {
+                if (_dataBasePath == value)
+                {
+                    return;
+                }
+                _dataBasePath = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
+
         #region IsDarkTheme
         private bool _isDarkTheme = false;
 
@@ -199,6 +218,7 @@ namespace TimeXv2.Model
         public LightSettings(Settings value)
         {
             this.AlarmRing = value.AlarmRing;
+            this.DataBasePath = value.DataBasePath;
             this.Height = value.Height;
             this.IsDarkTheme = value.IsDarkTheme;
             this.Left = value.Left;
@@ -242,6 +262,25 @@ namespace TimeXv2.Model
                     return;
                 }
                 _alarmVolume = value;
+                NotifyPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region DataBasePath
+        private string _dataBasePath;
+
+        [JsonIgnore]
+        public string DataBasePath
+        {
+            get { return _dataBasePath; }
+            set
+            {
+                if (_dataBasePath == value)
+                {
+                    return;
+                }
+                _dataBasePath = value;
                 NotifyPropertyChanged();
             }
         }
@@ -319,6 +358,7 @@ namespace TimeXv2.Model
         public void FillSettings(Settings settings)
         {
             settings.AlarmRing = this.AlarmRing;
+            settings.DataBasePath = this.DataBasePath;
             settings.Height = this.Height;
             settings.IsDarkTheme = this.IsDarkTheme;
             settings.Left = this.Left;

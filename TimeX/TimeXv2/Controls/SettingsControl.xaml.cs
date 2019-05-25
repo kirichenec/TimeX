@@ -62,6 +62,7 @@ namespace TimeXv2.Controls
         private void ControlLoaded(object sender, RoutedEventArgs e)
         {
             this.EditedSettings = new LightSettings(App.Settings);
+
         }
         #endregion
 

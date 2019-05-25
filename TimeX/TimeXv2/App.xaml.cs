@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Navigation;
 using TimeXv2.Model;
+using TimeXv2.Model.Data;
 using UniversalKLibrary.Classic.Simplificators;
 using FormsNamespace = System.Windows.Forms;
 
@@ -23,7 +24,6 @@ namespace TimeXv2
         #endregion
 
         #region Fields
-        private bool isFirstLoad = true;
         private FormsNamespace.NotifyIcon _notifyIcon;
         private WindowState _notMinimazedState;
         #endregion
@@ -38,28 +38,24 @@ namespace TimeXv2
 
         #region Methods
 
-        #region Application_LoadCompleted | Обработчик события загрузки приложения
+        #region Application_LoadCompleted | Обработчик события загрузки страницы
         /// <summary>
-        /// Обработчик события загрузки приложения
+        /// Обработчик события загрузки страницы
         /// </summary>
         private void Application_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            if (isFirstLoad)
-            {
-                CreateNotifyicon();
+            CreateNotifyicon();
 
-                var window = App.Current.MainWindow;
-                window.ContentRendered += ClearMainWindowHistory;
-                window.Closing += SaveSettings;
-                window.Closing += DeleteNotifyicon;
-                window.StateChanged += OnWindowStateChangoed;
+            var window = App.Current.MainWindow;
+            window.ContentRendered += ClearMainWindowHistory;
+            window.Closing += SaveSettings;
+            window.Closing += DeleteNotifyicon;
+            window.StateChanged += OnWindowStateChangoed;
 
-                // %LocalAppData%\IsolatedStorage
+            // %LocalAppData%\IsolatedStorage
+            LoadSettings(window);
 
-                LoadSettings(window);
-
-                isFirstLoad = false;
-            }
+            App.Current.LoadCompleted -= Application_LoadCompleted;
         }
         #endregion
 
