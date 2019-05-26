@@ -12,9 +12,9 @@ namespace TimeXv2.Model.Data
         Task<Action> GetActionByUidAsync(int uid);
         Task<List<Action>> GetActionsListAsync(bool isFullLoad = false);
         Task<Checkpoint> GetCheckpointByUidAsync(int uid);
-        string GetDataBaseConnectionString();
+        string GetDataBasePath();
         IQueryable<Action> QueryableActions();
-        void SetDataBaseConnectionString(string connectionString);
+        bool SetDataBaseConnectionString(string connectionString);
         Task<bool> UpdateActionAsync(Action value);
         Task<bool> UpdateCheckpointAsync(Checkpoint value);
     }

@@ -6,7 +6,7 @@
         /// Переход на страницу
         /// </summary>
         /// <param name="page">Имя страницы</param>
-        void Navigate(NavPage page);
+        void Navigate(NavPage page, bool forcibly = false);
 
         NavPage CurrentPage { get; }
     }

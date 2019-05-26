@@ -57,7 +57,9 @@ namespace TimeXv2.ViewModel
                       {
                           var openFileDialog = new OpenFileDialog();
                           if (openFileDialog.ShowDialog() == true)
+                          {
                               settings.DataBasePath = openFileDialog.FileName;
+                          }
                       }));
             }
         }
@@ -135,7 +137,7 @@ namespace TimeXv2.ViewModel
                     ?? (_fillDataBasePathCommand = new RelayCommand<LightSettings>(
                         lightSettings =>
                         {
-                            lightSettings.DataBasePath = _dataService.GetDataBaseConnectionString();
+                            lightSettings.DataBasePath = _dataService.GetDataBasePath();
                         }));
             }
         }
@@ -215,7 +217,10 @@ namespace TimeXv2.ViewModel
                             }
                             App.SaveSettings();
                             Static.Properties.Instance.AlarmRing = App.Settings.AlarmRing;
-                            _dataService.SetDataBaseConnectionString(lightSettings.DataBasePath);
+                            if (_dataService.SetDataBaseConnectionString(lightSettings.DataBasePath))
+                            {
+                                _navigationService.Navigate(NavPage.Main, forcibly: true);
+                            };
                         }));
             }
         }

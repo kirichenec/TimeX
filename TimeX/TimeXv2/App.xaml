@@ -240,10 +240,9 @@
                                                             </Style>
                                                         </StackPanel.Resources>
 
-                                                        <Separator Background="{DynamicResource MaterialDesignPaper}" />
+                                                        <Separator Background="{DynamicResource MaterialDesignPaper}"/>
                                                         <StackPanel Orientation="Vertical">
                                                             <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                                                
                                                                 <Button.InputBindings>
                                                                     <MouseBinding Gesture="Shift+LeftClick"
                                                                                   Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
@@ -252,10 +251,11 @@
                                                                         </MouseBinding.CommandParameter>
                                                                     </MouseBinding>
                                                                 </Button.InputBindings>
-                                                                
+
                                                                 <Button.CommandParameter>
                                                                     <controls:SettingsControl/>
                                                                 </Button.CommandParameter>
+
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="Auto" />
@@ -265,7 +265,7 @@
                                                                     <TextBlock Text="Настройки" />
                                                                 </Grid>
                                                             </Button>
-                                                            
+
                                                             <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                                                 <Button.CommandParameter>
                                                                     <controls:AboutControl/>

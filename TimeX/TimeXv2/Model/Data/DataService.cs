@@ -99,7 +99,7 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region GetDataBaseConnectionString
-        public string GetDataBaseConnectionString()
+        public string GetDataBasePath()
         {
             DbConnectionStringBuilder builder = new DbConnectionStringBuilder
             {
@@ -118,15 +118,22 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region SetDataBaseConnectionString
-        public void SetDataBaseConnectionString(string connectionPath)
+        public bool SetDataBaseConnectionString(string connectionPath)
         {
-            _timeXcontext.Database.Connection.ConnectionString = "Data Source=" + connectionPath;
+            var newConnectionString = "Data Source=" + connectionPath;
+            if (_timeXcontext.Database.Connection.ConnectionString == newConnectionString)
+            {
+                return false;
+            }
+
+            _timeXcontext.Database.Connection.ConnectionString = newConnectionString;
 
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
             connectionStringsSection.ConnectionStrings[$"{nameof(TimeXv2)}Context"].ConnectionString = _timeXcontext.Database.Connection.ConnectionString;
             config.Save();
             ConfigurationManager.RefreshSection("connectionStrings");
+            return true;
         }
         #endregion
 
