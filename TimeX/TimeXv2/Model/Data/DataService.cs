@@ -118,12 +118,12 @@ namespace TimeXv2.Model.Data
         #endregion
 
         #region SetDataBaseConnectionString
-        public bool SetDataBaseConnectionString(string connectionPath)
+        public async Task<bool> SetDataBasePathAsync(string newPath)
         {
-            var newConnectionString = "Data Source=" + connectionPath;
+            var newConnectionString = "Data Source=" + newPath;
             if (_timeXcontext.Database.Connection.ConnectionString == newConnectionString)
             {
-                return false;
+                return await Task.FromResult(false);
             }
 
             _timeXcontext.Database.Connection.ConnectionString = newConnectionString;
@@ -133,7 +133,7 @@ namespace TimeXv2.Model.Data
             connectionStringsSection.ConnectionStrings[$"{nameof(TimeXv2)}Context"].ConnectionString = _timeXcontext.Database.Connection.ConnectionString;
             config.Save();
             ConfigurationManager.RefreshSection("connectionStrings");
-            return true;
+            return await Task.FromResult(true);
         }
         #endregion
 

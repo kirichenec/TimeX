@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +13,12 @@ namespace TimeXv2.Model.Data
         Task<Checkpoint> GetCheckpointByUidAsync(int uid);
         string GetDataBasePath();
         IQueryable<Action> QueryableActions();
-        bool SetDataBaseConnectionString(string connectionString);
+        /// <summary>
+        /// Set new path in connectionString
+        /// </summary>
+        /// <param name="newPath">Path</param>
+        /// <returns>Path updated</returns>
+        Task<bool> SetDataBasePathAsync(string newPath);
         Task<bool> UpdateActionAsync(Action value);
         Task<bool> UpdateCheckpointAsync(Checkpoint value);
     }

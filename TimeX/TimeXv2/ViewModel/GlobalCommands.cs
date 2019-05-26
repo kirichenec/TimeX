@@ -4,6 +4,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
@@ -217,10 +218,26 @@ namespace TimeXv2.ViewModel
                             }
                             App.SaveSettings();
                             Static.Properties.Instance.AlarmRing = App.Settings.AlarmRing;
-                            if (_dataService.SetDataBaseConnectionString(lightSettings.DataBasePath))
-                            {
-                                _navigationService.Navigate(NavPage.Main, forcibly: true);
-                            };
+
+                            new RetryingDataService<bool, string>()
+                                .RunTheMethod(_dataService.SetDataBasePathAsync, lightSettings.DataBasePath)
+                                .ContinueWith(
+                                    answer =>
+                                    {
+                                        var needRefresh = answer.Result;
+                                        if (string.IsNullOrEmpty(needRefresh.Message))
+                                        {
+                                            if (needRefresh.Result)
+                                            {
+                                                _navigationService.Navigate(NavPage.Main, forcibly: true);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Static.Properties.ShowMessage(needRefresh.Message);
+                                        }
+                                    },
+                                    TaskScheduler.FromCurrentSynchronizationContext());
                         }));
             }
         }
