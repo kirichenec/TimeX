@@ -200,7 +200,7 @@
                                                                 </MultiDataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
-                                                        <Style TargetType="materialDesign:PackIcon" BasedOn="{StaticResource {x:Type materialDesign:PackIcon}}">
+                                                        <Style TargetType="materialDesign:PackIcon">
                                                             <Setter Property="Kind" Value="Check"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding CheckedDate}" Value="{x:Null}">

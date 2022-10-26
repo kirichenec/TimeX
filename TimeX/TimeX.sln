@@ -1,9 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeXv2", "TimeXv2\TimeXv2.csproj", "{8996730E-AA5E-42CC-B147-BC89CC94E34D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutionItems", "solutionItems", "{60756DEB-CC2C-4361-ACCC-6F302FCCF9E2}"
+	ProjectSection(SolutionItems) = preProject
+		..\Materials\add-button.png = ..\Materials\add-button.png
+		..\Materials\bg-admin.png = ..\Materials\bg-admin.png
+		..\Materials\bg-admin1.png = ..\Materials\bg-admin1.png
+		..\Materials\bg-v2.png = ..\Materials\bg-v2.png
+		..\Materials\edit-small.png = ..\Materials\edit-small.png
+		..\Materials\Flaticon_17742.png = ..\Materials\Flaticon_17742.png
+		..\Materials\Flaticon_17773.png = ..\Materials\Flaticon_17773.png
+		..\Materials\hexellence.png = ..\Materials\hexellence.png
+		..\Materials\location24px.png = ..\Materials\location24px.png
+		..\Materials\logo.png = ..\Materials\logo.png
+		..\Materials\love_icons.zip = ..\Materials\love_icons.zip
+		..\Materials\save-small.png = ..\Materials\save-small.png
+		..\Materials\save-small1.png = ..\Materials\save-small1.png
+		..\Materials\trash-small.png = ..\Materials\trash-small.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1E65C3D8-CD2B-4157-B199-3C45B6AD10D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8996730E-AA5E-42CC-B147-BC89CC94E34D} = {1E65C3D8-CD2B-4157-B199-3C45B6AD10D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBF43340-84B4-421C-AEFF-9B691127AA84}

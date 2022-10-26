@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Navigation;
+using TimeXv2.Extensions;
 using TimeXv2.Model;
-using TimeXv2.Model.Data;
 using UniversalKLibrary.Classic.Simplificators;
 using FormsNamespace = System.Windows.Forms;
 
@@ -132,7 +132,7 @@ namespace TimeXv2
             loadedSettings.FillSettings(Settings);
 
             Static.Properties.Instance.AlarmRing = Settings.AlarmRing;
-            new MaterialDesignThemes.Wpf.PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
+            PaletteHelperExtensions.SetLightDark(App.Settings.IsDarkTheme);
         }
         #endregion
 
