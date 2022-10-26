@@ -1,10 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TimeXv2.Extensions;
 using TimeXv2.Model;
 using TimeXv2.Model.Data;
 using TimeXv2.ViewModel.Navigation;
@@ -39,7 +39,7 @@ namespace TimeXv2.ViewModel
                     ?? (_changeIsDarkCommand = new RelayCommand<bool>(
                         isDarkTheme =>
                         {
-                            new PaletteHelper().SetLightDark(isDarkTheme);
+                            PaletteHelperExtensions.SetLightDark(isDarkTheme);
                         }));
             }
         }
@@ -121,7 +121,7 @@ namespace TimeXv2.ViewModel
                     ?? (_closeSettingsCommand = new RelayCommand(
                         () =>
                         {
-                            new PaletteHelper().SetLightDark(App.Settings.IsDarkTheme);
+                            PaletteHelperExtensions.SetLightDark(App.Settings.IsDarkTheme);
                         }));
             }
         }

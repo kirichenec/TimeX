@@ -139,7 +139,7 @@
                 <Setter Property="Margin" Value="{StaticResource RightBottom}" />
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
-            <Style TargetType="{x:Type TextBlock}" x:Key="TitleTextBlock" BasedOn="{StaticResource MaterialDesignTitleTextBlock}">
+            <Style TargetType="{x:Type TextBlock}" x:Key="TitleTextBlock" BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}">
                 <Setter Property="Margin" Value="{StaticResource RightBottom}" />
             </Style>
 
